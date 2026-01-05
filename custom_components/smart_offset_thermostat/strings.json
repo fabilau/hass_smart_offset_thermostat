@@ -1,0 +1,42 @@
+{
+  "title": "Smart Offset Thermostat",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Offset Thermostat",
+        "description": "Select thermostat, room sensor and the desired room temperature.",
+        "data": {
+          "climate_entity": "Thermostat",
+          "room_sensor_entity": "Room temperature sensor",
+          "room_target": "Room target temperature",
+          "window_sensor_entity": "Window sensor (binary_sensor, optional)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Control options",
+        "description": "Fine-tune how the controller behaves.",
+        "data": {
+          "interval_sec": "Control interval (seconds)",
+          "deadband": "Deadband (°C)",
+          "step_max": "Max change per step (°C)",
+          "step_min": "Rounding step (°C)",
+          "learn_rate": "Learning rate",
+          "trv_min": "Min thermostat setpoint (°C)",
+          "trv_max": "Max thermostat setpoint (°C)",
+          "cooldown_sec": "Cooldown between changes (seconds)",
+          "enable_learning": "Enable learning",
+          "boost_duration_sec": "Boost duration (seconds)",
+          "window_sensor_entity": "Window sensor (binary_sensor, optional)",
+          "stuck_enable": "Adaptive over-temp correction (reduce setpoint if room stays too warm)",
+          "stuck_seconds": "Over-temp evaluation window (seconds)",
+          "stuck_min_drop": "Required cooling within window (°C)",
+          "stuck_step": "Extra reduction step when too warm (°C)"
+        }
+      }
+    }
+  }
+}

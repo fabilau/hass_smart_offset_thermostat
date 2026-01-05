@@ -1,0 +1,42 @@
+{
+  "title": "Smart Offset Thermostat",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Offset Thermostat",
+        "description": "Selecione o termóstato, o sensor de temperatura da divisão (e opcionalmente o sensor de janela) e a temperatura desejada.",
+        "data": {
+          "climate_entity": "Termóstato",
+          "room_sensor_entity": "Sensor externo de temperatura da divisão",
+          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
+          "room_target": "Temperatura alvo da divisão"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opções de controlo",
+        "description": "Ajuste o comportamento do controlador.",
+        "data": {
+          "interval_sec": "Intervalo de controlo (segundos)",
+          "deadband": "Zona morta (°C)",
+          "step_max": "Alteração máx. por passo (°C)",
+          "step_min": "Passo de arredondamento (°C)",
+          "learn_rate": "Taxa de aprendizagem",
+          "trv_min": "Setpoint mínimo do termóstato (°C)",
+          "trv_max": "Setpoint máximo do termóstato (°C)",
+          "cooldown_sec": "Tempo de espera entre alterações (segundos)",
+          "boost_duration_sec": "Duração do boost (segundos)",
+          "enable_learning": "Ativar aprendizagem",
+          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
+          "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a consigna se a divisão continuar demasiado quente)",
+          "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
+          "stuck_min_drop": "Arrefecimento necessário na janela (°C)",
+          "stuck_step": "Passo extra de redução em sobretemperatura (°C)"
+        }
+      }
+    }
+  }
+}

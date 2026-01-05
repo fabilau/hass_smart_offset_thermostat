@@ -1,0 +1,139 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any, Callable, Optional
+
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
+from homeassistant.const import UnitOfTemperature
+
+from .const import DOMAIN, SIGNAL_UPDATE, CONF_ROOM_TARGET
+
+_ACTION_TEXT = {
+    "init": "Initialisierung",
+    "deadband": "Im Toleranzbereich (keine Änderung)",
+    "deadband_rebase": "Sollwert geändert (Basiswert gesetzt)",
+    "cooldown": "Sperrzeit aktiv (keine Änderung)",
+    "set_temperature": "Sollwert an Thermostat gesendet",
+    "skipped_no_change": "Keine Änderung nötig",
+    "skipped_unavailable_entities": "Entitäten nicht verfügbar",
+    "skipped_invalid_room_temp": "Raumtemperatur ungültig",
+    "boost": "Boost aktiv (max. Heizleistung)",
+    "window_open": "Fenster offen (Absenkung)",
+    "stuck_overtemp_down": "Übertemperatur: zusätzlich abgesenkt",
+    "reset_offset": "Offset zurückgesetzt",
+}
+
+
+
+@dataclass(frozen=True)
+class _Def:
+    key: str
+    name: str
+    unit: str | None = None
+    device_class: str | None = None
+
+SENSORS = (
+    _Def("error", "Regelabweichung", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("offset", "Gelerntes Offset", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("target_trv", "Berechneter Thermostat-Sollwert", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("last_set", "Zuletzt gesetzter Thermostat-Sollwert", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("last_action", "Letzte Entscheidung (Code)", None, None),
+    _Def("last_action_text", "Letzte Entscheidung", None, None),
+    _Def("change_count", "Anzahl Sollwert-Änderungen", None, None),
+_Def("window_state", "Fensterstatus", None, None),
+_Def("boost_remaining", "Boost Restzeit", "s", SensorDeviceClass.DURATION),
+_Def("boost_active", "Boost aktiv", None, None),
+_Def("control_paused", "Regelung pausiert", None, None),
+)
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
+    controller = hass.data[DOMAIN][entry.entry_id]
+    entities = [SmartOffsetDebugSensor(hass, entry, controller, d) for d in SENSORS]
+    async_add_entities(entities)
+
+class SmartOffsetDebugSensor(SensorEntity):
+    _attr_has_entity_name = True
+    _attr_entity_registry_enabled_default = True
+
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry, controller, definition: _Def):
+        self.hass = hass
+        self.entry = entry
+        self.controller = controller
+        self.definition = definition
+
+        self._attr_unique_id = f"{entry.entry_id}_{definition.key}"
+        self._attr_name = definition.name
+        self._attr_native_unit_of_measurement = definition.unit
+        if definition.device_class:
+            self._attr_device_class = definition.device_class
+
+        self._unsub: Optional[Callable[[], None]] = None
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.entry.entry_id)},
+            name="Smart Offset Thermostat",
+            manufacturer="Custom",
+            model="Smart Offset Thermostat",
+        )
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return {
+            "thermostat": self.entry.data.get("climate_entity"),
+            "room_sensor": self.entry.data.get("room_sensor_entity"),
+            "room_target": self.controller.opt(CONF_ROOM_TARGET),
+        }
+
+    @property
+    def native_value(self):
+        k = self.definition.key
+        if k == "error":
+            return None if self.controller.last_error is None else round(float(self.controller.last_error), 3)
+        if k == "offset":
+            return round(float(self.controller.storage.get_offset(self.entry.entry_id)), 3)
+        if k == "target_trv":
+            return None if self.controller.last_target_trv is None else float(self.controller.last_target_trv)
+        if k == "last_set":
+            return None if self.controller.last_set is None else float(self.controller.last_set)
+        if k == "last_action":
+            return self.controller.last_action
+        if k == "last_action_text":
+            return _ACTION_TEXT.get(self.controller.last_action, self.controller.last_action)
+        if k == "change_count":
+            return int(self.controller.change_count)
+        if k == "window_state":
+            return "open" if self.controller.window_is_open else "closed"
+        if k == "boost_remaining":
+            if not self.controller.boost_active:
+                return 0
+            remaining = int(max(0.0, self.controller.boost_until - self.hass.loop.time()))
+            return remaining
+        if k == "boost_active":
+            return bool(self.controller.boost_active and (self.hass.loop.time() < self.controller.boost_until))
+        if k == "control_paused":
+            paused = self.controller.window_is_open or (self.controller.boost_active and (self.hass.loop.time() < self.controller.boost_until))
+            return bool(paused)
+        return None
+
+    async def async_added_to_hass(self) -> None:
+        @callback
+        def _update():
+            self.async_write_ha_state()
+
+        self._unsub = async_dispatcher_connect(
+            self.hass,
+            f"{SIGNAL_UPDATE}_{self.entry.entry_id}",
+            _update,
+        )
+
+    async def async_will_remove_from_hass(self) -> None:
+        if self._unsub:
+            self._unsub()
+            self._unsub = None

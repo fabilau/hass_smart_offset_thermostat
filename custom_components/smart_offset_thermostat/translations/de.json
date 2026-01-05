@@ -1,0 +1,42 @@
+{
+  "title": "Smart Offset Thermostat",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Offset Thermostat",
+        "description": "Wähle Thermostat, Raumfühler und die gewünschte Raum-Solltemperatur.",
+        "data": {
+          "climate_entity": "Thermostat",
+          "room_sensor_entity": "Externer Raumtemperatur-Sensor",
+          "room_target": "Raum-Solltemperatur",
+          "window_sensor_entity": "Fenstersensor (binary_sensor, optional)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Regel-Optionen",
+        "description": "Feinabstimmung der Regelung.",
+        "data": {
+          "interval_sec": "Regelintervall (Sekunden)",
+          "deadband": "Toleranzbereich (Deadband) in °C",
+          "step_max": "Maximale Änderung pro Schritt (°C)",
+          "step_min": "Rundungsschritt (°C)",
+          "learn_rate": "Lernrate",
+          "trv_min": "Min. Thermostat-Sollwert (°C)",
+          "trv_max": "Max. Thermostat-Sollwert (°C)",
+          "cooldown_sec": "Sperrzeit zwischen Änderungen (Sekunden)",
+          "enable_learning": "Lernen aktivieren",
+          "boost_duration_sec": "Boost-Dauer (Sekunden)",
+          "window_sensor_entity": "Fenstersensor (binary_sensor, optional)",
+          "stuck_enable": "Adaptive Übertemperatur-Korrektur (senkt Sollwert, wenn Raum zu warm bleibt)",
+          "stuck_seconds": "Übertemperatur-Auswertefenster (Sekunden)",
+          "stuck_min_drop": "Erforderliche Abkühlung im Fenster (°C)",
+          "stuck_step": "Zusätzlicher Absenk-Schritt bei Übertemperatur (°C)"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "domain": "smart_offset_thermostat",
+  "name": "Smart Offset Thermostat",
+  "version": "1.1.22",
+  "documentation": "https://github.com/fabilau/hass_smart_offset_thermostat",
+  "issue_tracker": "https://github.com/fabilau/hass_smart_offset_thermostat/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@fabilau"],
+  "config_flow": true,
+  "iot_class": "local_polling"
+}

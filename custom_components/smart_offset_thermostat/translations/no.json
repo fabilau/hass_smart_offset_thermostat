@@ -1,0 +1,42 @@
+{
+  "title": "Smart Offset Thermostat",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Offset Thermostat",
+        "description": "Velg termostat, romtemperatursensor (og valgfri vindussensor) og ønsket romtemperatur.",
+        "data": {
+          "climate_entity": "Termostat",
+          "room_sensor_entity": "Ekstern romtemperatursensor",
+          "window_sensor_entity": "Vindussensor (binary_sensor, valgfri)",
+          "room_target": "Ønsket romtemperatur"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kontrollvalg",
+        "description": "Finjuster hvordan kontrolleren oppfører seg.",
+        "data": {
+          "interval_sec": "Kontrollintervall (sekunder)",
+          "deadband": "Dødbånd (°C)",
+          "step_max": "Maks endring per steg (°C)",
+          "step_min": "Avrundingssteg (°C)",
+          "learn_rate": "Læringsrate",
+          "trv_min": "Min termostat-settpunkt (°C)",
+          "trv_max": "Maks termostat-settpunkt (°C)",
+          "cooldown_sec": "Sperretid mellom endringer (sekunder)",
+          "boost_duration_sec": "Boost-varighet (sekunder)",
+          "enable_learning": "Aktiver læring",
+          "window_sensor_entity": "Vindussensor (binary_sensor, valgfri)",
+          "stuck_enable": "Adaptiv overtemperatur-korrigering (senker settpunkt hvis rommet forblir for varmt)",
+          "stuck_seconds": "Evalueringsvindu for overtemperatur (sekunder)",
+          "stuck_min_drop": "Krav til nedkjøling i vinduet (°C)",
+          "stuck_step": "Ekstra senkesteg ved overtemperatur (°C)"
+        }
+      }
+    }
+  }
+}

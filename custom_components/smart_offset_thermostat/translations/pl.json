@@ -1,0 +1,42 @@
+{
+  "title": "Smart Offset Thermostat",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Offset Thermostat",
+        "description": "Wybierz termostat, czujnik temperatury w pomieszczeniu (oraz opcjonalnie czujnik okna) i docelową temperaturę.",
+        "data": {
+          "climate_entity": "Termostat",
+          "room_sensor_entity": "Zewnętrzny czujnik temperatury pomieszczenia",
+          "window_sensor_entity": "Czujnik okna (binary_sensor, opcjonalnie)",
+          "room_target": "Temperatura docelowa pomieszczenia"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje sterowania",
+        "description": "Dostosuj zachowanie sterownika.",
+        "data": {
+          "interval_sec": "Interwał sterowania (sekundy)",
+          "deadband": "Martwa strefa (°C)",
+          "step_max": "Maks. zmiana na krok (°C)",
+          "step_min": "Krok zaokrąglania (°C)",
+          "learn_rate": "Współczynnik uczenia",
+          "trv_min": "Min. nastawa termostatu (°C)",
+          "trv_max": "Maks. nastawa termostatu (°C)",
+          "cooldown_sec": "Czas blokady między zmianami (sekundy)",
+          "boost_duration_sec": "Czas boost (sekundy)",
+          "enable_learning": "Włącz uczenie",
+          "window_sensor_entity": "Czujnik okna (binary_sensor, opcjonalnie)",
+          "stuck_enable": "Adaptacyjna korekta przegrzania (obniża nastawę, jeśli pomieszczenie pozostaje zbyt ciepłe)",
+          "stuck_seconds": "Okno oceny przegrzania (sekundy)",
+          "stuck_min_drop": "Wymagane schłodzenie w oknie (°C)",
+          "stuck_step": "Dodatkowy krok obniżenia przy przegrzaniu (°C)"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "title": "Smart Offset Thermostat",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Offset Thermostat",
+        "description": "Selecione o termostato, o sensor de temperatura do ambiente (e opcionalmente o sensor de janela) e a temperatura desejada.",
+        "data": {
+          "climate_entity": "Termostato",
+          "room_sensor_entity": "Sensor externo de temperatura do ambiente",
+          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
+          "room_target": "Temperatura alvo do ambiente"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opções de controle",
+        "description": "Ajuste o comportamento do controlador.",
+        "data": {
+          "interval_sec": "Intervalo de controle (segundos)",
+          "deadband": "Faixa morta (°C)",
+          "step_max": "Mudança máx. por passo (°C)",
+          "step_min": "Passo de arredondamento (°C)",
+          "learn_rate": "Taxa de aprendizado",
+          "trv_min": "Setpoint mínimo do termostato (°C)",
+          "trv_max": "Setpoint máximo do termostato (°C)",
+          "cooldown_sec": "Pausa entre mudanças (segundos)",
+          "boost_duration_sec": "Duração do boost (segundos)",
+          "enable_learning": "Ativar aprendizado",
+          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
+          "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a meta se o ambiente continuar quente demais)",
+          "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
+          "stuck_min_drop": "Resfriamento necessário na janela (°C)",
+          "stuck_step": "Passo extra de redução em sobretemperatura (°C)"
+        }
+      }
+    }
+  }
+}

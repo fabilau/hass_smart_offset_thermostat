@@ -1,0 +1,42 @@
+{
+  "title": "Smart Offset Thermostat",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Offset Thermostat",
+        "description": "Sélectionnez le thermostat, le capteur de température de la pièce (et éventuellement le capteur de fenêtre) et la température souhaitée.",
+        "data": {
+          "climate_entity": "Thermostat",
+          "room_sensor_entity": "Capteur externe de température de la pièce",
+          "window_sensor_entity": "Capteur de fenêtre (binary_sensor, optionnel)",
+          "room_target": "Température cible de la pièce"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options de régulation",
+        "description": "Ajustez finement le comportement du contrôleur.",
+        "data": {
+          "interval_sec": "Intervalle de régulation (secondes)",
+          "deadband": "Bande morte (°C)",
+          "step_max": "Variation max par étape (°C)",
+          "step_min": "Pas d’arrondi (°C)",
+          "learn_rate": "Taux d’apprentissage",
+          "trv_min": "Consigne mini du thermostat (°C)",
+          "trv_max": "Consigne maxi du thermostat (°C)",
+          "cooldown_sec": "Temps de blocage entre changements (secondes)",
+          "boost_duration_sec": "Durée du boost (secondes)",
+          "enable_learning": "Activer l’apprentissage",
+          "window_sensor_entity": "Capteur de fenêtre (binary_sensor, optionnel)",
+          "stuck_enable": "Correction adaptative de surchauffe (baisse la consigne si la pièce reste trop chaude)",
+          "stuck_seconds": "Fenêtre d’évaluation surchauffe (secondes)",
+          "stuck_min_drop": "Refroidissement requis dans la fenêtre (°C)",
+          "stuck_step": "Pas de baisse supplémentaire en surchauffe (°C)"
+        }
+      }
+    }
+  }
+}
