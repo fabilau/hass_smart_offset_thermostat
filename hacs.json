@@ -5,8 +5,18 @@
   "country": [
     "DE",
     "AT",
-    "CH"
+    "CH",
+    "EN",
+    "ES",
+    "FR",
+    "IT",
+    "NL",
+    "NO",
+    "PL",
+    "PT-BR",
+    "PT",
+    "SV"
   ],
-  "homeassistant": "2024.6.0",
+  "homeassistant": "2025.12.5",
   "render_readme": true
 }
