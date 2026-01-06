@@ -1,7 +1,7 @@
 {
+  "domain": "smart_offset_thermostat",
   "name": "Smart Offset Thermostat",
   "content_in_root": false,
-  "domain": "smart_offset_thermostat",
   "country": [
     "DE",
     "AT",
