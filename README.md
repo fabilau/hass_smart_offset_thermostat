@@ -28,6 +28,7 @@ It is designed for setups where the built-in thermostat sensor is inaccurate (e.
 1. Select:
    - a physical thermostat
    - an external room temperature sensor
+   - a window sensor
    - a desired room temperature
 
 2. The integration compares:
