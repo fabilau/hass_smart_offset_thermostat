@@ -123,5 +123,6 @@ Thank you for your support! 🙏
 
 ## 🧾 License
 
-MIT License  
-Author: fabilau
+This project is licensed under the PolyForm Noncommercial License.
+You may use, modify and share it for non-commercial purposes.
+Commercial use, selling, or offering this software as part of a paid product or service is not permitted.
