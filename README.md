@@ -1,7 +1,7 @@
 # Smart Offset Thermostat
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-blue.svg)](#installation)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg)](LICENSE)
 
 **Smart Offset Thermostat** is a Home Assistant integration that creates a virtual thermostat which learns and compensates the temperature offset of physical radiator thermostats using an external room temperature sensor.
 
