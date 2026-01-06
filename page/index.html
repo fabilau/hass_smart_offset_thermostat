@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Offset Thermostat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="text-gray-800 antialiased">
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-blue-600 to-orange-500 text-white py-16 px-6 text-center">
+    <div class="max-w-3xl mx-auto">
+      <img src="assets/logo.png" alt="Smart Offset Thermostat Logo" class="mx-auto mb-6 w-32 h-32" />
+      <h1 class="text-4xl font-bold mb-4">Smart Offset Thermostat</h1>
+      <p class="text-lg leading-relaxed mb-8">
+        Virtual thermostat for Home Assistant with automatic temperature calibration.
+        Smart Offset Thermostat intelligently compensates for the measurement offset of real radiator thermostats using an external sensor —
+        for consistently accurate temperature values and efficient heating.
+      </p>
+      <a href="#installation" class="bg-white text-blue-600 font-semibold py-3 px-6 rounded shadow hover:bg-gray-100">
+        Install via HACS
+      </a>
+    </div>
+  </section>
+
+  <!-- Features Overview -->
+  <section class="py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <!-- Feature 1 -->
+        <div class="flex flex-col items-center">
+          <!-- Arrow Path Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+          </svg>
+          <h3 class="mt-4 font-semibold">Automatic Offset Learning</h3>
+          <p class="text-sm mt-1 text-gray-700">Learns the ideal temperature offset automatically in the background</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="flex flex-col items-center">
+          <!-- Wifi Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
+          </svg>
+          <h3 class="mt-4 font-semibold">External Temperature Sensor</h3>
+          <p class="text-sm mt-1 text-gray-700">Uses a separate room sensor for accurate readings</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="flex flex-col items-center">
+          <!-- Device Phone Mobile Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5A2.25 2.25 0 008.25 22.5h7.5A2.25 2.25 0 0018 20.25V3.75A2.25 2.25 0 0015.75 1.5H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+          </svg>
+          <h3 class="mt-4 font-semibold">Virtual Thermostat</h3>
+          <p class="text-sm mt-1 text-gray-700">Dedicated climate entity for dashboards &amp; HomeKit</p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="flex flex-col items-center">
+          <!-- Adjustments Horizontal Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+          </svg>
+          <h3 class="mt-4 font-semibold">Adaptive Learning Logic</h3>
+          <p class="text-sm mt-1 text-gray-700">Dynamically adapts to changing conditions</p>
+        </div>
+        <!-- Feature 5 -->
+        <div class="flex flex-col items-center">
+          <!-- Window Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8.25V18a2.25 2.25 0 002.25 2.25h13.5A2.25 2.25 0 0021 18V8.25M3 8.25V6A2.25 2.25 0 015.25 3.75h13.5A2.25 2.25 0 0121 6v2.25M3 8.25h18M5.25 6h.008v.008H5.25V6zM7.5 6h.008v.008H7.5V6zm2.25 6h.008v.008H9.75V6z" />
+          </svg>
+          <h3 class="mt-4 font-semibold">Window Detection</h3>
+          <p class="text-sm mt-1 text-gray-700">Detects open windows and automatically restores settings</p>
+        </div>
+        <!-- Feature 6 -->
+        <div class="flex flex-col items-center">
+          <!-- Fire Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+          </svg>
+          <h3 class="mt-4 font-semibold">Boost Mode</h3>
+          <p class="text-sm mt-1 text-gray-700">Fast heating at the push of a button</p>
+        </div>
+        <!-- Feature 7 -->
+        <div class="flex flex-col items-center">
+          <!-- Trending Down Icon (filled) -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-12 h-12 text-orange-500">
+            <path fill="currentColor" fill-rule="evenodd" d="M1.22 4.22a.75.75 0 011.06 0L6 7.94l2.761-2.762a.75.75 0 011.158.12 24.9 24.9 0 012.718 5.556l.729-1.261a.75.75 0 011.299.75l-1.591 2.755a.75.75 0 01-1.025.275l-2.756-1.591a.75.75 0 11.75-1.3l1.097.634a23.417 23.417 0 00-1.984-4.211L6.53 9.53a.75.75 0 01-1.06 0L1.22 5.28a.75.75 0 010-1.06z" clip-rule="evenodd" />
+          </svg>
+          <h3 class="mt-4 font-semibold">Overtemperature Correction</h3>
+          <p class="text-sm mt-1 text-gray-700">Prevents overheating through automatic adjustments</p>
+        </div>
+        <!-- Feature 8 -->
+        <div class="flex flex-col items-center">
+          <!-- Cog (Gear) Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49L3.9 13.233a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99L3.96 8.838a1.125 1.125 0 01-.26-1.43L5 5.16a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <h3 class="mt-4 font-semibold">UI-Based Configuration</h3>
+          <p class="text-sm mt-1 text-gray-700">Convenient setup without YAML</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detailed Explanations -->
+  <section class="py-16 px-6 bg-gray-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold mb-8 text-center">How It Works &amp; Details</h2>
+      <!-- Adaptive Overtemperature Correction -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Adaptive Overtemperature Correction</h3>
+        <p class="leading-relaxed">
+          If the current temperature rises significantly above the setpoint, Smart Offset Thermostat reacts automatically.
+          The adaptive overtemperature correction reduces heating output to prevent overheating
+          and continuously adjusts the control behavior. This maintains a comfortable room temperature without overheating.
+        </p>
+      </div>
+      <!-- Window Sensor Integration -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Window Sensor Integration</h3>
+        <p class="leading-relaxed">
+          The integration reliably detects open windows via connected window/door contacts or sudden temperature drops.
+          While airing the room, Smart Offset Thermostat automatically pauses heating control so the learned offset is not distorted.
+          As soon as the window is closed, all settings are restored automatically and normal control resumes.
+        </p>
+      </div>
+      <!-- Boost Mode -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Boost Mode</h3>
+        <p class="leading-relaxed">
+          Need cozy warmth quickly? With Boost Mode, you can set the radiator to maximum output for a defined duration at the push of a button.
+          This heats the room rapidly. Afterwards, Smart Offset Thermostat returns to normal control
+          to avoid wasting energy.
+        </p>
+      </div>
+      <!-- Offset Reset -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Offset Reset</h3>
+        <p class="leading-relaxed">
+          Want to reset the learned offset? No problem: you can perform an offset reset at any time via the user interface.
+          Smart Offset Thermostat will then start learning the temperature offset again — ideal after replacing a device
+          or if the room situation has changed.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- UI Configuration Highlight -->
+  <section class="py-16 px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <h3 class="text-xl font-semibold mb-3">Easy Setup Without YAML</h3>
+      <p class="leading-relaxed text-gray-800">
+        All settings can be configured conveniently via the Home Assistant UI — with no manual YAML configuration.
+        This makes setup and adjustments especially user-friendly.
+      </p>
+    </div>
+  </section>
+
+  <!-- HomeKit Compatibility -->
+  <section class="py-16 px-6 bg-gray-50">
+    <div class="max-w-5xl mx-auto md:flex md:items-center md:justify-between md:gap-12">
+      <div class="md:w-1/2 mb-8 md:mb-0">
+        <h3 class="text-xl font-semibold mb-3">HomeKit Compatibility</h3>
+        <p class="leading-relaxed text-gray-800">
+          Smart Offset Thermostat can be integrated seamlessly into Apple HomeKit.
+          Using Home Assistant’s HomeKit integration, the virtual thermostat appears in the Apple Home app like a regular thermostat —
+          including precise temperature values calibrated by the external sensor.
+          This lets you control your heating via Siri or the Home app without sacrificing accurate measurements.
+        </p>
+      </div>
+      <div class="md:w-1/2 text-center">
+        <img src="homekit_steuerung.png" alt="Thermostat control via Apple HomeKit" class="inline-block max-w-full rounded-lg shadow" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation -->
+  <section id="installation" class="py-16 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold text-center mb-12">Installation</h2>
+      <div class="grid md:grid-cols-2 gap-12">
+        <!-- Installation via HACS -->
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Install via HACS</h3>
+          <ol class="list-decimal list-inside space-y-2 text-gray-800 leading-relaxed">
+            <li>Open the Home Assistant Community Store (HACS) and navigate to <strong>Integrations</strong>.</li>
+            <li>Search for <em>Smart Offset Thermostat</em> and add the integration (you may need to add the repository manually first).</li>
+            <li>Restart Home Assistant after the installation is complete.</li>
+            <li>In Home Assistant, go to <strong>Settings &gt; Devices &amp; Services</strong> and click <strong>Add Integration</strong>. Select <em>Smart Offset Thermostat</em> from the list to configure it.</li>
+          </ol>
+        </div>
+        <!-- Manual Installation -->
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Manual Installation</h3>
+          <ol class="list-decimal list-inside space-y-2 text-gray-800 leading-relaxed">
+            <li>Download the latest version of the integration code from <a href="https://github.com/fabilau/hass_smart_offset_thermostat" class="text-blue-600 hover:underline">GitHub</a>.</li>
+            <li>Copy the <code>smart_offset_thermostat</code> folder into the <code>custom_components</code> directory of your Home Assistant installation.</li>
+            <li>Restart Home Assistant so the manually added integration is detected.</li>
+            <li>Add the <em>Smart Offset Thermostat</em> integration via the Home Assistant UI (see step 4 above).</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Support & Donate -->
+  <section class="py-16 px-6 bg-gray-50">
+    <div class="max-w-2xl mx-auto text-center">
+      <h3 class="text-xl font-semibold mb-3">Support &amp; Donation</h3>
+      <p class="leading-relaxed text-gray-800 mb-4">
+        Like this project? Support development with a donation — every contribution is welcome and helps improve the project.
+      </p>
+      <a href="https://revolut.me/fabian599" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded">
+        Support via Revolut
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300 text-sm py-4">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between px-6">
+      <div class="mb-2 md:mb-0">&copy; 2026 fabilau</div>
+      <div class="mb-2 md:mb-0">Released under the MIT License</div>
+      <div><a href="https://github.com/fabilau/hass_smart_offset_thermostat" class="hover:underline">GitHub</a></div>
+    </div>
+  </footer>
+
+</body>
+</html>
