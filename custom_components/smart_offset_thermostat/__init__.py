@@ -6,6 +6,9 @@ from homeassistant.config_entries import ConfigEntry
 from .const import DOMAIN, PLATFORMS
 from .storage import OffsetStorage
 from .controller import SmartOffsetController
+from homeassistant.helpers import config_validation as cv
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema("smart_offset_thermostat")
 
 async def async_setup(hass: HomeAssistant, config: dict):
     hass.data.setdefault(DOMAIN, {})
