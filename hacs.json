@@ -1,20 +1,6 @@
 {
   "name": "Smart Offset Thermostat",
   "content_in_root": false,
-  "country": [
-    "DE",
-    "AT",
-    "CH",
-    "US",
-    "ES",
-    "FR",
-    "IT",
-    "NL",
-    "NO",
-    "PL",
-    "PT",
-    "SV"
-  ],
   "homeassistant": "2025.12.5",
   "render_readme": true
 }
