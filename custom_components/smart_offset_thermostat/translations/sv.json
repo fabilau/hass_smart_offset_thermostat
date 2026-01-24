@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Styrfel"
+      },
+      "offset": {
+        "name": "Inlärd offset"
+      },
+      "target_trv": {
+        "name": "Beräknat termostatbörvärde"
+      },
+      "last_set": {
+        "name": "Senast inställt termostatbörvärde"
+      },
+      "last_action": {
+        "name": "Senaste beslut (kod)"
+      },
+      "last_action_text": {
+        "name": "Senaste beslut",
+        "state": {
+          "init": "Initialisering",
+          "deadband": "I dödbandet (ingen ändring)",
+          "deadband_rebase": "Börvärde ändrat (baslinje satt)",
+          "cooldown": "Spärrtid aktiv (ingen ändring)",
+          "set_temperature": "Börvärde skickat till termostat",
+          "skipped_no_change": "Ingen ändring behövs",
+          "skipped_unavailable_entities": "Entiteter inte tillgängliga",
+          "skipped_invalid_room_temp": "Rumstemperatur ogiltig",
+          "boost": "Boost aktiv (max. värmeeffekt)",
+          "window_open": "Fönster öppet (sänkt)",
+          "stuck_overtemp_down": "Övertemperatur: ytterligare sänkt",
+          "reset_offset": "Offset återställd"
+        }
+      },
+      "change_count": {
+        "name": "Antal börvärdesändringar"
+      },
+      "window_state": {
+        "name": "Fönsterstatus"
+      },
+      "boost_remaining": {
+        "name": "Boost återstående tid"
+      },
+      "boost_active": {
+        "name": "Boost aktiv"
+      },
+      "control_paused": {
+        "name": "Styrning pausad"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Återställ offset"
+      }
+    }
   }
 }

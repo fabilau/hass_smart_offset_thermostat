@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Błąd sterowania"
+      },
+      "offset": {
+        "name": "Nauczony offset"
+      },
+      "target_trv": {
+        "name": "Obliczona nastawa termostatu"
+      },
+      "last_set": {
+        "name": "Ostatnio ustawiona nastawa termostatu"
+      },
+      "last_action": {
+        "name": "Ostatnia decyzja (kod)"
+      },
+      "last_action_text": {
+        "name": "Ostatnia decyzja",
+        "state": {
+          "init": "Inicjalizacja",
+          "deadband": "W martwej strefie (bez zmiany)",
+          "deadband_rebase": "Nastawa zmieniona (linia bazowa ustawiona)",
+          "cooldown": "Blokada aktywna (bez zmiany)",
+          "set_temperature": "Nastawa wysłana do termostatu",
+          "skipped_no_change": "Nie trzeba zmiany",
+          "skipped_unavailable_entities": "Encje niedostępne",
+          "skipped_invalid_room_temp": "Temperatura pomieszczenia nieprawidłowa",
+          "boost": "Boost aktywny (maks. moc grzewcza)",
+          "window_open": "Okno otwarte (obniżone)",
+          "stuck_overtemp_down": "Przegrzanie: dodatkowo obniżone",
+          "reset_offset": "Offset zresetowany"
+        }
+      },
+      "change_count": {
+        "name": "Liczba zmian nastawy"
+      },
+      "window_state": {
+        "name": "Status okna"
+      },
+      "boost_remaining": {
+        "name": "Pozostały czas boost"
+      },
+      "boost_active": {
+        "name": "Boost aktywny"
+      },
+      "control_paused": {
+        "name": "Sterowanie wstrzymane"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Resetuj offset"
+      }
+    }
   }
 }

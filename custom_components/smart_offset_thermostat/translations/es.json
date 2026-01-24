@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Error de control"
+      },
+      "offset": {
+        "name": "Offset aprendido"
+      },
+      "target_trv": {
+        "name": "Consigna calculada del termostato"
+      },
+      "last_set": {
+        "name": "Última consigna establecida del termostato"
+      },
+      "last_action": {
+        "name": "Última decisión (código)"
+      },
+      "last_action_text": {
+        "name": "Última decisión",
+        "state": {
+          "init": "Inicialización",
+          "deadband": "En banda muerta (sin cambio)",
+          "deadband_rebase": "Consigna cambiada (línea base establecida)",
+          "cooldown": "Enfriamiento activo (sin cambio)",
+          "set_temperature": "Consigna enviada al termostato",
+          "skipped_no_change": "No se necesita cambio",
+          "skipped_unavailable_entities": "Entidades no disponibles",
+          "skipped_invalid_room_temp": "Temperatura de habitación no válida",
+          "boost": "Boost activo (máxima potencia de calefacción)",
+          "window_open": "Ventana abierta (reducida)",
+          "stuck_overtemp_down": "Sobretemperatura: adicionalmente reducida",
+          "reset_offset": "Offset restablecido"
+        }
+      },
+      "change_count": {
+        "name": "Número de cambios de consigna"
+      },
+      "window_state": {
+        "name": "Estado de ventana"
+      },
+      "boost_remaining": {
+        "name": "Tiempo restante de boost"
+      },
+      "boost_active": {
+        "name": "Boost activo"
+      },
+      "control_paused": {
+        "name": "Control pausado"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Restablecer offset"
+      }
+    }
   }
 }

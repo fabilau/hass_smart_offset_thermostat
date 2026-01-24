@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Errore di controllo"
+      },
+      "offset": {
+        "name": "Offset appreso"
+      },
+      "target_trv": {
+        "name": "Setpoint calcolato del termostato"
+      },
+      "last_set": {
+        "name": "Ultimo setpoint inviato al termostato"
+      },
+      "last_action": {
+        "name": "Ultima decisione (codice)"
+      },
+      "last_action_text": {
+        "name": "Ultima decisione",
+        "state": {
+          "init": "Inizializzazione",
+          "deadband": "Nella banda morta (nessun cambiamento)",
+          "deadband_rebase": "Setpoint modificato (baseline impostata)",
+          "cooldown": "Pausa attiva (nessun cambiamento)",
+          "set_temperature": "Setpoint inviato al termostato",
+          "skipped_no_change": "Nessun cambiamento necessario",
+          "skipped_unavailable_entities": "Entità non disponibili",
+          "skipped_invalid_room_temp": "Temperatura stanza non valida",
+          "boost": "Boost attivo (potenza riscaldamento max)",
+          "window_open": "Finestra aperta (ridotto)",
+          "stuck_overtemp_down": "Sovratemperatura: ulteriormente ridotto",
+          "reset_offset": "Offset azzerato"
+        }
+      },
+      "change_count": {
+        "name": "Numero di cambiamenti setpoint"
+      },
+      "window_state": {
+        "name": "Stato finestra"
+      },
+      "boost_remaining": {
+        "name": "Tempo rimanente boost"
+      },
+      "boost_active": {
+        "name": "Boost attivo"
+      },
+      "control_paused": {
+        "name": "Controllo in pausa"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Reimposta offset"
+      }
+    }
   }
 }

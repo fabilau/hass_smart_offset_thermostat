@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Erreur de régulation"
+      },
+      "offset": {
+        "name": "Offset appris"
+      },
+      "target_trv": {
+        "name": "Consigne calculée du thermostat"
+      },
+      "last_set": {
+        "name": "Dernière consigne envoyée au thermostat"
+      },
+      "last_action": {
+        "name": "Dernière décision (code)"
+      },
+      "last_action_text": {
+        "name": "Dernière décision",
+        "state": {
+          "init": "Initialisation",
+          "deadband": "Dans la bande morte (aucun changement)",
+          "deadband_rebase": "Consigne modifiée (référence établie)",
+          "cooldown": "Blocage actif (aucun changement)",
+          "set_temperature": "Consigne envoyée au thermostat",
+          "skipped_no_change": "Aucun changement nécessaire",
+          "skipped_unavailable_entities": "Entités non disponibles",
+          "skipped_invalid_room_temp": "Température de la pièce invalide",
+          "boost": "Boost actif (puissance de chauffe max)",
+          "window_open": "Fenêtre ouverte (réduit)",
+          "stuck_overtemp_down": "Surchauffe: réduit en plus",
+          "reset_offset": "Offset réinitialisé"
+        }
+      },
+      "change_count": {
+        "name": "Nombre de changements de consigne"
+      },
+      "window_state": {
+        "name": "État de fenêtre"
+      },
+      "boost_remaining": {
+        "name": "Temps restant boost"
+      },
+      "boost_active": {
+        "name": "Boost actif"
+      },
+      "control_paused": {
+        "name": "Régulation en pause"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Réinitialiser l'offset"
+      }
+    }
   }
 }
