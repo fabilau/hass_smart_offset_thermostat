@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Sequence
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.config_entries import ConfigEntry
@@ -19,6 +19,22 @@ class _Def:
     key: str
     unit: str | None = None
     device_class: str | None = None
+    options: Sequence[str] | None = None
+
+LAST_ACTION_OPTIONS = (
+    "init",
+    "deadband",
+    "deadband_rebase",
+    "cooldown",
+    "set_temperature",
+    "skipped_no_change",
+    "skipped_unavailable_entities",
+    "skipped_invalid_room_temp",
+    "boost",
+    "window_open",
+    "stuck_overtemp_down",
+    "reset_offset",
+)
 
 SENSORS = (
     _Def("error", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
@@ -26,7 +42,7 @@ SENSORS = (
     _Def("target_trv", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
     _Def("last_set", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
     _Def("last_action", None, None),
-    _Def("last_action_text", None, None),
+    _Def("last_action_text", None, SensorDeviceClass.ENUM, options=LAST_ACTION_OPTIONS),
     _Def("change_count", None, None),
     _Def("window_state", None, None),
     _Def("boost_remaining", "s", SensorDeviceClass.DURATION),
@@ -54,6 +70,9 @@ class SmartOffsetDebugSensor(SensorEntity):
         self._attr_native_unit_of_measurement = definition.unit
         if definition.device_class:
             self._attr_device_class = definition.device_class
+
+        if definition.options:
+            self._attr_options = list(definition.options)
 
         self._unsub: Optional[Callable[[], None]] = None
 
