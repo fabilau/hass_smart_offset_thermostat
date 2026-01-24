@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Control error"
+      },
+      "offset": {
+        "name": "Learned offset"
+      },
+      "target_trv": {
+        "name": "Calculated thermostat setpoint"
+      },
+      "last_set": {
+        "name": "Last set thermostat setpoint"
+      },
+      "last_action": {
+        "name": "Last decision (code)"
+      },
+      "last_action_text": {
+        "name": "Last decision",
+        "state": {
+          "init": "Initialization",
+          "deadband": "In deadband (no change)",
+          "deadband_rebase": "Setpoint changed (baseline set)",
+          "cooldown": "Cooldown active (no change)",
+          "set_temperature": "Setpoint sent to thermostat",
+          "skipped_no_change": "No change needed",
+          "skipped_unavailable_entities": "Entities unavailable",
+          "skipped_invalid_room_temp": "Room temperature invalid",
+          "boost": "Boost active (max heating power)",
+          "window_open": "Window open (reduced)",
+          "stuck_overtemp_down": "Over-temperature: additionally reduced",
+          "reset_offset": "Offset reset"
+        }
+      },
+      "change_count": {
+        "name": "Number of setpoint changes"
+      },
+      "window_state": {
+        "name": "Window state"
+      },
+      "boost_remaining": {
+        "name": "Boost remaining time"
+      },
+      "boost_active": {
+        "name": "Boost active"
+      },
+      "control_paused": {
+        "name": "Control paused"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Reset offset"
+      }
+    }
   }
 }

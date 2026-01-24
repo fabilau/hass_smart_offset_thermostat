@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Kontrollfeil"
+      },
+      "offset": {
+        "name": "Lært offset"
+      },
+      "target_trv": {
+        "name": "Beregnet termostat-settpunkt"
+      },
+      "last_set": {
+        "name": "Sist satt termostat-settpunkt"
+      },
+      "last_action": {
+        "name": "Siste avgjørelse (kode)"
+      },
+      "last_action_text": {
+        "name": "Siste avgjørelse",
+        "state": {
+          "init": "Initialisering",
+          "deadband": "I dødbåndet (ingen endring)",
+          "deadband_rebase": "Settpunkt endret (basislinje satt)",
+          "cooldown": "Sperretid aktiv (ingen endring)",
+          "set_temperature": "Settpunkt sendt til termostat",
+          "skipped_no_change": "Ingen endring nødvendig",
+          "skipped_unavailable_entities": "Entiteter ikke tilgjengelige",
+          "skipped_invalid_room_temp": "Romtemperatur ugyldig",
+          "boost": "Boost aktiv (maks. varmeeffekt)",
+          "window_open": "Vindu åpent (senket)",
+          "stuck_overtemp_down": "Overtemperatur: ytterligere senket",
+          "reset_offset": "Offset tilbakestilt"
+        }
+      },
+      "change_count": {
+        "name": "Antall settpunkt-endringer"
+      },
+      "window_state": {
+        "name": "Vindustatus"
+      },
+      "boost_remaining": {
+        "name": "Boost gjenværende tid"
+      },
+      "boost_active": {
+        "name": "Boost aktiv"
+      },
+      "control_paused": {
+        "name": "Kontroll pauset"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Tilbakestill offset"
+      }
+    }
   }
 }

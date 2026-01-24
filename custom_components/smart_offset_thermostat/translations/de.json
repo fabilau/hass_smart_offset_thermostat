@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Regelabweichung"
+      },
+      "offset": {
+        "name": "Gelerntes Offset"
+      },
+      "target_trv": {
+        "name": "Berechneter Thermostat-Sollwert"
+      },
+      "last_set": {
+        "name": "Zuletzt gesetzter Thermostat-Sollwert"
+      },
+      "last_action": {
+        "name": "Letzte Entscheidung (Code)"
+      },
+      "last_action_text": {
+        "name": "Letzte Entscheidung",
+        "state": {
+          "init": "Initialisierung",
+          "deadband": "Im Toleranzbereich (keine Änderung)",
+          "deadband_rebase": "Sollwert geändert (Basiswert gesetzt)",
+          "cooldown": "Sperrzeit aktiv (keine Änderung)",
+          "set_temperature": "Sollwert an Thermostat gesendet",
+          "skipped_no_change": "Keine Änderung nötig",
+          "skipped_unavailable_entities": "Entitäten nicht verfügbar",
+          "skipped_invalid_room_temp": "Raumtemperatur ungültig",
+          "boost": "Boost aktiv (max. Heizleistung)",
+          "window_open": "Fenster offen (Absenkung)",
+          "stuck_overtemp_down": "Übertemperatur: zusätzlich abgesenkt",
+          "reset_offset": "Offset zurückgesetzt"
+        }
+      },
+      "change_count": {
+        "name": "Anzahl Sollwert-Änderungen"
+      },
+      "window_state": {
+        "name": "Fensterstatus"
+      },
+      "boost_remaining": {
+        "name": "Boost Restzeit"
+      },
+      "boost_active": {
+        "name": "Boost aktiv"
+      },
+      "control_paused": {
+        "name": "Regelung pausiert"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Offset zurücksetzen"
+      }
+    }
   }
 }

@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Regelfout"
+      },
+      "offset": {
+        "name": "Geleerde offset"
+      },
+      "target_trv": {
+        "name": "Berekend thermostaatsetpoint"
+      },
+      "last_set": {
+        "name": "Laatst ingesteld thermostaatsetpoint"
+      },
+      "last_action": {
+        "name": "Laatste beslissing (code)"
+      },
+      "last_action_text": {
+        "name": "Laatste beslissing",
+        "state": {
+          "init": "Initialisatie",
+          "deadband": "In dode zone (geen wijziging)",
+          "deadband_rebase": "Setpoint gewijzigd (basislijn ingesteld)",
+          "cooldown": "Wachttijd actief (geen wijziging)",
+          "set_temperature": "Setpoint naar thermostaat gestuurd",
+          "skipped_no_change": "Geen wijziging nodig",
+          "skipped_unavailable_entities": "Entiteiten niet beschikbaar",
+          "skipped_invalid_room_temp": "Kamertemperatuur ongeldig",
+          "boost": "Boost actief (max. verwarmingsvermogen)",
+          "window_open": "Raam open (verlaagd)",
+          "stuck_overtemp_down": "Overtemperatuur: extra verlaagd",
+          "reset_offset": "Offset gereset"
+        }
+      },
+      "change_count": {
+        "name": "Aantal setpointwijzigingen"
+      },
+      "window_state": {
+        "name": "Raamstatus"
+      },
+      "boost_remaining": {
+        "name": "Boost resterende tijd"
+      },
+      "boost_active": {
+        "name": "Boost actief"
+      },
+      "control_paused": {
+        "name": "Regeling gepauzeerd"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Offset resetten"
+      }
+    }
   }
 }

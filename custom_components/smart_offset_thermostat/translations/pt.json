@@ -38,5 +38,61 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "error": {
+        "name": "Erro de controlo"
+      },
+      "offset": {
+        "name": "Offset aprendido"
+      },
+      "target_trv": {
+        "name": "Setpoint calculado do termóstato"
+      },
+      "last_set": {
+        "name": "Último setpoint definido no termóstato"
+      },
+      "last_action": {
+        "name": "Última decisão (código)"
+      },
+      "last_action_text": {
+        "name": "Última decisão",
+        "state": {
+          "init": "Inicialização",
+          "deadband": "Na zona morta (sem alteração)",
+          "deadband_rebase": "Setpoint alterado (linha de base definida)",
+          "cooldown": "Tempo de espera ativo (sem alteração)",
+          "set_temperature": "Setpoint enviado ao termóstato",
+          "skipped_no_change": "Nenhuma alteração necessária",
+          "skipped_unavailable_entities": "Entidades indisponíveis",
+          "skipped_invalid_room_temp": "Temperatura da divisão inválida",
+          "boost": "Boost ativo (potência máxima de aquecimento)",
+          "window_open": "Janela aberta (reduzido)",
+          "stuck_overtemp_down": "Sobretemperatura: adicionalmente reduzido",
+          "reset_offset": "Offset reiniciado"
+        }
+      },
+      "change_count": {
+        "name": "Número de alterações de setpoint"
+      },
+      "window_state": {
+        "name": "Estado da janela"
+      },
+      "boost_remaining": {
+        "name": "Tempo restante de boost"
+      },
+      "boost_active": {
+        "name": "Boost ativo"
+      },
+      "control_paused": {
+        "name": "Controlo pausado"
+      }
+    },
+    "button": {
+      "reset_offset": {
+        "name": "Reiniciar offset"
+      }
+    }
   }
 }

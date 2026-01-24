@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Sequence
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.config_entries import ConfigEntry
@@ -13,42 +13,41 @@ from homeassistant.const import UnitOfTemperature
 
 from .const import DOMAIN, SIGNAL_UPDATE, CONF_ROOM_TARGET
 
-_ACTION_TEXT = {
-    "init": "Initialisierung",
-    "deadband": "Im Toleranzbereich (keine Änderung)",
-    "deadband_rebase": "Sollwert geändert (Basiswert gesetzt)",
-    "cooldown": "Sperrzeit aktiv (keine Änderung)",
-    "set_temperature": "Sollwert an Thermostat gesendet",
-    "skipped_no_change": "Keine Änderung nötig",
-    "skipped_unavailable_entities": "Entitäten nicht verfügbar",
-    "skipped_invalid_room_temp": "Raumtemperatur ungültig",
-    "boost": "Boost aktiv (max. Heizleistung)",
-    "window_open": "Fenster offen (Absenkung)",
-    "stuck_overtemp_down": "Übertemperatur: zusätzlich abgesenkt",
-    "reset_offset": "Offset zurückgesetzt",
-}
-
-
 
 @dataclass(frozen=True)
 class _Def:
     key: str
-    name: str
     unit: str | None = None
     device_class: str | None = None
+    options: Sequence[str] | None = None
+
+LAST_ACTION_OPTIONS = (
+    "init",
+    "deadband",
+    "deadband_rebase",
+    "cooldown",
+    "set_temperature",
+    "skipped_no_change",
+    "skipped_unavailable_entities",
+    "skipped_invalid_room_temp",
+    "boost",
+    "window_open",
+    "stuck_overtemp_down",
+    "reset_offset",
+)
 
 SENSORS = (
-    _Def("error", "Regelabweichung", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
-    _Def("offset", "Gelerntes Offset", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
-    _Def("target_trv", "Berechneter Thermostat-Sollwert", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
-    _Def("last_set", "Zuletzt gesetzter Thermostat-Sollwert", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
-    _Def("last_action", "Letzte Entscheidung (Code)", None, None),
-    _Def("last_action_text", "Letzte Entscheidung", None, None),
-    _Def("change_count", "Anzahl Sollwert-Änderungen", None, None),
-_Def("window_state", "Fensterstatus", None, None),
-_Def("boost_remaining", "Boost Restzeit", "s", SensorDeviceClass.DURATION),
-_Def("boost_active", "Boost aktiv", None, None),
-_Def("control_paused", "Regelung pausiert", None, None),
+    _Def("error", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("offset", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("target_trv", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("last_set", UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE),
+    _Def("last_action", None, None),
+    _Def("last_action_text", None, SensorDeviceClass.ENUM, options=LAST_ACTION_OPTIONS),
+    _Def("change_count", None, None),
+    _Def("window_state", None, None),
+    _Def("boost_remaining", "s", SensorDeviceClass.DURATION),
+    _Def("boost_active", None, None),
+    _Def("control_paused", None, None),
 )
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
@@ -67,10 +66,13 @@ class SmartOffsetDebugSensor(SensorEntity):
         self.definition = definition
 
         self._attr_unique_id = f"{entry.entry_id}_{definition.key}"
-        self._attr_name = definition.name
+        self._attr_translation_key = definition.key
         self._attr_native_unit_of_measurement = definition.unit
         if definition.device_class:
             self._attr_device_class = definition.device_class
+
+        if definition.options:
+            self._attr_options = list(definition.options)
 
         self._unsub: Optional[Callable[[], None]] = None
 
@@ -105,7 +107,7 @@ class SmartOffsetDebugSensor(SensorEntity):
         if k == "last_action":
             return self.controller.last_action
         if k == "last_action_text":
-            return _ACTION_TEXT.get(self.controller.last_action, self.controller.last_action)
+            return self.controller.last_action
         if k == "change_count":
             return int(self.controller.change_count)
         if k == "window_state":
