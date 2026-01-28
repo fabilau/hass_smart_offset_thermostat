@@ -1,30 +1,29 @@
-name: Release
+name: Build ZIP & Create Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
 
 permissions:
   contents: write
 
 jobs:
-  release-zip:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: ZIP Component Dir
+      - name: Build ZIP
         run: |
           cd "${GITHUB_WORKSPACE}/custom_components/smart_offset_thermostat"
           zip -r "${GITHUB_WORKSPACE}/smart_offset_thermostat.zip" . \
             -x "**/__pycache__/*" \
             -x "**/*.pyc"
 
-      - name: Upload zip to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Create GitHub Release + upload asset
+        uses: ncipollo/release-action@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.workspace }}/smart_offset_thermostat.zip
-          asset_name: smart_offset_thermostat.zip
-          tag: ${{ github.ref_name }}
-          overwrite: true
+          artifacts: "smart_offset_thermostat.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
