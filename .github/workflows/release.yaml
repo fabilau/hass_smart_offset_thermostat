@@ -27,7 +27,7 @@ jobs:
           tag: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           draft: true
-          generateReleaseNotes: true
+          generateReleaseNotes: false
           artifacts: "smart_offset_thermostat.zip"
           artifactContentType: application/zip
           allowUpdates: true
