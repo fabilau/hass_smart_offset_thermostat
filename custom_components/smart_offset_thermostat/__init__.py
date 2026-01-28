@@ -14,6 +14,43 @@ async def async_setup(hass: HomeAssistant, config: dict):
     hass.data.setdefault(DOMAIN, {})
     return True
 
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate old options/data to the latest format."""
+    # Note: We use a very small, safe migration:
+    # - old: window_sensor_entity (single string)
+    # - new: window_sensor_entities (list of strings)
+    if entry.version is None:
+        # Some HA versions use 1 as default; keep safe.
+        current_version = 1
+    else:
+        current_version = entry.version
+
+    options = dict(entry.options)
+    data = dict(entry.data)
+
+    changed = False
+
+    # Migrate from single -> multiple (options)
+    if "window_sensor_entities" not in options:
+        if "window_sensor_entity" in options and options.get("window_sensor_entity"):
+            options["window_sensor_entities"] = [options.get("window_sensor_entity")]
+            options.pop("window_sensor_entity", None)
+            changed = True
+        elif "window_sensor_entity" in data and data.get("window_sensor_entity"):
+            options["window_sensor_entities"] = [data.get("window_sensor_entity")]
+            changed = True
+
+    # Remove legacy key from options if still present
+    if "window_sensor_entity" in options:
+        options.pop("window_sensor_entity", None)
+        changed = True
+
+    if changed:
+        hass.config_entries.async_update_entry(entry, options=options, version=current_version)
+
+    return True
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     hass.data.setdefault(DOMAIN, {})
 
@@ -23,12 +60,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data[DOMAIN]["storage"] = store
 
     store = hass.data[DOMAIN]["storage"]
-    # Migrate window sensor from entry.data -> entry.options (so it can be changed later in Options)
-    # Backwards compatible: controller reads via opt(), but we copy once so the UI can modify it.
-    if "window_sensor_entity" in entry.data and "window_sensor_entity" not in entry.options:
-        new_options = dict(entry.options)
-        new_options["window_sensor_entity"] = entry.data.get("window_sensor_entity")
-        hass.config_entries.async_update_entry(entry, options=new_options)
+    # Legacy migration is handled in async_migrate_entry
 
     controller = SmartOffsetController(hass, entry, store)
     hass.data[DOMAIN][entry.entry_id] = controller

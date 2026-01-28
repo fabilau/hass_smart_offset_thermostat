@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Termostato",
           "room_sensor_entity": "Sensore esterno temperatura stanza",
-          "window_sensor_entity": "Sensore finestra (binary_sensor, opzionale)",
-          "room_target": "Temperatura obiettivo stanza"
+          "room_target": "Temperatura obiettivo stanza",
+          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Pausa tra modifiche (secondi)",
           "boost_duration_sec": "Durata boost (secondi)",
           "enable_learning": "Abilita apprendimento",
-          "window_sensor_entity": "Sensore finestra (binary_sensor, opzionale)",
           "stuck_enable": "Correzione adattiva sovratemperatura (abbassa il setpoint se la stanza resta troppo calda)",
           "stuck_seconds": "Finestra valutazione sovratemperatura (secondi)",
           "stuck_min_drop": "Raffreddamento richiesto nella finestra (°C)",
-          "stuck_step": "Passo extra di riduzione in sovratemperatura (°C)"
+          "stuck_step": "Passo extra di riduzione in sovratemperatura (°C)",
+          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)"
         }
       }
     }

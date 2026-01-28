@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Termostat",
           "room_sensor_entity": "Extern rumstemperatursensor",
-          "window_sensor_entity": "Fönstersensor (binary_sensor, valfri)",
-          "room_target": "Måltemperatur för rummet"
+          "room_target": "Måltemperatur för rummet",
+          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Spärrtid mellan ändringar (sekunder)",
           "boost_duration_sec": "Boostlängd (sekunder)",
           "enable_learning": "Aktivera inlärning",
-          "window_sensor_entity": "Fönstersensor (binary_sensor, valfri)",
           "stuck_enable": "Adaptiv övertemperatur-korrigering (sänker börvärdet om rummet förblir för varmt)",
           "stuck_seconds": "Utvärderingsfönster övertemperatur (sekunder)",
           "stuck_min_drop": "Krav på nedkylning i fönstret (°C)",
-          "stuck_step": "Extra sänkningssteg vid övertemperatur (°C)"
+          "stuck_step": "Extra sänkningssteg vid övertemperatur (°C)",
+          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)"
         }
       }
     }

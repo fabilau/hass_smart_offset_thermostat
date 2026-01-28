@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Capteur externe de température de la pièce",
-          "window_sensor_entity": "Capteur de fenêtre (binary_sensor, optionnel)",
-          "room_target": "Température cible de la pièce"
+          "room_target": "Température cible de la pièce",
+          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Temps de blocage entre changements (secondes)",
           "boost_duration_sec": "Durée du boost (secondes)",
           "enable_learning": "Activer l’apprentissage",
-          "window_sensor_entity": "Capteur de fenêtre (binary_sensor, optionnel)",
           "stuck_enable": "Correction adaptative de surchauffe (baisse la consigne si la pièce reste trop chaude)",
           "stuck_seconds": "Fenêtre d’évaluation surchauffe (secondes)",
           "stuck_min_drop": "Refroidissement requis dans la fenêtre (°C)",
-          "stuck_step": "Pas de baisse supplémentaire en surchauffe (°C)"
+          "stuck_step": "Pas de baisse supplémentaire en surchauffe (°C)",
+          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)"
         }
       }
     }

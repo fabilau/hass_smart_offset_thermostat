@@ -15,7 +15,7 @@ from .const import (
     CONF_INTERVAL_SEC, CONF_DEADBAND, CONF_STEP_MAX, CONF_STEP_MIN,
     CONF_LEARN_RATE, CONF_TRV_MIN, CONF_TRV_MAX, CONF_COOLDOWN_SEC,
     CONF_ENABLE_LEARNING,
-    CONF_WINDOW_SENSOR, CONF_BOOST_DURATION_SEC,
+    CONF_WINDOW_SENSOR, CONF_WINDOW_SENSORS, CONF_BOOST_DURATION_SEC,
     CONF_STUCK_ENABLE, CONF_STUCK_SECONDS, CONF_STUCK_MIN_DROP, CONF_STUCK_STEP,
     DEFAULT_INTERVAL_SEC, DEFAULT_DEADBAND, DEFAULT_STEP_MAX, DEFAULT_STEP_MIN,
     DEFAULT_LEARN_RATE, DEFAULT_TRV_MIN, DEFAULT_TRV_MAX, DEFAULT_COOLDOWN_SEC,
@@ -35,7 +35,7 @@ class SmartOffsetThermostatConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         schema = vol.Schema({
             vol.Required(CONF_CLIMATE): EntitySelector(EntitySelectorConfig(domain="climate")),
             vol.Required(CONF_ROOM_SENSOR): EntitySelector(EntitySelectorConfig(domain="sensor")),
-            vol.Optional(CONF_WINDOW_SENSOR): EntitySelector(EntitySelectorConfig(domain="binary_sensor")),
+            vol.Optional(CONF_WINDOW_SENSORS): EntitySelector(EntitySelectorConfig(domain="binary_sensor", multiple=True)),
             vol.Required(CONF_ROOM_TARGET, default=22.0): NumberSelector(
                 NumberSelectorConfig(min=5.0, max=30.0, step=0.5, mode=NumberSelectorMode.BOX, unit_of_measurement="°C")
             ),
@@ -57,9 +57,16 @@ class SmartOffsetThermostatOptionsFlow(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         opts = self._entry.options
+        # Backward compatible: accept old single window_sensor_entity and new window_sensor_entities (list)
+        window_defaults = opts.get(CONF_WINDOW_SENSORS)
+        if window_defaults is None:
+            old = opts.get(CONF_WINDOW_SENSOR)
+            window_defaults = [old] if old else []
+        elif isinstance(window_defaults, str):
+            window_defaults = [window_defaults]
 
         schema = vol.Schema({
-            vol.Optional(CONF_WINDOW_SENSOR, default=opts.get(CONF_WINDOW_SENSOR)): EntitySelector(EntitySelectorConfig(domain="binary_sensor")),
+            vol.Optional(CONF_WINDOW_SENSORS, default=window_defaults): EntitySelector(EntitySelectorConfig(domain="binary_sensor", multiple=True)),
             vol.Optional(CONF_INTERVAL_SEC, default=opts.get(CONF_INTERVAL_SEC, DEFAULT_INTERVAL_SEC)): NumberSelector(
                 NumberSelectorConfig(min=60, max=1800, step=10, mode=NumberSelectorMode.BOX, unit_of_measurement="s")
             ),
