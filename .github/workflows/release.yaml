@@ -1,8 +1,12 @@
-name: Attach ZIP to Draft Release
+name: Attach ZIP to Draft Release (manual)
 
 on:
-  release:
-    types: [created]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release-Tag"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -20,11 +24,11 @@ jobs:
             -x "**/__pycache__/*" \
             -x "**/*.pyc"
 
-      - name: Upload ZIP to release (draft)
+      - name: Upload ZIP to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.workspace }}/smart_offset_thermostat.zip
           asset_name: smart_offset_thermostat.zip
-          tag: ${{ github.event.release.tag_name }}
+          tag: ${{ inputs.tag }}
           overwrite: true
