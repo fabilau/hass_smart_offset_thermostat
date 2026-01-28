@@ -9,7 +9,7 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Externer Raumtemperatur-Sensor",
           "room_target": "Raum-Solltemperatur",
-          "window_sensor_entity": "Fenstersensor (binary_sensor, optional)"
+          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Sperrzeit zwischen Änderungen (Sekunden)",
           "enable_learning": "Lernen aktivieren",
           "boost_duration_sec": "Boost-Dauer (Sekunden)",
-          "window_sensor_entity": "Fenstersensor (binary_sensor, optional)",
           "stuck_enable": "Adaptive Übertemperatur-Korrektur (senkt Sollwert, wenn Raum zu warm bleibt)",
           "stuck_seconds": "Übertemperatur-Auswertefenster (Sekunden)",
           "stuck_min_drop": "Erforderliche Abkühlung im Fenster (°C)",
-          "stuck_step": "Zusätzlicher Absenk-Schritt bei Übertemperatur (°C)"
+          "stuck_step": "Zusätzlicher Absenk-Schritt bei Übertemperatur (°C)",
+          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)"
         }
       }
     }

@@ -9,7 +9,7 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Room temperature sensor",
           "room_target": "Room target temperature",
-          "window_sensor_entity": "Window sensor (binary_sensor, optional)"
+          "window_sensor_entities": "Window sensors (optional, multiple)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Cooldown between changes (seconds)",
           "enable_learning": "Enable learning",
           "boost_duration_sec": "Boost duration (seconds)",
-          "window_sensor_entity": "Window sensor (binary_sensor, optional)",
           "stuck_enable": "Adaptive over-temp correction (reduce setpoint if room stays too warm)",
           "stuck_seconds": "Over-temp evaluation window (seconds)",
           "stuck_min_drop": "Required cooling within window (°C)",
-          "stuck_step": "Extra reduction step when too warm (°C)"
+          "stuck_step": "Extra reduction step when too warm (°C)",
+          "window_sensor_entities": "Window sensors (optional, multiple)"
         }
       }
     }

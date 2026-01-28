@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Termóstato",
           "room_sensor_entity": "Sensor externo de temperatura da divisão",
-          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
-          "room_target": "Temperatura alvo da divisão"
+          "room_target": "Temperatura alvo da divisão",
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Tempo de espera entre alterações (segundos)",
           "boost_duration_sec": "Duração do boost (segundos)",
           "enable_learning": "Ativar aprendizagem",
-          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
           "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a consigna se a divisão continuar demasiado quente)",
           "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
           "stuck_min_drop": "Arrefecimento necessário na janela (°C)",
-          "stuck_step": "Passo extra de redução em sobretemperatura (°C)"
+          "stuck_step": "Passo extra de redução em sobretemperatura (°C)",
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
         }
       }
     }

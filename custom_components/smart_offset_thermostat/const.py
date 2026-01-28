@@ -41,6 +41,7 @@ SIGNAL_UPDATE = "smart_offset_thermostat_update"
 
 
 CONF_WINDOW_SENSOR = "window_sensor_entity"
+CONF_WINDOW_SENSORS = "window_sensor_entities"
 CONF_BOOST_DURATION_SEC = "boost_duration_sec"
 
 DEFAULT_BOOST_DURATION_SEC = 300

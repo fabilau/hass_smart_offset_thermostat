@@ -21,7 +21,7 @@ This approach ensures **broad compatibility** across different manufacturers, pr
 - 🌡️ Uses an external temperature sensor for accurate room temperature
 - 🎯 Virtual climate entity (usable in dashboards and HomeKit)
 - 🧠 Adaptive learning without aggressive oscillation
-- 🪟 Window sensor support (automatic setback)
+- 🪟 Multi Window sensor support (automatic setback)
 - 🚀 Boost mode (temporary full heating)
 - ♻️ Reset learned offset at any time
 - 🧊 Adaptive over-temperature correction
@@ -56,8 +56,9 @@ Default values (configurable):
 
 ---
 
-## 🪟 Window Sensor
+## 🪟 Multi Window Sensor
 
+- Define multiple window sensors
 - Window open → thermostat set to minimum
 - Window closed → target restored immediately
 - Learning is paused while the window is open

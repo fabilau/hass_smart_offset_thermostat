@@ -1,5 +1,15 @@
 # Changelog
 
+
+## v1.1.28
+- Fix: multiple window sensors now normalized so all selected sensors trigger
+- Fix: window close triggers forced update (cooldown no longer blocks forced control)
+
+
+## v1.1.27
+- Migration: automatically convert legacy window_sensor_entity to window_sensor_entities (multi window sensors)
+
+
 ## v1.1.22
 - Fix: when starting inside deadband and last_set is unknown, initialize TRV setpoint to baseline
 

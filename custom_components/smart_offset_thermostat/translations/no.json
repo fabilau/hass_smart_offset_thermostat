@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Termostat",
           "room_sensor_entity": "Ekstern romtemperatursensor",
-          "window_sensor_entity": "Vindussensor (binary_sensor, valgfri)",
-          "room_target": "Ønsket romtemperatur"
+          "room_target": "Ønsket romtemperatur",
+          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Sperretid mellom endringer (sekunder)",
           "boost_duration_sec": "Boost-varighet (sekunder)",
           "enable_learning": "Aktiver læring",
-          "window_sensor_entity": "Vindussensor (binary_sensor, valgfri)",
           "stuck_enable": "Adaptiv overtemperatur-korrigering (senker settpunkt hvis rommet forblir for varmt)",
           "stuck_seconds": "Evalueringsvindu for overtemperatur (sekunder)",
           "stuck_min_drop": "Krav til nedkjøling i vinduet (°C)",
-          "stuck_step": "Ekstra senkesteg ved overtemperatur (°C)"
+          "stuck_step": "Ekstra senkesteg ved overtemperatur (°C)",
+          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)"
         }
       }
     }

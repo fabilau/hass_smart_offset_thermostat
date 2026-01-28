@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Thermostaat",
           "room_sensor_entity": "Externe kamertemperatuursensor",
-          "window_sensor_entity": "Raamsensor (binary_sensor, optioneel)",
-          "room_target": "Doeltemperatuur kamer"
+          "room_target": "Doeltemperatuur kamer",
+          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Wachttijd tussen wijzigingen (seconden)",
           "boost_duration_sec": "Boostduur (seconden)",
           "enable_learning": "Leren inschakelen",
-          "window_sensor_entity": "Raamsensor (binary_sensor, optioneel)",
           "stuck_enable": "Adaptieve overtemperatuur-correctie (verlaagt setpoint als de kamer te warm blijft)",
           "stuck_seconds": "Evaluatievenster overtemperatuur (seconden)",
           "stuck_min_drop": "Benodigde afkoeling in venster (°C)",
-          "stuck_step": "Extra verlaagstap bij overtemperatuur (°C)"
+          "stuck_step": "Extra verlaagstap bij overtemperatuur (°C)",
+          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)"
         }
       }
     }

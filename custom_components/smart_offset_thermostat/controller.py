@@ -28,6 +28,24 @@ def _to_float(value):
     except Exception:
         return None
 
+def _normalize_entity_list(value):
+    """Normalize selector values to a list[str]."""
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, (list, tuple)):
+        out = []
+        for v in value:
+            if v is None:
+                continue
+            if isinstance(v, str):
+                out.append(v)
+            elif isinstance(v, dict) and 'entity_id' in v:
+                out.append(v['entity_id'])
+        return [x for x in out if x]
+    return []
+
 class SmartOffsetController:
     def __init__(self, hass, entry, storage):
         self.hass = hass
@@ -48,7 +66,7 @@ class SmartOffsetController:
         self.window_is_open = False
         self._last_room_target = None
         self._unsub_window = None
-        self._window_entity = None
+        self._window_entities = tuple()
         self._force_next_control = False
         self._stuck_active = False
         self._stuck_ref_temp = None
@@ -67,9 +85,10 @@ class SmartOffsetController:
 
 
 
-    def _ensure_window_listener(self, window_entity: str | None):
+    def _ensure_window_listener(self, window_entities: list[str] | None):
         # Subscribe to window sensor changes so the controller reacts immediately (no need to wait for next interval)
-        if window_entity == self._window_entity:
+        entities = tuple([e for e in _normalize_entity_list(window_entities) if e])
+        if entities == self._window_entities:
             return
 
         # Unsubscribe old listener
@@ -80,23 +99,29 @@ class SmartOffsetController:
                 pass
             self._unsub_window = None
 
-        self._window_entity = window_entity
+        self._window_entities = entities
 
-        if not window_entity:
+        if not entities:
             return
+
+        def _compute_open() -> bool:
+            for ent in entities:
+                st = self.hass.states.get(ent)
+                if st is None:
+                    continue
+                if str(st.state).lower() in ("on", "open", "true", "1"):
+                    return True
+            return False
 
         async def _on_window_change(event):
             # Update window state immediately and trigger control once
-            new_state = event.data.get("new_state")
-            if new_state is None:
-                return
-            is_open = str(new_state.state).lower() in ("on", "open", "true", "1")
+            is_open = _compute_open()
             if is_open != self.window_is_open:
                 self.window_is_open = is_open
             await self.trigger_once(force=True)
             self._notify()
 
-        self._unsub_window = async_track_state_change_event(self.hass, [window_entity], _on_window_change)
+        self._unsub_window = async_track_state_change_event(self.hass, list(entities), _on_window_change)
 
     def _cancel_boost(self):
         if self._boost_unsub:
@@ -154,8 +179,12 @@ class SmartOffsetController:
     async def _tick(self, _):
         climate_entity = self.entry.data[CONF_CLIMATE]
         room_sensor = self.entry.data[CONF_ROOM_SENSOR]
-        window_entity = self.opt(CONF_WINDOW_SENSOR)
-        self._ensure_window_listener(window_entity)
+        window_entities = _normalize_entity_list(self.opt(CONF_WINDOW_SENSORS))
+        # backward compatible: old single key
+        old_window = self.opt(CONF_WINDOW_SENSOR)
+        if old_window and old_window not in window_entities:
+            window_entities = list(window_entities) + [old_window]
+        self._ensure_window_listener(list(window_entities))
 
         climate = self.hass.states.get(climate_entity)
         room = self.hass.states.get(room_sensor)
@@ -192,10 +221,14 @@ class SmartOffsetController:
 
         # Window handling (optional)
         window_open = False
-        if window_entity:
-            w_state = self.hass.states.get(window_entity)
-            if w_state:
-                window_open = str(w_state.state).lower() in ("on", "open", "true", "1")
+        if window_entities:
+            for _we in window_entities:
+                w_state = self.hass.states.get(_we)
+                if not w_state:
+                    continue
+                if str(w_state.state).lower() in ("on", "open", "true", "1"):
+                    window_open = True
+                    break
 
         if window_open != self.window_is_open:
             self.window_is_open = window_open
@@ -394,7 +427,7 @@ class SmartOffsetController:
                 self.last_action = "skipped_no_change"
                 self._notify()
                 return
-            if (now_mono - self.last_change) < cooldown and abs(e) < 1.0:
+            if (now_mono - self.last_change) < cooldown and abs(e) < 1.0 and not self._force_next_control:
                 self.last_action = "cooldown"
                 self._notify()
                 return
@@ -407,6 +440,7 @@ class SmartOffsetController:
         )
 
         self.last_set = t_trv
+        self._force_next_control = False
         self.last_change = now_mono
         self.change_count += 1
         self._force_next_control = False

@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Termostato",
           "room_sensor_entity": "Sensor externo de temperatura do ambiente",
-          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
-          "room_target": "Temperatura alvo do ambiente"
+          "room_target": "Temperatura alvo do ambiente",
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Pausa entre mudanças (segundos)",
           "boost_duration_sec": "Duração do boost (segundos)",
           "enable_learning": "Ativar aprendizado",
-          "window_sensor_entity": "Sensor de janela (binary_sensor, opcional)",
           "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a meta se o ambiente continuar quente demais)",
           "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
           "stuck_min_drop": "Resfriamento necessário na janela (°C)",
-          "stuck_step": "Passo extra de redução em sobretemperatura (°C)"
+          "stuck_step": "Passo extra de redução em sobretemperatura (°C)",
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
         }
       }
     }

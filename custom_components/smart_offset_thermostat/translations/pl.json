@@ -8,8 +8,8 @@
         "data": {
           "climate_entity": "Termostat",
           "room_sensor_entity": "Zewnętrzny czujnik temperatury pomieszczenia",
-          "window_sensor_entity": "Czujnik okna (binary_sensor, opcjonalnie)",
-          "room_target": "Temperatura docelowa pomieszczenia"
+          "room_target": "Temperatura docelowa pomieszczenia",
+          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)"
         }
       }
     }
@@ -30,11 +30,11 @@
           "cooldown_sec": "Czas blokady między zmianami (sekundy)",
           "boost_duration_sec": "Czas boost (sekundy)",
           "enable_learning": "Włącz uczenie",
-          "window_sensor_entity": "Czujnik okna (binary_sensor, opcjonalnie)",
           "stuck_enable": "Adaptacyjna korekta przegrzania (obniża nastawę, jeśli pomieszczenie pozostaje zbyt ciepłe)",
           "stuck_seconds": "Okno oceny przegrzania (sekundy)",
           "stuck_min_drop": "Wymagane schłodzenie w oknie (°C)",
-          "stuck_step": "Dodatkowy krok obniżenia przy przegrzaniu (°C)"
+          "stuck_step": "Dodatkowy krok obniżenia przy przegrzaniu (°C)",
+          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)"
         }
       }
     }
