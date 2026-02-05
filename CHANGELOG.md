@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.1.29
+- Added russian language support
+
 
 ## v1.1.28
 - Fix: multiple window sensors now normalized so all selected sensors trigger
