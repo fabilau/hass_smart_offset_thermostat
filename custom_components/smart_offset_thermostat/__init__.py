@@ -8,6 +8,7 @@ from .const import (
     PLATFORMS,
     CONF_ROOM_TARGET,
     CONF_MODES,
+    CONF_WINDOW_DELAY_SEC,
     DEFAULTS,
     DEFAULT_MODES,
 )
@@ -33,6 +34,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         current_version = 1
     else:
         current_version = entry.version
+    target_version = 2
 
     options = dict(entry.options)
     data = dict(entry.data)
@@ -55,6 +57,11 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         changed = True
     if "pause_entities" in options:
         options.pop("pause_entities", None)
+        changed = True
+
+    # Preserve existing behavior for window setback: default to 0s delay on existing entries
+    if CONF_WINDOW_DELAY_SEC not in options:
+        options[CONF_WINDOW_DELAY_SEC] = 0
         changed = True
 
     # Remove legacy per-mode keys if present
@@ -92,8 +99,11 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             options.pop(key, None)
             changed = True
 
+    if current_version < target_version:
+        changed = True
+
     if changed:
-        hass.config_entries.async_update_entry(entry, options=options, version=current_version)
+        hass.config_entries.async_update_entry(entry, options=options, version=target_version)
 
     return True
 

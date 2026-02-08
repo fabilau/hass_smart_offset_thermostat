@@ -9,7 +9,8 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Capteur externe de température de la pièce",
           "room_target": "Température cible de la pièce",
-          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)"
+          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)",
+          "window_delay_sec": "Delai d'ouverture avant reduction (secondes)"
         }
       }
     }

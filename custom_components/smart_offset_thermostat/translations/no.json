@@ -9,7 +9,8 @@
           "climate_entity": "Termostat",
           "room_sensor_entity": "Ekstern romtemperatursensor",
           "room_target": "Ønsket romtemperatur",
-          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)"
+          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)",
+          "window_delay_sec": "Forsinkelse ved apent vindu for senking (sekunder)"
         }
       }
     }

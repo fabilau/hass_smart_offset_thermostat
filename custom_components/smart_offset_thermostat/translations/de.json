@@ -9,7 +9,8 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Externer Raumtemperatur-Sensor",
           "room_target": "Raum-Solltemperatur",
-          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)"
+          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)",
+          "window_delay_sec": "Verzoegerung bei offenem Fenster vor Absenkung (Sekunden)"
         }
       }
     }

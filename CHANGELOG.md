@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.33
+- Added configurable window-open delay before setback
+- Migration: existing entries default to 0s delay (no behavior change)
+
+
 ## v1.1.32
 - Added configurable modes list (JSON) with add/remove support
 - Mode select updates immediately after saving options

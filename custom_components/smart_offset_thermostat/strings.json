@@ -9,7 +9,8 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Room temperature sensor",
           "room_target": "Room target temperature",
-          "window_sensor_entities": "Window sensors (optional, multiple)"
+          "window_sensor_entities": "Window sensors (optional, multiple)",
+          "window_delay_sec": "Window open delay before setback (seconds)"
         }
       }
     }

@@ -9,7 +9,8 @@
           "climate_entity": "Thermostaat",
           "room_sensor_entity": "Externe kamertemperatuursensor",
           "room_target": "Doeltemperatuur kamer",
-          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)"
+          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)",
+          "window_delay_sec": "Vertraging bij open raam voor verlaging (seconden)"
         }
       }
     }

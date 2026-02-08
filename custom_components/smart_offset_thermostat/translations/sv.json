@@ -9,7 +9,8 @@
           "climate_entity": "Termostat",
           "room_sensor_entity": "Extern rumstemperatursensor",
           "room_target": "Måltemperatur för rummet",
-          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)"
+          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)",
+          "window_delay_sec": "Forsening vid oppet fonster fore sankning (sekunder)"
         }
       }
     }

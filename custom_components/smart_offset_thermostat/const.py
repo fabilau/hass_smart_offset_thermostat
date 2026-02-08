@@ -58,12 +58,15 @@ SIGNAL_UPDATE = "smart_offset_thermostat_update"
 
 CONF_WINDOW_SENSOR = "window_sensor_entity"
 CONF_WINDOW_SENSORS = "window_sensor_entities"
+CONF_WINDOW_DELAY_SEC = "window_delay_sec"
 CONF_BOOST_DURATION_SEC = "boost_duration_sec"
 
 DEFAULT_BOOST_DURATION_SEC = 300
+DEFAULT_WINDOW_DELAY_SEC = 60
 
 DEFAULTS.update({
     CONF_BOOST_DURATION_SEC: DEFAULT_BOOST_DURATION_SEC,
+    CONF_WINDOW_DELAY_SEC: DEFAULT_WINDOW_DELAY_SEC,
 })
 
 CONF_STUCK_ENABLE = "stuck_enable"

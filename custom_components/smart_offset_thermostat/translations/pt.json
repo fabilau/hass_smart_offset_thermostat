@@ -9,7 +9,8 @@
           "climate_entity": "Termóstato",
           "room_sensor_entity": "Sensor externo de temperatura da divisão",
           "room_target": "Temperatura alvo da divisão",
-          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)",
+          "window_delay_sec": "Atraso de janela aberta antes da reducao (segundos)"
         }
       }
     }

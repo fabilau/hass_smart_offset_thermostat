@@ -64,6 +64,10 @@ class SmartOffsetController:
         self.boost_active = False
         self.boost_until = 0.0
         self.window_is_open = False
+        self._window_setback_active = False
+        self._window_raw_open = False
+        self._window_open_since = None
+        self._window_delay_unsub = None
         self._last_room_target = None
         self._unsub_window = None
         self._window_entities = tuple()
@@ -117,9 +121,17 @@ class SmartOffsetController:
             return False
 
         async def _on_window_change(event):
-            # Update window state immediately and trigger control once
+            # Recompute on any window change (delay logic runs in _tick)
             is_open = _compute_open()
-            if is_open != self.window_is_open:
+            now_mono = self.hass.loop.time()
+            if is_open:
+                if not self._window_raw_open:
+                    self._window_open_since = now_mono
+            else:
+                if self._window_raw_open:
+                    self._window_open_since = None
+            self._window_raw_open = is_open
+            if self.window_is_open != is_open:
                 self.window_is_open = is_open
             await self.trigger_once(force=True)
             self._notify()
@@ -234,6 +246,26 @@ class SmartOffsetController:
         self.boost_active = False
         self.boost_until = 0.0
 
+    def _cancel_window_delay(self):
+        if self._window_delay_unsub:
+            try:
+                self._window_delay_unsub()
+            except Exception:
+                pass
+            self._window_delay_unsub = None
+
+    def _schedule_window_delay(self, delay: float):
+        self._cancel_window_delay()
+        if delay <= 0:
+            return
+
+        async def _fire(_):
+            self._window_delay_unsub = None
+            await self.trigger_once(force=True)
+            self._notify()
+
+        self._window_delay_unsub = async_call_later(self.hass, float(delay), _fire)
+
     async def reset_offset(self):
         # Reset learned offset to 0 and persist it
         self.storage.set_offset(self.entry.entry_id, 0.0)
@@ -272,6 +304,7 @@ class SmartOffsetController:
 
     async def async_stop(self):
         self._cancel_boost()
+        self._cancel_window_delay()
         if self.unsub:
             self.unsub()
             self.unsub = None
@@ -339,6 +372,12 @@ class SmartOffsetController:
         trv_max = float(self.opt(CONF_TRV_MAX) or DEFAULT_TRV_MAX)
         cooldown = float(self.opt(CONF_COOLDOWN_SEC) or DEFAULT_COOLDOWN_SEC)
         enable_learning = bool(self.opt(CONF_ENABLE_LEARNING))
+        window_delay_raw = self.opt(CONF_WINDOW_DELAY_SEC)
+        if window_delay_raw is None:
+            window_delay_sec = int(DEFAULT_WINDOW_DELAY_SEC)
+        else:
+            window_delay_sec = int(window_delay_raw)
+        window_delay_sec = max(0, min(window_delay_sec, 24 * 3600))
 
         # Window handling (optional)
         window_open = False
@@ -351,8 +390,34 @@ class SmartOffsetController:
                     window_open = True
                     break
 
-        if window_open != self.window_is_open:
+        now_mono = self.hass.loop.time()
+        if window_open:
+            if self._window_open_since is None:
+                self._window_open_since = now_mono
+            if window_delay_sec > 0 and self._window_delay_unsub is None:
+                remaining = float(window_delay_sec) - (now_mono - float(self._window_open_since))
+                if remaining <= 0:
+                    self._cancel_window_delay()
+                else:
+                    self._schedule_window_delay(remaining)
+        else:
+            if self._window_open_since is not None:
+                self._cancel_window_delay()
+            self._window_open_since = None
+
+        self._window_raw_open = window_open
+        if self.window_is_open != window_open:
             self.window_is_open = window_open
+
+        window_setback_active = window_open
+        if window_open and window_delay_sec > 0:
+            if self._window_open_since is None:
+                window_setback_active = False
+            else:
+                window_setback_active = (now_mono - float(self._window_open_since)) >= float(window_delay_sec)
+
+        if self._window_setback_active != window_setback_active:
+            self._window_setback_active = window_setback_active
 
         e = t_target - t_room
         self.last_error = e
@@ -380,7 +445,7 @@ class SmartOffsetController:
             self._stable_last_set = None
 
         # Highest priority: window open => set TRV to minimum and pause learning
-        if window_open:
+        if window_setback_active:
             self._cancel_boost()
             t_trv = _clamp(float(trv_min), float(trv_min), float(trv_max))
             self.last_target_trv = t_trv
@@ -525,14 +590,14 @@ class SmartOffsetController:
 
         t_trv = _round_step(t_target + offset + correction, step_min)
         # apply persistent over-temp bias (built up by adaptive correction)
-        if stuck_enable and (not window_open) and (not (self.boost_active and (self.hass.loop.time() < self.boost_until))):
+        if stuck_enable and (not window_setback_active) and (not (self.boost_active and (self.hass.loop.time() < self.boost_until))):
             if e < -deadband and self._stuck_bias > 0:
                 t_trv = _round_step(_clamp(float(t_trv) - float(self._stuck_bias), float(trv_min), float(trv_max)), step_min)
             elif e >= -deadband:
                 self._stuck_bias = 0.0
         # Persistent over-temperature detection (cooling not happening)
         now_mono = self.hass.loop.time()
-        if stuck_enable and (not window_open) and (not (self.boost_active and (self.hass.loop.time() < self.boost_until))):
+        if stuck_enable and (not window_setback_active) and (not (self.boost_active and (self.hass.loop.time() < self.boost_until))):
             if e < -deadband:
                 if not self._stuck_active:
                     self._stuck_active = True

@@ -18,18 +18,19 @@ from .const import (
     CONF_ENABLE_LEARNING,
     CONF_PAUSE_ON_HVAC_OFF,
     CONF_MODES,
-    CONF_WINDOW_SENSOR, CONF_WINDOW_SENSORS, CONF_BOOST_DURATION_SEC,
+    CONF_WINDOW_SENSOR, CONF_WINDOW_SENSORS, CONF_WINDOW_DELAY_SEC, CONF_BOOST_DURATION_SEC,
     CONF_STUCK_ENABLE, CONF_STUCK_SECONDS, CONF_STUCK_MIN_DROP, CONF_STUCK_STEP,
     DEFAULT_INTERVAL_SEC, DEFAULT_DEADBAND, DEFAULT_STEP_MAX, DEFAULT_STEP_MIN,
     DEFAULT_LEARN_RATE, DEFAULT_TRV_MIN, DEFAULT_TRV_MAX, DEFAULT_COOLDOWN_SEC,
     DEFAULT_ENABLE_LEARNING, DEFAULT_PAUSE_ON_HVAC_OFF,
     DEFAULT_BOOST_DURATION_SEC,
+    DEFAULT_WINDOW_DELAY_SEC,
     DEFAULT_STUCK_ENABLE, DEFAULT_STUCK_SECONDS, DEFAULT_STUCK_MIN_DROP, DEFAULT_STUCK_STEP,
     DEFAULTS, DEFAULT_MODES
 )
 
 class SmartOffsetThermostatConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    VERSION = 1
+    VERSION = 2
 
     async def async_step_user(self, user_input=None):
         if user_input is not None:
@@ -75,6 +76,9 @@ class SmartOffsetThermostatOptionsFlow(config_entries.OptionsFlow):
 
         schema = vol.Schema({
             vol.Optional(CONF_WINDOW_SENSORS, default=window_defaults): EntitySelector(EntitySelectorConfig(domain="binary_sensor", multiple=True)),
+            vol.Optional(CONF_WINDOW_DELAY_SEC, default=opts.get(CONF_WINDOW_DELAY_SEC, DEFAULT_WINDOW_DELAY_SEC)): NumberSelector(
+                NumberSelectorConfig(min=0, max=3600, step=10, mode=NumberSelectorMode.BOX, unit_of_measurement="s")
+            ),
             vol.Optional(CONF_INTERVAL_SEC, default=opts.get(CONF_INTERVAL_SEC, DEFAULT_INTERVAL_SEC)): NumberSelector(
                 NumberSelectorConfig(min=60, max=1800, step=10, mode=NumberSelectorMode.BOX, unit_of_measurement="s")
             ),

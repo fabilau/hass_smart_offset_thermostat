@@ -61,6 +61,7 @@ Default values (configurable):
 
 - Define multiple window sensors
 - Window open → thermostat set to minimum
+- Optional delay before setback (default: 60 seconds)
 - Window closed → target restored immediately
 - Learning is paused while the window is open
 
@@ -88,6 +89,7 @@ All settings are configurable via the Home Assistant UI:
 - Thermostat limits
 - Adaptive over-temperature correction
 - Window sensor
+- Window open delay
 - Boost duration
 - Mode settings (targets, pause, add/remove)
 
