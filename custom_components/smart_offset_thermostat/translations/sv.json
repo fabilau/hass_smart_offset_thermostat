@@ -30,6 +30,8 @@
           "cooldown_sec": "Spärrtid mellan ändringar (sekunder)",
           "boost_duration_sec": "Boostlängd (sekunder)",
           "enable_learning": "Aktivera inlärning",
+          "pause_on_hvac_off": "Pausa styrning när termostaten är av",
+          "modes": "Lägen (JSON: id, target, pause)",
           "stuck_enable": "Adaptiv övertemperatur-korrigering (sänker börvärdet om rummet förblir för varmt)",
           "stuck_seconds": "Utvärderingsfönster övertemperatur (sekunder)",
           "stuck_min_drop": "Krav på nedkylning i fönstret (°C)",
@@ -69,6 +71,7 @@
           "skipped_invalid_room_temp": "Rumstemperatur ogiltig",
           "boost": "Boost aktiv (max. värmeeffekt)",
           "window_open": "Fönster öppet (sänkt)",
+          "paused": "Styrning pausad",
           "stuck_overtemp_down": "Övertemperatur: ytterligare sänkt",
           "reset_offset": "Offset återställd"
         }
@@ -92,6 +95,17 @@
     "button": {
       "reset_offset": {
         "name": "Återställ offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Läge",
+        "state": {
+          "present": "Närvarande",
+          "away": "Borta",
+          "summer": "Sommar",
+          "winter": "Vinter"
+        }
       }
     }
   }

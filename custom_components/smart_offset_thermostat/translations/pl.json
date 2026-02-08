@@ -30,6 +30,8 @@
           "cooldown_sec": "Czas blokady między zmianami (sekundy)",
           "boost_duration_sec": "Czas boost (sekundy)",
           "enable_learning": "Włącz uczenie",
+          "pause_on_hvac_off": "Wstrzymaj sterowanie, gdy termostat jest wyłączony",
+          "modes": "Tryby (JSON: id, target, pause)",
           "stuck_enable": "Adaptacyjna korekta przegrzania (obniża nastawę, jeśli pomieszczenie pozostaje zbyt ciepłe)",
           "stuck_seconds": "Okno oceny przegrzania (sekundy)",
           "stuck_min_drop": "Wymagane schłodzenie w oknie (°C)",
@@ -69,6 +71,7 @@
           "skipped_invalid_room_temp": "Temperatura pomieszczenia nieprawidłowa",
           "boost": "Boost aktywny (maks. moc grzewcza)",
           "window_open": "Okno otwarte (obniżone)",
+          "paused": "Sterowanie wstrzymane",
           "stuck_overtemp_down": "Przegrzanie: dodatkowo obniżone",
           "reset_offset": "Offset zresetowany"
         }
@@ -92,6 +95,17 @@
     "button": {
       "reset_offset": {
         "name": "Resetuj offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Tryb",
+        "state": {
+          "present": "Obecny",
+          "away": "Nieobecny",
+          "summer": "Lato",
+          "winter": "Zima"
+        }
       }
     }
   }

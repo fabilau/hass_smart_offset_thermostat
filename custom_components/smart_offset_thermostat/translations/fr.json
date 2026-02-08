@@ -30,6 +30,8 @@
           "cooldown_sec": "Temps de blocage entre changements (secondes)",
           "boost_duration_sec": "Durée du boost (secondes)",
           "enable_learning": "Activer l’apprentissage",
+          "pause_on_hvac_off": "Mettre en pause le contrôle lorsque le thermostat est éteint",
+          "modes": "Modes (JSON : id, target, pause)",
           "stuck_enable": "Correction adaptative de surchauffe (baisse la consigne si la pièce reste trop chaude)",
           "stuck_seconds": "Fenêtre d’évaluation surchauffe (secondes)",
           "stuck_min_drop": "Refroidissement requis dans la fenêtre (°C)",
@@ -69,6 +71,7 @@
           "skipped_invalid_room_temp": "Température de la pièce invalide",
           "boost": "Boost actif (puissance de chauffe max)",
           "window_open": "Fenêtre ouverte (réduit)",
+          "paused": "Contrôle en pause",
           "stuck_overtemp_down": "Surchauffe: réduit en plus",
           "reset_offset": "Offset réinitialisé"
         }
@@ -91,7 +94,18 @@
     },
     "button": {
       "reset_offset": {
-        "name": "Réinitialiser l'offset"
+        "name": "Réinitialiser l’offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Mode",
+        "state": {
+          "present": "Présent",
+          "away": "Absent",
+          "summer": "Été",
+          "winter": "Hiver"
+        }
       }
     }
   }

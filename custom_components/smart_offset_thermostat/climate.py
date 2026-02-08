@@ -11,7 +11,7 @@ from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import HVACMode, ClimateEntityFeature
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 
-from .const import DOMAIN, SIGNAL_UPDATE, CONF_ROOM_TARGET, DEFAULTS
+from .const import DOMAIN, SIGNAL_UPDATE, DEFAULTS
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     controller = hass.data[DOMAIN][entry.entry_id]
@@ -55,9 +55,8 @@ class SmartOffsetVirtualThermostat(ClimateEntity):
 
     @property
     def target_temperature(self) -> float | None:
-        v = self.controller.opt(CONF_ROOM_TARGET)
         try:
-            return float(v)
+            return float(self.controller.get_mode_target())
         except Exception:
             return float(DEFAULTS[CONF_ROOM_TARGET])
 
@@ -79,12 +78,8 @@ class SmartOffsetVirtualThermostat(ClimateEntity):
         if ATTR_TEMPERATURE not in kwargs:
             return
         new_target = float(kwargs[ATTR_TEMPERATURE])
-
-        new_options = dict(self.entry.options)
-        new_options[CONF_ROOM_TARGET] = new_target
-        self.hass.config_entries.async_update_entry(self.entry, options=new_options)
-
-        await self.controller.trigger_once()
+        await self.controller.set_mode_target(new_target)
+        await self.controller.trigger_once(force=True)
         self.async_write_ha_state()
 
     async def async_added_to_hass(self) -> None:

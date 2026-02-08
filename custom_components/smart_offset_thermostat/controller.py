@@ -67,6 +67,8 @@ class SmartOffsetController:
         self._last_room_target = None
         self._unsub_window = None
         self._window_entities = tuple()
+        self.pause_active = False
+        self.mode = self.storage.get_mode(self.entry.entry_id)
         self._force_next_control = False
         self._stuck_active = False
         self._stuck_ref_temp = None
@@ -123,6 +125,85 @@ class SmartOffsetController:
 
         self._unsub_window = async_track_state_change_event(self.hass, list(entities), _on_window_change)
 
+    def _get_modes(self) -> list[dict]:
+        modes = self.entry.options.get(CONF_MODES)
+        if isinstance(modes, list) and modes:
+            return modes
+        return DEFAULT_MODES
+
+    def _get_mode(self, modes: list[dict]) -> str:
+        mode = self.storage.get_mode(self.entry.entry_id)
+        ids = [m.get("id") for m in modes if isinstance(m, dict)]
+        if mode in ids:
+            return mode
+        return ids[0] if ids else MODE_PRESENT
+
+    def _get_mode_settings(self, mode: str, modes: list[dict]) -> tuple[bool, float]:
+        for item in modes:
+            if not isinstance(item, dict):
+                continue
+            if item.get("id") != mode:
+                continue
+            pause = bool(item.get("pause", False))
+            target = item.get("target", DEFAULTS[CONF_ROOM_TARGET])
+            try:
+                target = float(target)
+            except Exception:
+                target = float(DEFAULTS[CONF_ROOM_TARGET])
+            return pause, target
+        return False, float(DEFAULTS[CONF_ROOM_TARGET])
+
+    async def set_mode(self, mode: str):
+        modes = self._get_modes()
+        ids = [m.get("id") for m in modes if isinstance(m, dict)]
+        if mode not in ids:
+            return
+        self.storage.set_mode(self.entry.entry_id, mode)
+        await self.storage.async_save()
+        self.mode = mode
+        await self.trigger_once(force=True)
+        self._notify()
+
+    def get_mode(self) -> str:
+        modes = self._get_modes()
+        return self._get_mode(modes)
+
+    def get_mode_target(self, mode: str | None = None) -> float:
+        modes = self._get_modes()
+        if mode is None:
+            mode = self._get_mode(modes)
+        _, target = self._get_mode_settings(mode, modes)
+        return float(target)
+
+    async def set_mode_target(self, target: float, mode: str | None = None):
+        modes = self._get_modes()
+        if mode is None:
+            mode = self._get_mode(modes)
+        new_modes = []
+        updated = False
+        for item in modes:
+            if not isinstance(item, dict):
+                continue
+            if item.get("id") == mode:
+                new_item = dict(item)
+                new_item["target"] = float(target)
+                new_modes.append(new_item)
+                updated = True
+            else:
+                new_modes.append(item)
+        if updated:
+            new_options = dict(self.entry.options)
+            new_options[CONF_MODES] = new_modes
+            self.hass.config_entries.async_update_entry(self.entry, options=new_options)
+
+    def get_mode_ids(self) -> list[str]:
+        modes = self._get_modes()
+        ids = []
+        for item in modes:
+            if isinstance(item, dict) and item.get("id"):
+                ids.append(str(item.get("id")))
+        return ids
+
     def _cancel_boost(self):
         if self._boost_unsub:
             try:
@@ -159,6 +240,10 @@ class SmartOffsetController:
         self._notify()
 
     async def async_start(self):
+        modes = self._get_modes()
+        if self.storage.get_mode(self.entry.entry_id) not in [m.get("id") for m in modes if isinstance(m, dict)]:
+            self.storage.set_mode(self.entry.entry_id, self._get_mode(modes))
+            await self.storage.async_save()
         interval = int(self.opt(CONF_INTERVAL_SEC) or DEFAULT_INTERVAL_SEC)
         self.unsub = async_track_time_interval(
             self.hass, self._tick, timedelta(seconds=interval)
@@ -180,6 +265,7 @@ class SmartOffsetController:
         climate_entity = self.entry.data[CONF_CLIMATE]
         room_sensor = self.entry.data[CONF_ROOM_SENSOR]
         window_entities = _normalize_entity_list(self.opt(CONF_WINDOW_SENSORS))
+        pause_on_hvac_off = bool(self.opt(CONF_PAUSE_ON_HVAC_OFF))
         # backward compatible: old single key
         old_window = self.opt(CONF_WINDOW_SENSOR)
         if old_window and old_window not in window_entities:
@@ -199,7 +285,15 @@ class SmartOffsetController:
             self._notify()
             return
 
-        t_target = float(self.opt(CONF_ROOM_TARGET) or DEFAULTS[CONF_ROOM_TARGET])
+        modes = self._get_modes()
+        mode = self._get_mode(modes)
+        if self.storage.get_mode(self.entry.entry_id) != mode:
+            self.storage.set_mode(self.entry.entry_id, mode)
+            await self.storage.async_save()
+        mode_pause, mode_target = self._get_mode_settings(mode, modes)
+        if mode_target is None:
+            mode_target = float(self.opt(CONF_ROOM_TARGET) or DEFAULTS[CONF_ROOM_TARGET])
+        t_target = float(mode_target)
         # Detect target changes: when user changes the virtual target, rebase TRV even if we end up in deadband
         target_changed = (self._last_room_target is not None and abs(t_target - self._last_room_target) > 1e-9)
         self._last_room_target = t_target
@@ -235,6 +329,23 @@ class SmartOffsetController:
 
         e = t_target - t_room
         self.last_error = e
+
+        self.pause_active = bool(mode_pause)
+        if pause_on_hvac_off and climate is not None:
+            if str(climate.state).lower() == "off":
+                self.pause_active = True
+        if self.pause_active:
+            self.last_action = "paused"
+            self.last_target_trv = self.last_set
+            self._stable_since = None
+            self._stable_target = None
+            self._stable_last_set = None
+            self._stuck_active = False
+            self._stuck_ref_temp = None
+            self._stuck_ref_time = None
+            self._stuck_bias = 0.0
+            self._notify()
+            return
         # reset stability tracking when we are outside the deadband
         if abs(e) > float(deadband):
             self._stable_since = None

@@ -30,6 +30,8 @@
           "cooldown_sec": "Sperretid mellom endringer (sekunder)",
           "boost_duration_sec": "Boost-varighet (sekunder)",
           "enable_learning": "Aktiver læring",
+          "pause_on_hvac_off": "Pause styring når termostaten er av",
+          "modes": "Moduser (JSON: id, target, pause)",
           "stuck_enable": "Adaptiv overtemperatur-korrigering (senker settpunkt hvis rommet forblir for varmt)",
           "stuck_seconds": "Evalueringsvindu for overtemperatur (sekunder)",
           "stuck_min_drop": "Krav til nedkjøling i vinduet (°C)",
@@ -69,6 +71,7 @@
           "skipped_invalid_room_temp": "Romtemperatur ugyldig",
           "boost": "Boost aktiv (maks. varmeeffekt)",
           "window_open": "Vindu åpent (senket)",
+          "paused": "Styring pauset",
           "stuck_overtemp_down": "Overtemperatur: ytterligere senket",
           "reset_offset": "Offset tilbakestilt"
         }
@@ -92,6 +95,17 @@
     "button": {
       "reset_offset": {
         "name": "Tilbakestill offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modus",
+        "state": {
+          "present": "Hjemme",
+          "away": "Borte",
+          "summer": "Sommer",
+          "winter": "Vinter"
+        }
       }
     }
   }

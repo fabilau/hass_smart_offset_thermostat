@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.1.32
+- Added configurable modes list (JSON) with add/remove support
+- Mode select updates immediately after saving options
+
+
+## v1.1.31
+- Added mode select with per-mode target temperature and pause control (replaces pause entities)
+- Post-start refresh to avoid unknown states after restart
+
+
+## v1.1.30
+- Added pause controls to stop learning and setpoint changes when HVAC is off or a pause entity is active
+
+
 ## v1.1.29
 - Added russian language support
 

@@ -30,6 +30,8 @@
           "cooldown_sec": "Wachttijd tussen wijzigingen (seconden)",
           "boost_duration_sec": "Boostduur (seconden)",
           "enable_learning": "Leren inschakelen",
+          "pause_on_hvac_off": "Pauzeer de regeling wanneer de thermostaat uit staat",
+          "modes": "Modi (JSON: id, target, pause)",
           "stuck_enable": "Adaptieve overtemperatuur-correctie (verlaagt setpoint als de kamer te warm blijft)",
           "stuck_seconds": "Evaluatievenster overtemperatuur (seconden)",
           "stuck_min_drop": "Benodigde afkoeling in venster (°C)",
@@ -69,6 +71,7 @@
           "skipped_invalid_room_temp": "Kamertemperatuur ongeldig",
           "boost": "Boost actief (max. verwarmingsvermogen)",
           "window_open": "Raam open (verlaagd)",
+          "paused": "Regeling gepauzeerd",
           "stuck_overtemp_down": "Overtemperatuur: extra verlaagd",
           "reset_offset": "Offset gereset"
         }
@@ -92,6 +95,17 @@
     "button": {
       "reset_offset": {
         "name": "Offset resetten"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modus",
+        "state": {
+          "present": "Aanwezig",
+          "away": "Afwezig",
+          "summer": "Zomer",
+          "winter": "Winter"
+        }
       }
     }
   }

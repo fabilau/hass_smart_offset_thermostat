@@ -29,6 +29,8 @@
           "trv_max": "Max. Thermostat-Sollwert (°C)",
           "cooldown_sec": "Sperrzeit zwischen Änderungen (Sekunden)",
           "enable_learning": "Lernen aktivieren",
+          "pause_on_hvac_off": "Regelung pausieren, wenn Thermostat aus ist",
+          "modes": "Modi (JSON: id, target, pause)",
           "boost_duration_sec": "Boost-Dauer (Sekunden)",
           "stuck_enable": "Adaptive Übertemperatur-Korrektur (senkt Sollwert, wenn Raum zu warm bleibt)",
           "stuck_seconds": "Übertemperatur-Auswertefenster (Sekunden)",
@@ -69,6 +71,7 @@
           "skipped_invalid_room_temp": "Raumtemperatur ungültig",
           "boost": "Boost aktiv (max. Heizleistung)",
           "window_open": "Fenster offen (Absenkung)",
+          "paused": "Regelung pausiert",
           "stuck_overtemp_down": "Übertemperatur: zusätzlich abgesenkt",
           "reset_offset": "Offset zurückgesetzt"
         }
@@ -92,6 +95,17 @@
     "button": {
       "reset_offset": {
         "name": "Offset zurücksetzen"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modus",
+        "state": {
+          "present": "Anwesend",
+          "away": "Abwesend",
+          "summer": "Sommer",
+          "winter": "Winter"
+        }
       }
     }
   }

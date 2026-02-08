@@ -30,6 +30,8 @@
           "cooldown_sec": "Pausa entre mudanças (segundos)",
           "boost_duration_sec": "Duração do boost (segundos)",
           "enable_learning": "Ativar aprendizado",
+          "pause_on_hvac_off": "Pausar controle quando o termostato estiver desligado",
+          "modes": "Modos (JSON: id, target, pause)",
           "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a meta se o ambiente continuar quente demais)",
           "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
           "stuck_min_drop": "Resfriamento necessário na janela (°C)",
@@ -69,6 +71,7 @@
           "skipped_invalid_room_temp": "Temperatura do ambiente inválida",
           "boost": "Boost ativo (potência máxima de aquecimento)",
           "window_open": "Janela aberta (reduzido)",
+          "paused": "Controle pausado",
           "stuck_overtemp_down": "Sobretemperatura: adicionalmente reduzido",
           "reset_offset": "Offset resetado"
         }
@@ -92,6 +95,17 @@
     "button": {
       "reset_offset": {
         "name": "Resetar offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modo",
+        "state": {
+          "present": "Presente",
+          "away": "Ausente",
+          "summer": "Verão",
+          "winter": "Inverno"
+        }
       }
     }
   }
