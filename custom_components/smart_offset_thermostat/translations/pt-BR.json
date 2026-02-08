@@ -37,7 +37,8 @@
           "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
           "stuck_min_drop": "Resfriamento necessário na janela (°C)",
           "stuck_step": "Passo extra de redução em sobretemperatura (°C)",
-          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)",
+          "window_delay_sec": "Atraso de janela aberta antes da reducao (segundos)"
         }
       }
     }

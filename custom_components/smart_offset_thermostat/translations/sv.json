@@ -37,7 +37,8 @@
           "stuck_seconds": "Utvärderingsfönster övertemperatur (sekunder)",
           "stuck_min_drop": "Krav på nedkylning i fönstret (°C)",
           "stuck_step": "Extra sänkningssteg vid övertemperatur (°C)",
-          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)"
+          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)",
+          "window_delay_sec": "Forsening vid oppet fonster fore sankning (sekunder)"
         }
       }
     }

@@ -37,7 +37,8 @@
           "stuck_seconds": "Evalueringsvindu for overtemperatur (sekunder)",
           "stuck_min_drop": "Krav til nedkjøling i vinduet (°C)",
           "stuck_step": "Ekstra senkesteg ved overtemperatur (°C)",
-          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)"
+          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)",
+          "window_delay_sec": "Forsinkelse ved apent vindu for senking (sekunder)"
         }
       }
     }

@@ -37,7 +37,8 @@
           "stuck_seconds": "Evaluatievenster overtemperatuur (seconden)",
           "stuck_min_drop": "Benodigde afkoeling in venster (°C)",
           "stuck_step": "Extra verlaagstap bij overtemperatuur (°C)",
-          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)"
+          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)",
+          "window_delay_sec": "Vertraging bij open raam voor verlaging (seconden)"
         }
       }
     }

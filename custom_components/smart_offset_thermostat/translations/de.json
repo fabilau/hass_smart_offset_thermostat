@@ -37,7 +37,8 @@
           "stuck_seconds": "Übertemperatur-Auswertefenster (Sekunden)",
           "stuck_min_drop": "Erforderliche Abkühlung im Fenster (°C)",
           "stuck_step": "Zusätzlicher Absenk-Schritt bei Übertemperatur (°C)",
-          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)"
+          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)",
+          "window_delay_sec": "Verzoegerung bei offenem Fenster vor Absenkung (Sekunden)"
         }
       }
     }

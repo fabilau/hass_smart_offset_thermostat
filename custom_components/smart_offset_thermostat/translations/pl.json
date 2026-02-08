@@ -37,7 +37,8 @@
           "stuck_seconds": "Okno oceny przegrzania (sekundy)",
           "stuck_min_drop": "Wymagane schłodzenie w oknie (°C)",
           "stuck_step": "Dodatkowy krok obniżenia przy przegrzaniu (°C)",
-          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)"
+          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)",
+          "window_delay_sec": "Opoznienie przy otwartym oknie przed obnizeniem (sekundy)"
         }
       }
     }

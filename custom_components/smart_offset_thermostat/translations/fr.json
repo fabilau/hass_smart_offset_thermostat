@@ -37,7 +37,8 @@
           "stuck_seconds": "Fenêtre d’évaluation surchauffe (secondes)",
           "stuck_min_drop": "Refroidissement requis dans la fenêtre (°C)",
           "stuck_step": "Pas de baisse supplémentaire en surchauffe (°C)",
-          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)"
+          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)",
+          "window_delay_sec": "Delai d'ouverture avant reduction (secondes)"
         }
       }
     }

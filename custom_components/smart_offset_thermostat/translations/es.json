@@ -37,7 +37,8 @@
           "stuck_seconds": "Ventana de evaluación de sobretemperatura (segundos)",
           "stuck_min_drop": "Enfriamiento requerido en la ventana (°C)",
           "stuck_step": "Paso extra de reducción en sobretemperatura (°C)",
-          "window_sensor_entities": "Sensor de ventana (binary_sensor, opcional)"
+          "window_sensor_entities": "Sensor de ventana (binary_sensor, opcional)",
+          "window_delay_sec": "Retraso de ventana abierta antes de la reduccion (segundos)"
         }
       }
     }

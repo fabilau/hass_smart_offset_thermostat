@@ -37,7 +37,8 @@
           "stuck_seconds": "Окно оценки перегрева (секунды)",
           "stuck_min_drop": "Требуемое охлаждение в окне оценки (°C)",
           "stuck_step": "Дополнительный шаг снижения при перегреве (°C)",
-          "window_sensor_entities": "Датчик окна (binary_sensor, опционально)"
+          "window_sensor_entities": "Датчик окна (binary_sensor, опционально)",
+          "window_delay_sec": "Задержка перед снижением при открытом окне (секунды)"
         }
       }
     }

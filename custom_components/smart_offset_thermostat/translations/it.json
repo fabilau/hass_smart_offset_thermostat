@@ -37,7 +37,8 @@
           "stuck_seconds": "Finestra valutazione sovratemperatura (secondi)",
           "stuck_min_drop": "Raffreddamento richiesto nella finestra (°C)",
           "stuck_step": "Passo extra di riduzione in sovratemperatura (°C)",
-          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)"
+          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)",
+          "window_delay_sec": "Ritardo finestra aperta prima della riduzione (secondi)"
         }
       }
     }
