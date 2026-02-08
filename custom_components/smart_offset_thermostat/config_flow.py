@@ -17,12 +17,14 @@ from .const import (
     CONF_LEARN_RATE, CONF_TRV_MIN, CONF_TRV_MAX, CONF_COOLDOWN_SEC,
     CONF_ENABLE_LEARNING,
     CONF_PAUSE_ON_HVAC_OFF,
+    CONF_MANUAL_TARGET_SYNC, CONF_MANUAL_DELAY_SEC,
     CONF_MODES,
     CONF_WINDOW_SENSOR, CONF_WINDOW_SENSORS, CONF_WINDOW_DELAY_SEC, CONF_BOOST_DURATION_SEC,
     CONF_STUCK_ENABLE, CONF_STUCK_SECONDS, CONF_STUCK_MIN_DROP, CONF_STUCK_STEP,
     DEFAULT_INTERVAL_SEC, DEFAULT_DEADBAND, DEFAULT_STEP_MAX, DEFAULT_STEP_MIN,
     DEFAULT_LEARN_RATE, DEFAULT_TRV_MIN, DEFAULT_TRV_MAX, DEFAULT_COOLDOWN_SEC,
     DEFAULT_ENABLE_LEARNING, DEFAULT_PAUSE_ON_HVAC_OFF,
+    DEFAULT_MANUAL_TARGET_SYNC, DEFAULT_MANUAL_DELAY_SEC,
     DEFAULT_BOOST_DURATION_SEC,
     DEFAULT_WINDOW_DELAY_SEC,
     DEFAULT_STUCK_ENABLE, DEFAULT_STUCK_SECONDS, DEFAULT_STUCK_MIN_DROP, DEFAULT_STUCK_STEP,
@@ -108,6 +110,10 @@ class SmartOffsetThermostatOptionsFlow(config_entries.OptionsFlow):
             ),
             vol.Optional(CONF_ENABLE_LEARNING, default=opts.get(CONF_ENABLE_LEARNING, DEFAULT_ENABLE_LEARNING)): BooleanSelector(),
             vol.Optional(CONF_PAUSE_ON_HVAC_OFF, default=opts.get(CONF_PAUSE_ON_HVAC_OFF, DEFAULT_PAUSE_ON_HVAC_OFF)): BooleanSelector(),
+            vol.Optional(CONF_MANUAL_TARGET_SYNC, default=opts.get(CONF_MANUAL_TARGET_SYNC, DEFAULT_MANUAL_TARGET_SYNC)): BooleanSelector(),
+            vol.Optional(CONF_MANUAL_DELAY_SEC, default=opts.get(CONF_MANUAL_DELAY_SEC, DEFAULT_MANUAL_DELAY_SEC)): NumberSelector(
+                NumberSelectorConfig(min=0, max=3600, step=10, mode=NumberSelectorMode.BOX, unit_of_measurement="s")
+            ),
             vol.Optional(CONF_MODES, default=modes_default): TextSelector(
                 TextSelectorConfig(multiline=True)
             ),

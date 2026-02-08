@@ -31,6 +31,8 @@
           "boost_duration_sec": "Boost duration (seconds)",
           "enable_learning": "Enable learning",
           "pause_on_hvac_off": "Pause control when thermostat is off",
+          "manual_target_sync": "Sync manual thermostat changes",
+          "manual_delay_sec": "Manual change delay before override (seconds)",
           "modes": "Modes (JSON: id, target, pause)",
           "stuck_enable": "Adaptive over-temp correction (reduce setpoint if room stays too warm)",
           "stuck_seconds": "Over-temp evaluation window (seconds)",
@@ -74,7 +76,9 @@
           "window_open": "Window open (reduced)",
           "paused": "Control paused",
           "stuck_overtemp_down": "Over-temperature: additionally reduced",
-          "reset_offset": "Offset reset"
+          "reset_offset": "Offset reset",
+          "manual_target_sync": "Manual change detected (target updated)",
+          "manual_hold": "Manual change hold (waiting)"
         }
       },
       "change_count": {

@@ -11,6 +11,7 @@ from .const import *
 
 STABLE_LEARN_SECONDS = 900  # 15 minutes within deadband
 STABLE_LEARN_ALPHA = 0.25     # move offset 25% towards implied value per stable window
+MANUAL_GRACE_SECONDS = 30
 
 LOGGER = logging.getLogger(__name__)
 
@@ -69,6 +70,12 @@ class SmartOffsetController:
         self._window_open_since = None
         self._window_delay_unsub = None
         self._last_room_target = None
+        self._manual_hold_until = 0.0
+        self._last_seen_trv = None
+        self._manual_pending_target = None
+        self._manual_delay_unsub = None
+        self._last_commanded_trv = None
+        self._last_commanded_time = 0.0
         self._unsub_window = None
         self._window_entities = tuple()
         self._unsub_climate = None
@@ -254,6 +261,18 @@ class SmartOffsetController:
                 pass
             self._window_delay_unsub = None
 
+    def _cancel_manual_delay(self):
+        if self._manual_delay_unsub:
+            try:
+                self._manual_delay_unsub()
+            except Exception:
+                pass
+            self._manual_delay_unsub = None
+
+    def _record_commanded(self, value: float):
+        self._last_commanded_trv = float(value)
+        self._last_commanded_time = self.hass.loop.time()
+
     def _schedule_window_delay(self, delay: float):
         self._cancel_window_delay()
         if delay <= 0:
@@ -265,6 +284,18 @@ class SmartOffsetController:
             self._notify()
 
         self._window_delay_unsub = async_call_later(self.hass, float(delay), _fire)
+
+    def _schedule_manual_delay(self, delay: float):
+        self._cancel_manual_delay()
+        if delay <= 0:
+            return
+
+        async def _fire(_):
+            self._manual_delay_unsub = None
+            await self.trigger_once(force=True)
+            self._notify()
+
+        self._manual_delay_unsub = async_call_later(self.hass, float(delay), _fire)
 
     async def reset_offset(self):
         # Reset learned offset to 0 and persist it
@@ -305,6 +336,7 @@ class SmartOffsetController:
     async def async_stop(self):
         self._cancel_boost()
         self._cancel_window_delay()
+        self._cancel_manual_delay()
         if self.unsub:
             self.unsub()
             self.unsub = None
@@ -325,12 +357,13 @@ class SmartOffsetController:
         room_sensor = self.entry.data[CONF_ROOM_SENSOR]
         window_entities = _normalize_entity_list(self.opt(CONF_WINDOW_SENSORS))
         pause_on_hvac_off = bool(self.opt(CONF_PAUSE_ON_HVAC_OFF))
+        manual_sync = bool(self.opt(CONF_MANUAL_TARGET_SYNC))
         # backward compatible: old single key
         old_window = self.opt(CONF_WINDOW_SENSOR)
         if old_window and old_window not in window_entities:
             window_entities = list(window_entities) + [old_window]
         self._ensure_window_listener(list(window_entities))
-        self._ensure_climate_listener(climate_entity, pause_on_hvac_off)
+        self._ensure_climate_listener(climate_entity, pause_on_hvac_off or manual_sync)
 
         climate = self.hass.states.get(climate_entity)
         room = self.hass.states.get(room_sensor)
@@ -378,6 +411,9 @@ class SmartOffsetController:
         else:
             window_delay_sec = int(window_delay_raw)
         window_delay_sec = max(0, min(window_delay_sec, 24 * 3600))
+
+        manual_delay_sec = int(self.opt(CONF_MANUAL_DELAY_SEC) or DEFAULT_MANUAL_DELAY_SEC)
+        manual_delay_sec = max(0, min(manual_delay_sec, 3600))
 
         # Window handling (optional)
         window_open = False
@@ -457,6 +493,7 @@ class SmartOffsetController:
                     {"entity_id": climate_entity, ATTR_TEMPERATURE: t_trv},
                     blocking=False,
                 )
+                self._record_commanded(t_trv)
                 self.last_set = t_trv
                 self.last_change = now_mono
                 self.change_count += 1
@@ -486,6 +523,7 @@ class SmartOffsetController:
                     {"entity_id": climate_entity, ATTR_TEMPERATURE: t_trv},
                     blocking=False,
                 )
+                self._record_commanded(t_trv)
                 self.last_set = t_trv
                 self.last_change = now_mono
                 self.change_count += 1
@@ -493,6 +531,56 @@ class SmartOffsetController:
             self.last_action = "boost"
             self._notify()
             return
+
+        t_trv_current = _to_float(climate.attributes.get(ATTR_TEMPERATURE))
+        device_step = _to_float(climate.attributes.get("target_temp_step")) or step_min
+
+        if manual_sync and t_trv_current is not None:
+            manual_threshold = max(float(device_step), float(step_min))
+            if self._last_seen_trv is None:
+                self._last_seen_trv = t_trv_current
+            else:
+                changed = abs(t_trv_current - float(self._last_seen_trv)) >= (manual_threshold - 1e-6)
+                from_self = self.last_set is not None and abs(t_trv_current - float(self.last_set)) <= (manual_threshold + 1e-6)
+                recent_commanded = (
+                    self._last_commanded_trv is not None
+                    and (now_mono - float(self._last_commanded_time)) < MANUAL_GRACE_SECONDS
+                    and abs(t_trv_current - float(self._last_commanded_trv)) <= (manual_threshold + 1e-6)
+                )
+                if changed and not from_self and not recent_commanded:
+                    self._manual_pending_target = float(t_trv_current)
+                    if manual_delay_sec > 0:
+                        self._manual_hold_until = now_mono + float(manual_delay_sec)
+                        self._schedule_manual_delay(float(manual_delay_sec))
+                    else:
+                        self._manual_hold_until = now_mono
+                    self.last_action = "manual_hold"
+                    self.last_target_trv = self.last_set
+                    self._last_seen_trv = t_trv_current
+                    self._notify()
+                    return
+                self._last_seen_trv = t_trv_current
+        else:
+            self._last_seen_trv = None
+
+        if not manual_sync:
+            self._manual_hold_until = 0.0
+            self._manual_pending_target = None
+            self._cancel_manual_delay()
+
+        if manual_sync and self._manual_hold_until and now_mono < self._manual_hold_until:
+            self.last_action = "manual_hold"
+            self.last_target_trv = self.last_set
+            self._notify()
+            return
+        if self._manual_hold_until and now_mono >= self._manual_hold_until:
+            self._manual_hold_until = 0.0
+            if manual_sync and self._manual_pending_target is not None:
+                await self.set_mode_target(float(self._manual_pending_target), mode)
+                self._manual_pending_target = None
+                self.last_action = "manual_target_sync"
+                self.last_target_trv = self.last_set
+                self._notify()
 
         if abs(e) <= deadband:
             # If the user changed the target, we must not keep an old (possibly very high) TRV setpoint.
@@ -510,6 +598,7 @@ class SmartOffsetController:
                         {"entity_id": climate_entity, ATTR_TEMPERATURE: baseline},
                         blocking=False,
                     )
+                    self._record_commanded(baseline)
                     self.last_set = baseline
                     self.last_change = now_mono
                     self.change_count += 1
@@ -534,6 +623,7 @@ class SmartOffsetController:
                     {"entity_id": climate_entity, ATTR_TEMPERATURE: baseline},
                     blocking=False,
                 )
+                self._record_commanded(baseline)
                 self.last_set = baseline
                 self.last_change = now_mono
                 self.change_count += 1
@@ -641,6 +731,7 @@ class SmartOffsetController:
             {"entity_id": climate_entity, ATTR_TEMPERATURE: t_trv},
             blocking=False,
         )
+        self._record_commanded(t_trv)
 
         self.last_set = t_trv
         self._force_next_control = False

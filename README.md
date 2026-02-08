@@ -26,6 +26,7 @@ This approach ensures **broad compatibility** across different manufacturers, pr
 - ♻️ Reset learned offset at any time
 - 🧊 Adaptive over-temperature correction
 - 🧭 Mode select with per-mode targets and pause control
+- 🔁 Manual thermostat change sync with delay (optional, default 10s)
 - ⚙️ Fully configurable via UI (no YAML required)
 
 ---
@@ -91,6 +92,7 @@ All settings are configurable via the Home Assistant UI:
 - Window sensor
 - Window open delay
 - Boost duration
+- Manual thermostat change sync and delay
 - Mode settings (targets, pause, add/remove)
 
 ---

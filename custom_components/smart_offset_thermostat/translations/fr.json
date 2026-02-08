@@ -32,6 +32,8 @@
           "boost_duration_sec": "Durée du boost (secondes)",
           "enable_learning": "Activer l’apprentissage",
           "pause_on_hvac_off": "Mettre en pause le contrôle lorsque le thermostat est éteint",
+          "manual_target_sync": "Synchroniser les changements manuels du thermostat",
+          "manual_delay_sec": "Délai après changement manuel avant écrasement (secondes)",
           "modes": "Modes (JSON : id, target, pause)",
           "stuck_enable": "Correction adaptative de surchauffe (baisse la consigne si la pièce reste trop chaude)",
           "stuck_seconds": "Fenêtre d’évaluation surchauffe (secondes)",
@@ -75,7 +77,9 @@
           "window_open": "Fenêtre ouverte (réduit)",
           "paused": "Contrôle en pause",
           "stuck_overtemp_down": "Surchauffe: réduit en plus",
-          "reset_offset": "Offset réinitialisé"
+          "reset_offset": "Offset réinitialisé",
+          "manual_target_sync": "Changement manuel détecté (cible mise à jour)",
+          "manual_hold": "Attente après changement manuel"
         }
       },
       "change_count": {

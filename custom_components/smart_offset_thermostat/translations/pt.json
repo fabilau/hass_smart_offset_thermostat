@@ -32,6 +32,8 @@
           "boost_duration_sec": "Duração do boost (segundos)",
           "enable_learning": "Ativar aprendizagem",
           "pause_on_hvac_off": "Pausar controlo quando o termóstato estiver desligado",
+          "manual_target_sync": "Sincronizar alterações manuais do termóstato",
+          "manual_delay_sec": "Atraso após alteração manual antes de substituir (segundos)",
           "modes": "Modos (JSON: id, target, pause)",
           "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a consigna se a divisão continuar demasiado quente)",
           "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
@@ -75,7 +77,9 @@
           "window_open": "Janela aberta (reduzido)",
           "paused": "Controlo em pausa",
           "stuck_overtemp_down": "Sobretemperatura: adicionalmente reduzido",
-          "reset_offset": "Offset reiniciado"
+          "reset_offset": "Offset reiniciado",
+          "manual_target_sync": "Alteração manual detetada (alvo atualizado)",
+          "manual_hold": "Espera após alteração manual"
         }
       },
       "change_count": {

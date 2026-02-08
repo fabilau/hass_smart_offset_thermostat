@@ -32,6 +32,8 @@
           "boost_duration_sec": "Boostlängd (sekunder)",
           "enable_learning": "Aktivera inlärning",
           "pause_on_hvac_off": "Pausa styrning när termostaten är av",
+          "manual_target_sync": "Synkronisera manuella ändringar på termostaten",
+          "manual_delay_sec": "Fördröjning efter manuell ändring innan överskrivning (sekunder)",
           "modes": "Lägen (JSON: id, target, pause)",
           "stuck_enable": "Adaptiv övertemperatur-korrigering (sänker börvärdet om rummet förblir för varmt)",
           "stuck_seconds": "Utvärderingsfönster övertemperatur (sekunder)",
@@ -75,7 +77,9 @@
           "window_open": "Fönster öppet (sänkt)",
           "paused": "Styrning pausad",
           "stuck_overtemp_down": "Övertemperatur: ytterligare sänkt",
-          "reset_offset": "Offset återställd"
+          "reset_offset": "Offset återställd",
+          "manual_target_sync": "Manuell ändring upptäckt (mål uppdaterat)",
+          "manual_hold": "Väntar efter manuell ändring"
         }
       },
       "change_count": {

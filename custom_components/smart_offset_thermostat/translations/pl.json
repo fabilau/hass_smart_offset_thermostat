@@ -32,6 +32,8 @@
           "boost_duration_sec": "Czas boost (sekundy)",
           "enable_learning": "Włącz uczenie",
           "pause_on_hvac_off": "Wstrzymaj sterowanie, gdy termostat jest wyłączony",
+          "manual_target_sync": "Synchronizuj ręczne zmiany termostatu",
+          "manual_delay_sec": "Opóźnienie po ręcznej zmianie przed nadpisaniem (sekundy)",
           "modes": "Tryby (JSON: id, target, pause)",
           "stuck_enable": "Adaptacyjna korekta przegrzania (obniża nastawę, jeśli pomieszczenie pozostaje zbyt ciepłe)",
           "stuck_seconds": "Okno oceny przegrzania (sekundy)",
@@ -75,7 +77,9 @@
           "window_open": "Okno otwarte (obniżone)",
           "paused": "Sterowanie wstrzymane",
           "stuck_overtemp_down": "Przegrzanie: dodatkowo obniżone",
-          "reset_offset": "Offset zresetowany"
+          "reset_offset": "Offset zresetowany",
+          "manual_target_sync": "Wykryto ręczną zmianę (cel zaktualizowany)",
+          "manual_hold": "Oczekiwanie po ręcznej zmianie"
         }
       },
       "change_count": {

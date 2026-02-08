@@ -35,6 +35,8 @@ LAST_ACTION_OPTIONS = (
     "paused",
     "stuck_overtemp_down",
     "reset_offset",
+    "manual_target_sync",
+    "manual_hold",
 )
 
 SENSORS = (

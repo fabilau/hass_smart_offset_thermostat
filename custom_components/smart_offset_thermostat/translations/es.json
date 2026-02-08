@@ -32,6 +32,8 @@
           "boost_duration_sec": "Duración del boost (segundos)",
           "enable_learning": "Habilitar aprendizaje",
           "pause_on_hvac_off": "Pausar control cuando el termostato está apagado",
+          "manual_target_sync": "Sincronizar cambios manuales del termostato",
+          "manual_delay_sec": "Retardo tras cambio manual antes de sobrescribir (segundos)",
           "modes": "Modos (JSON: id, target, pause)",
           "stuck_enable": "Corrección adaptativa de sobretemperatura (baja la consigna si la habitación sigue demasiado caliente)",
           "stuck_seconds": "Ventana de evaluación de sobretemperatura (segundos)",
@@ -75,7 +77,9 @@
           "window_open": "Ventana abierta (reducida)",
           "paused": "Control en pausa",
           "stuck_overtemp_down": "Sobretemperatura: adicionalmente reducida",
-          "reset_offset": "Offset restablecido"
+          "reset_offset": "Offset restablecido",
+          "manual_target_sync": "Cambio manual detectado (objetivo actualizado)",
+          "manual_hold": "Espera tras cambio manual"
         }
       },
       "change_count": {
