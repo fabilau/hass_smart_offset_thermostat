@@ -67,6 +67,7 @@ class SmartOffsetController:
         self._last_room_target = None
         self._unsub_window = None
         self._window_entities = tuple()
+        self._unsub_climate = None
         self.pause_active = False
         self.mode = self.storage.get_mode(self.entry.entry_id)
         self._force_next_control = False
@@ -124,6 +125,25 @@ class SmartOffsetController:
             self._notify()
 
         self._unsub_window = async_track_state_change_event(self.hass, list(entities), _on_window_change)
+
+    def _ensure_climate_listener(self, climate_entity: str | None, enabled: bool):
+        if not enabled or not climate_entity:
+            if self._unsub_climate:
+                try:
+                    self._unsub_climate()
+                except Exception:
+                    pass
+                self._unsub_climate = None
+            return
+
+        if self._unsub_climate is not None:
+            return
+
+        async def _on_climate_change(_event):
+            await self.trigger_once(force=True)
+            self._notify()
+
+        self._unsub_climate = async_track_state_change_event(self.hass, [climate_entity], _on_climate_change)
 
     def _get_modes(self) -> list[dict]:
         modes = self.entry.options.get(CONF_MODES)
@@ -255,6 +275,12 @@ class SmartOffsetController:
         if self.unsub:
             self.unsub()
             self.unsub = None
+        if self._unsub_climate:
+            try:
+                self._unsub_climate()
+            except Exception:
+                pass
+            self._unsub_climate = None
 
     async def trigger_once(self, force: bool = False):
         if force:
@@ -271,6 +297,7 @@ class SmartOffsetController:
         if old_window and old_window not in window_entities:
             window_entities = list(window_entities) + [old_window]
         self._ensure_window_listener(list(window_entities))
+        self._ensure_climate_listener(climate_entity, pause_on_hvac_off)
 
         climate = self.hass.states.get(climate_entity)
         room = self.hass.states.get(room_sensor)
