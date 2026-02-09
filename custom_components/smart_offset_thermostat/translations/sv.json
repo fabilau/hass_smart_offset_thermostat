@@ -9,7 +9,8 @@
           "climate_entity": "Termostat",
           "room_sensor_entity": "Extern rumstemperatursensor",
           "room_target": "Måltemperatur för rummet",
-          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)"
+          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)",
+          "window_delay_sec": "Forsening vid oppet fonster fore sankning (sekunder)"
         }
       }
     }
@@ -30,11 +31,16 @@
           "cooldown_sec": "Spärrtid mellan ändringar (sekunder)",
           "boost_duration_sec": "Boostlängd (sekunder)",
           "enable_learning": "Aktivera inlärning",
+          "pause_on_hvac_off": "Pausa styrning när termostaten är av",
+          "manual_target_sync": "Synkronisera manuella ändringar på termostaten",
+          "manual_delay_sec": "Fördröjning efter manuell ändring innan överskrivning (sekunder)",
+          "modes": "Lägen (JSON: id, target, pause)",
           "stuck_enable": "Adaptiv övertemperatur-korrigering (sänker börvärdet om rummet förblir för varmt)",
           "stuck_seconds": "Utvärderingsfönster övertemperatur (sekunder)",
           "stuck_min_drop": "Krav på nedkylning i fönstret (°C)",
           "stuck_step": "Extra sänkningssteg vid övertemperatur (°C)",
-          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)"
+          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)",
+          "window_delay_sec": "Forsening vid oppet fonster fore sankning (sekunder)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Rumstemperatur ogiltig",
           "boost": "Boost aktiv (max. värmeeffekt)",
           "window_open": "Fönster öppet (sänkt)",
+          "paused": "Styrning pausad",
           "stuck_overtemp_down": "Övertemperatur: ytterligare sänkt",
-          "reset_offset": "Offset återställd"
+          "reset_offset": "Offset återställd",
+          "manual_target_sync": "Manuell ändring upptäckt (mål uppdaterat)",
+          "manual_hold": "Väntar efter manuell ändring"
         }
       },
       "change_count": {
@@ -92,6 +101,17 @@
     "button": {
       "reset_offset": {
         "name": "Återställ offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Läge",
+        "state": {
+          "present": "Närvarande",
+          "away": "Borta",
+          "summer": "Sommar",
+          "winter": "Vinter"
+        }
       }
     }
   }

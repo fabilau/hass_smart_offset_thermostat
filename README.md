@@ -25,6 +25,8 @@ This approach ensures **broad compatibility** across different manufacturers, pr
 - 🚀 Boost mode (temporary full heating)
 - ♻️ Reset learned offset at any time
 - 🧊 Adaptive over-temperature correction
+- 🧭 Mode select with per-mode targets and pause control
+- 🔁 Manual thermostat change sync with delay (optional, default 10s)
 - ⚙️ Fully configurable via UI (no YAML required)
 
 ---
@@ -60,6 +62,7 @@ Default values (configurable):
 
 - Define multiple window sensors
 - Window open → thermostat set to minimum
+- Optional delay before setback (default: 60 seconds)
 - Window closed → target restored immediately
 - Learning is paused while the window is open
 
@@ -87,7 +90,35 @@ All settings are configurable via the Home Assistant UI:
 - Thermostat limits
 - Adaptive over-temperature correction
 - Window sensor
+- Window open delay
 - Boost duration
+- Manual thermostat change sync and delay
+- Mode settings (targets, pause, add/remove)
+
+---
+
+## 🧭 Modes (customizable)
+
+In Options you can edit the `Modes` field as JSON.  
+Each mode is an object with:
+- `id` (string, used in the Mode select)
+- `target` (number)
+- `pause` (true/false)
+
+How to use:
+- After saving, the Mode select will update; pick the active mode there.
+- The current mode’s `target` becomes the room target.
+- If `pause` is true, learning and setpoint changes are suspended.
+- Remove a mode by deleting it from the JSON list and saving.
+
+Example:
+```
+[
+  {"id": "present", "target": 22.0, "pause": false},
+  {"id": "away", "target": 18.0, "pause": true},
+  {"id": "guest", "target": 21.0, "pause": false}
+]
+```
 
 ---
 

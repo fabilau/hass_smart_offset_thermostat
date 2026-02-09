@@ -21,3 +21,10 @@ class OffsetStorage:
     def set_offset(self, entry_id, offset):
         self._data.setdefault(entry_id, {})
         self._data[entry_id]["offset"] = float(offset)
+
+    def get_mode(self, entry_id):
+        return self._data.get(entry_id, {}).get("mode")
+
+    def set_mode(self, entry_id, mode: str):
+        self._data.setdefault(entry_id, {})
+        self._data[entry_id]["mode"] = str(mode)

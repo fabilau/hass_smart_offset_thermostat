@@ -32,8 +32,11 @@ LAST_ACTION_OPTIONS = (
     "skipped_invalid_room_temp",
     "boost",
     "window_open",
+    "paused",
     "stuck_overtemp_down",
     "reset_offset",
+    "manual_target_sync",
+    "manual_hold",
 )
 
 SENSORS = (
@@ -120,7 +123,11 @@ class SmartOffsetDebugSensor(SensorEntity):
         if k == "boost_active":
             return bool(self.controller.boost_active and (self.hass.loop.time() < self.controller.boost_until))
         if k == "control_paused":
-            paused = self.controller.window_is_open or (self.controller.boost_active and (self.hass.loop.time() < self.controller.boost_until))
+            paused = (
+                self.controller.window_is_open
+                or (self.controller.boost_active and (self.hass.loop.time() < self.controller.boost_until))
+                or bool(self.controller.pause_active)
+            )
             return bool(paused)
         return None
 

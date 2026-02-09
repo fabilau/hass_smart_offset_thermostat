@@ -1,5 +1,5 @@
 DOMAIN = "smart_offset_thermostat"
-PLATFORMS = ["sensor", "climate", "switch", "button"]
+PLATFORMS = ["sensor", "climate", "switch", "button", "select"]
 
 CONF_CLIMATE = "climate_entity"
 CONF_ROOM_SENSOR = "room_sensor_entity"
@@ -13,6 +13,10 @@ CONF_TRV_MIN = "trv_min"
 CONF_TRV_MAX = "trv_max"
 CONF_COOLDOWN_SEC = "cooldown_sec"
 CONF_ENABLE_LEARNING = "enable_learning"
+CONF_PAUSE_ON_HVAC_OFF = "pause_on_hvac_off"
+CONF_MANUAL_TARGET_SYNC = "manual_target_sync"
+CONF_MANUAL_DELAY_SEC = "manual_delay_sec"
+CONF_MODES = "modes"
 
 DEFAULT_INTERVAL_SEC = 240
 DEFAULT_DEADBAND = 0.2
@@ -23,6 +27,21 @@ DEFAULT_TRV_MIN = 12.0
 DEFAULT_TRV_MAX = 30.0
 DEFAULT_COOLDOWN_SEC = 600
 DEFAULT_ENABLE_LEARNING = True
+DEFAULT_PAUSE_ON_HVAC_OFF = False
+DEFAULT_MANUAL_TARGET_SYNC = False
+DEFAULT_MANUAL_DELAY_SEC = 10
+
+MODE_PRESENT = "present"
+MODE_AWAY = "away"
+MODE_SUMMER = "summer"
+MODE_WINTER = "winter"
+MODES = [MODE_PRESENT, MODE_AWAY, MODE_SUMMER, MODE_WINTER]
+DEFAULT_MODES = [
+    {"id": MODE_PRESENT, "target": 22.0, "pause": False},
+    {"id": MODE_AWAY, "target": 18.0, "pause": True},
+    {"id": MODE_SUMMER, "target": 22.0, "pause": False},
+    {"id": MODE_WINTER, "target": 22.0, "pause": False},
+]
 
 DEFAULTS = {
     CONF_ROOM_TARGET: 22.0,
@@ -35,6 +54,9 @@ DEFAULTS = {
     CONF_TRV_MAX: DEFAULT_TRV_MAX,
     CONF_COOLDOWN_SEC: DEFAULT_COOLDOWN_SEC,
     CONF_ENABLE_LEARNING: DEFAULT_ENABLE_LEARNING,
+    CONF_PAUSE_ON_HVAC_OFF: DEFAULT_PAUSE_ON_HVAC_OFF,
+    CONF_MANUAL_TARGET_SYNC: DEFAULT_MANUAL_TARGET_SYNC,
+    CONF_MANUAL_DELAY_SEC: DEFAULT_MANUAL_DELAY_SEC,
 }
 
 SIGNAL_UPDATE = "smart_offset_thermostat_update"
@@ -42,12 +64,15 @@ SIGNAL_UPDATE = "smart_offset_thermostat_update"
 
 CONF_WINDOW_SENSOR = "window_sensor_entity"
 CONF_WINDOW_SENSORS = "window_sensor_entities"
+CONF_WINDOW_DELAY_SEC = "window_delay_sec"
 CONF_BOOST_DURATION_SEC = "boost_duration_sec"
 
 DEFAULT_BOOST_DURATION_SEC = 300
+DEFAULT_WINDOW_DELAY_SEC = 60
 
 DEFAULTS.update({
     CONF_BOOST_DURATION_SEC: DEFAULT_BOOST_DURATION_SEC,
+    CONF_WINDOW_DELAY_SEC: DEFAULT_WINDOW_DELAY_SEC,
 })
 
 CONF_STUCK_ENABLE = "stuck_enable"

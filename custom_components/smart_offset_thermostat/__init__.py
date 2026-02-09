@@ -3,10 +3,19 @@ from __future__ import annotations
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 
-from .const import DOMAIN, PLATFORMS
+from .const import (
+    DOMAIN,
+    PLATFORMS,
+    CONF_ROOM_TARGET,
+    CONF_MODES,
+    CONF_WINDOW_DELAY_SEC,
+    DEFAULTS,
+    DEFAULT_MODES,
+)
 from .storage import OffsetStorage
 from .controller import SmartOffsetController
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.event import async_call_later
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema("smart_offset_thermostat")
 
@@ -25,6 +34,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         current_version = 1
     else:
         current_version = entry.version
+    target_version = 2
 
     options = dict(entry.options)
     data = dict(entry.data)
@@ -45,9 +55,55 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "window_sensor_entity" in options:
         options.pop("window_sensor_entity", None)
         changed = True
+    if "pause_entities" in options:
+        options.pop("pause_entities", None)
+        changed = True
+
+    # Preserve existing behavior for window setback: default to 0s delay on existing entries
+    if CONF_WINDOW_DELAY_SEC not in options:
+        options[CONF_WINDOW_DELAY_SEC] = 0
+        changed = True
+
+    # Remove legacy per-mode keys if present
+    legacy_keys = [
+        "mode_present_target",
+        "mode_present_pause",
+        "mode_away_target",
+        "mode_away_pause",
+        "mode_summer_target",
+        "mode_summer_pause",
+        "mode_winter_target",
+        "mode_winter_pause",
+    ]
+    legacy_present = any(k in options for k in legacy_keys)
+
+    # Initialize modes list if missing (present uses existing room target if available)
+    if CONF_MODES not in options:
+        if legacy_present:
+            modes = [
+                {"id": "present", "target": float(options.get("mode_present_target", options.get(CONF_ROOM_TARGET, DEFAULTS[CONF_ROOM_TARGET]))), "pause": bool(options.get("mode_present_pause", False))},
+                {"id": "away", "target": float(options.get("mode_away_target", DEFAULTS[CONF_ROOM_TARGET])), "pause": bool(options.get("mode_away_pause", True))},
+                {"id": "summer", "target": float(options.get("mode_summer_target", DEFAULTS[CONF_ROOM_TARGET])), "pause": bool(options.get("mode_summer_pause", False))},
+                {"id": "winter", "target": float(options.get("mode_winter_target", DEFAULTS[CONF_ROOM_TARGET])), "pause": bool(options.get("mode_winter_pause", False))},
+            ]
+        else:
+            modes = list(DEFAULT_MODES)
+            for item in modes:
+                if item.get("id") == "present":
+                    item["target"] = float(options.get(CONF_ROOM_TARGET, DEFAULTS[CONF_ROOM_TARGET]))
+        options[CONF_MODES] = modes
+        changed = True
+
+    for key in legacy_keys:
+        if key in options:
+            options.pop(key, None)
+            changed = True
+
+    if current_version < target_version:
+        changed = True
 
     if changed:
-        hass.config_entries.async_update_entry(entry, options=options, version=current_version)
+        hass.config_entries.async_update_entry(entry, options=options, version=target_version)
 
     return True
 
@@ -65,8 +121,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     controller = SmartOffsetController(hass, entry, store)
     hass.data[DOMAIN][entry.entry_id] = controller
 
+    async def _async_entry_updated(hass: HomeAssistant, updated_entry: ConfigEntry):
+        ctrl = hass.data[DOMAIN].get(updated_entry.entry_id)
+        if ctrl:
+            await ctrl.trigger_once(force=True)
+            ctrl._notify()
+
+    entry.async_on_unload(entry.add_update_listener(_async_entry_updated))
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     await controller.async_start()
+    async def _post_start(_):
+        await controller.trigger_once(force=True)
+        controller._notify()
+    async_call_later(hass, 2, _post_start)
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):

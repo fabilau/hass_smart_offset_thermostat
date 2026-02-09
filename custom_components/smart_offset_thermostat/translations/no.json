@@ -9,7 +9,8 @@
           "climate_entity": "Termostat",
           "room_sensor_entity": "Ekstern romtemperatursensor",
           "room_target": "Ønsket romtemperatur",
-          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)"
+          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)",
+          "window_delay_sec": "Forsinkelse ved apent vindu for senking (sekunder)"
         }
       }
     }
@@ -30,11 +31,16 @@
           "cooldown_sec": "Sperretid mellom endringer (sekunder)",
           "boost_duration_sec": "Boost-varighet (sekunder)",
           "enable_learning": "Aktiver læring",
+          "pause_on_hvac_off": "Pause styring når termostaten er av",
+          "manual_target_sync": "Synkroniser manuelle endringer på termostaten",
+          "manual_delay_sec": "Forsinkelse etter manuell endring før overskriving (sekunder)",
+          "modes": "Moduser (JSON: id, target, pause)",
           "stuck_enable": "Adaptiv overtemperatur-korrigering (senker settpunkt hvis rommet forblir for varmt)",
           "stuck_seconds": "Evalueringsvindu for overtemperatur (sekunder)",
           "stuck_min_drop": "Krav til nedkjøling i vinduet (°C)",
           "stuck_step": "Ekstra senkesteg ved overtemperatur (°C)",
-          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)"
+          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)",
+          "window_delay_sec": "Forsinkelse ved apent vindu for senking (sekunder)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Romtemperatur ugyldig",
           "boost": "Boost aktiv (maks. varmeeffekt)",
           "window_open": "Vindu åpent (senket)",
+          "paused": "Styring pauset",
           "stuck_overtemp_down": "Overtemperatur: ytterligere senket",
-          "reset_offset": "Offset tilbakestilt"
+          "reset_offset": "Offset tilbakestilt",
+          "manual_target_sync": "Manuell endring oppdaget (mål oppdatert)",
+          "manual_hold": "Ventetid etter manuell endring"
         }
       },
       "change_count": {
@@ -92,6 +101,17 @@
     "button": {
       "reset_offset": {
         "name": "Tilbakestill offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modus",
+        "state": {
+          "present": "Hjemme",
+          "away": "Borte",
+          "summer": "Sommer",
+          "winter": "Vinter"
+        }
       }
     }
   }

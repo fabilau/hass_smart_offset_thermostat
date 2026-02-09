@@ -9,7 +9,8 @@
           "climate_entity": "Thermostaat",
           "room_sensor_entity": "Externe kamertemperatuursensor",
           "room_target": "Doeltemperatuur kamer",
-          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)"
+          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)",
+          "window_delay_sec": "Vertraging bij open raam voor verlaging (seconden)"
         }
       }
     }
@@ -30,11 +31,16 @@
           "cooldown_sec": "Wachttijd tussen wijzigingen (seconden)",
           "boost_duration_sec": "Boostduur (seconden)",
           "enable_learning": "Leren inschakelen",
+          "pause_on_hvac_off": "Pauzeer de regeling wanneer de thermostaat uit staat",
+          "manual_target_sync": "Handmatige wijzigingen van de thermostaat synchroniseren",
+          "manual_delay_sec": "Vertraging na handmatige wijziging vóór overschrijven (seconden)",
+          "modes": "Modi (JSON: id, target, pause)",
           "stuck_enable": "Adaptieve overtemperatuur-correctie (verlaagt setpoint als de kamer te warm blijft)",
           "stuck_seconds": "Evaluatievenster overtemperatuur (seconden)",
           "stuck_min_drop": "Benodigde afkoeling in venster (°C)",
           "stuck_step": "Extra verlaagstap bij overtemperatuur (°C)",
-          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)"
+          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)",
+          "window_delay_sec": "Vertraging bij open raam voor verlaging (seconden)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Kamertemperatuur ongeldig",
           "boost": "Boost actief (max. verwarmingsvermogen)",
           "window_open": "Raam open (verlaagd)",
+          "paused": "Regeling gepauzeerd",
           "stuck_overtemp_down": "Overtemperatuur: extra verlaagd",
-          "reset_offset": "Offset gereset"
+          "reset_offset": "Offset gereset",
+          "manual_target_sync": "Handmatige wijziging gedetecteerd (doel bijgewerkt)",
+          "manual_hold": "Wachten na handmatige wijziging"
         }
       },
       "change_count": {
@@ -92,6 +101,17 @@
     "button": {
       "reset_offset": {
         "name": "Offset resetten"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modus",
+        "state": {
+          "present": "Aanwezig",
+          "away": "Afwezig",
+          "summer": "Zomer",
+          "winter": "Winter"
+        }
       }
     }
   }

@@ -9,7 +9,8 @@
           "climate_entity": "Termostat",
           "room_sensor_entity": "Zewnętrzny czujnik temperatury pomieszczenia",
           "room_target": "Temperatura docelowa pomieszczenia",
-          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)"
+          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)",
+          "window_delay_sec": "Opoznienie przy otwartym oknie przed obnizeniem (sekundy)"
         }
       }
     }
@@ -30,11 +31,16 @@
           "cooldown_sec": "Czas blokady między zmianami (sekundy)",
           "boost_duration_sec": "Czas boost (sekundy)",
           "enable_learning": "Włącz uczenie",
+          "pause_on_hvac_off": "Wstrzymaj sterowanie, gdy termostat jest wyłączony",
+          "manual_target_sync": "Synchronizuj ręczne zmiany termostatu",
+          "manual_delay_sec": "Opóźnienie po ręcznej zmianie przed nadpisaniem (sekundy)",
+          "modes": "Tryby (JSON: id, target, pause)",
           "stuck_enable": "Adaptacyjna korekta przegrzania (obniża nastawę, jeśli pomieszczenie pozostaje zbyt ciepłe)",
           "stuck_seconds": "Okno oceny przegrzania (sekundy)",
           "stuck_min_drop": "Wymagane schłodzenie w oknie (°C)",
           "stuck_step": "Dodatkowy krok obniżenia przy przegrzaniu (°C)",
-          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)"
+          "window_sensor_entities": "Czujnik okna (binary_sensor, opcjonalnie)",
+          "window_delay_sec": "Opoznienie przy otwartym oknie przed obnizeniem (sekundy)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Temperatura pomieszczenia nieprawidłowa",
           "boost": "Boost aktywny (maks. moc grzewcza)",
           "window_open": "Okno otwarte (obniżone)",
+          "paused": "Sterowanie wstrzymane",
           "stuck_overtemp_down": "Przegrzanie: dodatkowo obniżone",
-          "reset_offset": "Offset zresetowany"
+          "reset_offset": "Offset zresetowany",
+          "manual_target_sync": "Wykryto ręczną zmianę (cel zaktualizowany)",
+          "manual_hold": "Oczekiwanie po ręcznej zmianie"
         }
       },
       "change_count": {
@@ -92,6 +101,17 @@
     "button": {
       "reset_offset": {
         "name": "Resetuj offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Tryb",
+        "state": {
+          "present": "Obecny",
+          "away": "Nieobecny",
+          "summer": "Lato",
+          "winter": "Zima"
+        }
       }
     }
   }

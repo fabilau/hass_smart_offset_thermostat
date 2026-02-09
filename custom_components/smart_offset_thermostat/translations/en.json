@@ -30,11 +30,16 @@
           "cooldown_sec": "Cooldown between changes (seconds)",
           "boost_duration_sec": "Boost duration (seconds)",
           "enable_learning": "Enable learning",
+          "pause_on_hvac_off": "Pause control when thermostat is off",
+          "manual_target_sync": "Sync manual thermostat changes",
+          "manual_delay_sec": "Manual change delay before override (seconds)",
+          "modes": "Modes (JSON: id, target, pause)",
           "stuck_enable": "Adaptive over-temp correction (reduce setpoint if room stays too warm)",
           "stuck_seconds": "Over-temp evaluation window (seconds)",
           "stuck_min_drop": "Required cooling within window (°C)",
           "stuck_step": "Extra reduction step when too warm (°C)",
-          "window_sensor_entities": "Window sensor (binary_sensor, optional)"
+          "window_sensor_entities": "Window sensor (binary_sensor, optional)",
+          "window_delay_sec": "Window open delay before setback (seconds)"
         }
       }
     }
@@ -69,8 +74,11 @@
           "skipped_invalid_room_temp": "Room temperature invalid",
           "boost": "Boost active (max heating power)",
           "window_open": "Window open (reduced)",
+          "paused": "Control paused",
           "stuck_overtemp_down": "Over-temperature: additionally reduced",
-          "reset_offset": "Offset reset"
+          "reset_offset": "Offset reset",
+          "manual_target_sync": "Manual change detected (target updated)",
+          "manual_hold": "Manual change hold (waiting)"
         }
       },
       "change_count": {
@@ -92,6 +100,17 @@
     "button": {
       "reset_offset": {
         "name": "Reset offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Mode",
+        "state": {
+          "present": "Present",
+          "away": "Away",
+          "summer": "Summer",
+          "winter": "Winter"
+        }
       }
     }
   }

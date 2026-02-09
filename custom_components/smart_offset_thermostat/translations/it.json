@@ -9,7 +9,8 @@
           "climate_entity": "Termostato",
           "room_sensor_entity": "Sensore esterno temperatura stanza",
           "room_target": "Temperatura obiettivo stanza",
-          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)"
+          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)",
+          "window_delay_sec": "Ritardo finestra aperta prima della riduzione (secondi)"
         }
       }
     }
@@ -30,11 +31,16 @@
           "cooldown_sec": "Pausa tra modifiche (secondi)",
           "boost_duration_sec": "Durata boost (secondi)",
           "enable_learning": "Abilita apprendimento",
+          "pause_on_hvac_off": "Metti in pausa il controllo quando il termostato è spento",
+          "manual_target_sync": "Sincronizza modifiche manuali del termostato",
+          "manual_delay_sec": "Ritardo dopo modifica manuale prima della sovrascrittura (secondi)",
+          "modes": "Modalità (JSON: id, target, pause)",
           "stuck_enable": "Correzione adattiva sovratemperatura (abbassa il setpoint se la stanza resta troppo calda)",
           "stuck_seconds": "Finestra valutazione sovratemperatura (secondi)",
           "stuck_min_drop": "Raffreddamento richiesto nella finestra (°C)",
           "stuck_step": "Passo extra di riduzione in sovratemperatura (°C)",
-          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)"
+          "window_sensor_entities": "Sensore finestra (binary_sensor, opzionale)",
+          "window_delay_sec": "Ritardo finestra aperta prima della riduzione (secondi)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Temperatura stanza non valida",
           "boost": "Boost attivo (potenza riscaldamento max)",
           "window_open": "Finestra aperta (ridotto)",
+          "paused": "Controllo in pausa",
           "stuck_overtemp_down": "Sovratemperatura: ulteriormente ridotto",
-          "reset_offset": "Offset azzerato"
+          "reset_offset": "Offset azzerato",
+          "manual_target_sync": "Modifica manuale rilevata (obiettivo aggiornato)",
+          "manual_hold": "Attesa dopo modifica manuale"
         }
       },
       "change_count": {
@@ -92,6 +101,17 @@
     "button": {
       "reset_offset": {
         "name": "Reimposta offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modalità",
+        "state": {
+          "present": "Presente",
+          "away": "Assente",
+          "summer": "Estate",
+          "winter": "Inverno"
+        }
       }
     }
   }

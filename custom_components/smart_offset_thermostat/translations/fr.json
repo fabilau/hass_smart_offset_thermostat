@@ -9,7 +9,8 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Capteur externe de température de la pièce",
           "room_target": "Température cible de la pièce",
-          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)"
+          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)",
+          "window_delay_sec": "Delai d'ouverture avant reduction (secondes)"
         }
       }
     }
@@ -30,11 +31,16 @@
           "cooldown_sec": "Temps de blocage entre changements (secondes)",
           "boost_duration_sec": "Durée du boost (secondes)",
           "enable_learning": "Activer l’apprentissage",
+          "pause_on_hvac_off": "Mettre en pause le contrôle lorsque le thermostat est éteint",
+          "manual_target_sync": "Synchroniser les changements manuels du thermostat",
+          "manual_delay_sec": "Délai après changement manuel avant écrasement (secondes)",
+          "modes": "Modes (JSON : id, target, pause)",
           "stuck_enable": "Correction adaptative de surchauffe (baisse la consigne si la pièce reste trop chaude)",
           "stuck_seconds": "Fenêtre d’évaluation surchauffe (secondes)",
           "stuck_min_drop": "Refroidissement requis dans la fenêtre (°C)",
           "stuck_step": "Pas de baisse supplémentaire en surchauffe (°C)",
-          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)"
+          "window_sensor_entities": "Capteur de fenêtre (binary_sensor, optionnel)",
+          "window_delay_sec": "Delai d'ouverture avant reduction (secondes)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Température de la pièce invalide",
           "boost": "Boost actif (puissance de chauffe max)",
           "window_open": "Fenêtre ouverte (réduit)",
+          "paused": "Contrôle en pause",
           "stuck_overtemp_down": "Surchauffe: réduit en plus",
-          "reset_offset": "Offset réinitialisé"
+          "reset_offset": "Offset réinitialisé",
+          "manual_target_sync": "Changement manuel détecté (cible mise à jour)",
+          "manual_hold": "Attente après changement manuel"
         }
       },
       "change_count": {
@@ -91,7 +100,18 @@
     },
     "button": {
       "reset_offset": {
-        "name": "Réinitialiser l'offset"
+        "name": "Réinitialiser l’offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Mode",
+        "state": {
+          "present": "Présent",
+          "away": "Absent",
+          "summer": "Été",
+          "winter": "Hiver"
+        }
       }
     }
   }

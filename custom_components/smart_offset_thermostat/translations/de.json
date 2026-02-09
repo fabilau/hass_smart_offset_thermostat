@@ -9,7 +9,8 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Externer Raumtemperatur-Sensor",
           "room_target": "Raum-Solltemperatur",
-          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)"
+          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)",
+          "window_delay_sec": "Verzoegerung bei offenem Fenster vor Absenkung (Sekunden)"
         }
       }
     }
@@ -29,12 +30,17 @@
           "trv_max": "Max. Thermostat-Sollwert (°C)",
           "cooldown_sec": "Sperrzeit zwischen Änderungen (Sekunden)",
           "enable_learning": "Lernen aktivieren",
+          "pause_on_hvac_off": "Regelung pausieren, wenn Thermostat aus ist",
+          "manual_target_sync": "Manuelle Thermostat-Änderungen übernehmen",
+          "manual_delay_sec": "Verzögerung nach manueller Änderung vor Überschreiben (Sekunden)",
+          "modes": "Modi (JSON: id, target, pause)",
           "boost_duration_sec": "Boost-Dauer (Sekunden)",
           "stuck_enable": "Adaptive Übertemperatur-Korrektur (senkt Sollwert, wenn Raum zu warm bleibt)",
           "stuck_seconds": "Übertemperatur-Auswertefenster (Sekunden)",
           "stuck_min_drop": "Erforderliche Abkühlung im Fenster (°C)",
           "stuck_step": "Zusätzlicher Absenk-Schritt bei Übertemperatur (°C)",
-          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)"
+          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)",
+          "window_delay_sec": "Verzoegerung bei offenem Fenster vor Absenkung (Sekunden)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Raumtemperatur ungültig",
           "boost": "Boost aktiv (max. Heizleistung)",
           "window_open": "Fenster offen (Absenkung)",
+          "paused": "Regelung pausiert",
           "stuck_overtemp_down": "Übertemperatur: zusätzlich abgesenkt",
-          "reset_offset": "Offset zurückgesetzt"
+          "reset_offset": "Offset zurückgesetzt",
+          "manual_target_sync": "Manuelle Änderung erkannt (Ziel übernommen)",
+          "manual_hold": "Manuelle Änderung: Wartezeit aktiv"
         }
       },
       "change_count": {
@@ -92,6 +101,17 @@
     "button": {
       "reset_offset": {
         "name": "Offset zurücksetzen"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modus",
+        "state": {
+          "present": "Anwesend",
+          "away": "Abwesend",
+          "summer": "Sommer",
+          "winter": "Winter"
+        }
       }
     }
   }

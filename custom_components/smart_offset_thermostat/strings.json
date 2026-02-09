@@ -9,7 +9,8 @@
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Room temperature sensor",
           "room_target": "Room target temperature",
-          "window_sensor_entities": "Window sensors (optional, multiple)"
+          "window_sensor_entities": "Window sensors (optional, multiple)",
+          "window_delay_sec": "Window open delay before setback (seconds)"
         }
       }
     }
@@ -29,6 +30,8 @@
           "trv_max": "Max thermostat setpoint (°C)",
           "cooldown_sec": "Cooldown between changes (seconds)",
           "enable_learning": "Enable learning",
+          "pause_on_hvac_off": "Pause control when thermostat is off",
+          "modes": "Modes (JSON: id, target, pause)",
           "boost_duration_sec": "Boost duration (seconds)",
           "stuck_enable": "Adaptive over-temp correction (reduce setpoint if room stays too warm)",
           "stuck_seconds": "Over-temp evaluation window (seconds)",
@@ -69,6 +72,7 @@
           "skipped_invalid_room_temp": "Room temperature invalid",
           "boost": "Boost active (max heating power)",
           "window_open": "Window open (reduced)",
+          "paused": "Control paused",
           "stuck_overtemp_down": "Over-temperature: additionally reduced",
           "reset_offset": "Offset reset"
         }
@@ -92,6 +96,17 @@
     "button": {
       "reset_offset": {
         "name": "Reset offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Mode",
+        "state": {
+          "present": "Present",
+          "away": "Away",
+          "summer": "Summer",
+          "winter": "Winter"
+        }
       }
     }
   }

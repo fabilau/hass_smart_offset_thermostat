@@ -9,7 +9,8 @@
           "climate_entity": "Termostato",
           "room_sensor_entity": "Sensor externo de temperatura do ambiente",
           "room_target": "Temperatura alvo do ambiente",
-          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)",
+          "window_delay_sec": "Atraso de janela aberta antes da reducao (segundos)"
         }
       }
     }
@@ -30,11 +31,16 @@
           "cooldown_sec": "Pausa entre mudanças (segundos)",
           "boost_duration_sec": "Duração do boost (segundos)",
           "enable_learning": "Ativar aprendizado",
+          "pause_on_hvac_off": "Pausar controle quando o termostato estiver desligado",
+          "manual_target_sync": "Sincronizar alterações manuais do termostato",
+          "manual_delay_sec": "Atraso após alteração manual antes de sobrescrever (segundos)",
+          "modes": "Modos (JSON: id, target, pause)",
           "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a meta se o ambiente continuar quente demais)",
           "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
           "stuck_min_drop": "Resfriamento necessário na janela (°C)",
           "stuck_step": "Passo extra de redução em sobretemperatura (°C)",
-          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)"
+          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)",
+          "window_delay_sec": "Atraso de janela aberta antes da reducao (segundos)"
         }
       }
     }
@@ -69,8 +75,11 @@
           "skipped_invalid_room_temp": "Temperatura do ambiente inválida",
           "boost": "Boost ativo (potência máxima de aquecimento)",
           "window_open": "Janela aberta (reduzido)",
+          "paused": "Controle pausado",
           "stuck_overtemp_down": "Sobretemperatura: adicionalmente reduzido",
-          "reset_offset": "Offset resetado"
+          "reset_offset": "Offset resetado",
+          "manual_target_sync": "Alteração manual detectada (alvo atualizado)",
+          "manual_hold": "Espera após alteração manual"
         }
       },
       "change_count": {
@@ -92,6 +101,17 @@
     "button": {
       "reset_offset": {
         "name": "Resetar offset"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modo",
+        "state": {
+          "present": "Presente",
+          "away": "Ausente",
+          "summer": "Verão",
+          "winter": "Inverno"
+        }
       }
     }
   }
