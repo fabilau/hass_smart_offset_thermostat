@@ -156,7 +156,7 @@ Your support helps to:
 - maintain compatibility with future Home Assistant versions
 
 👉 **Revolut donation:**  
-`https://revolut.me/fabian599`
+`https://revolut.me/fabilrzs`
 
 Thank you for your support! 🙏
 
