@@ -1,54 +1,251 @@
 {
   "title": "Smart Offset Thermostat",
+  "selector": {
+    "hvac_mode": {
+      "options": {
+        "keep": "Mantener el modo actual",
+        "heat": "Calefacción",
+        "cool": "Refrigeración",
+        "auto": "Automático (controlado por el dispositivo)",
+        "dry": "Deshumidificación",
+        "fan_only": "Solo ventilador",
+        "off": "Apagado"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "title": "Smart Offset Thermostat",
-        "description": "Selecciona el termostato, el sensor de temperatura de la habitación (y opcionalmente el sensor de ventana) y la temperatura deseada.",
+        "title": "Elige tus dispositivos",
+        "description": "Conecta un termostato físico a un sensor externo y fiable de temperatura ambiente.",
         "data": {
           "climate_entity": "Termostato",
-          "room_sensor_entity": "Sensor externo de temperatura de la habitación",
-          "room_target": "Temperatura objetivo de la habitación",
-          "window_sensor_entities": "Sensor de ventana (binary_sensor, opcional)",
-          "window_delay_sec": "Retraso de ventana abierta antes de la reduccion (segundos)"
+          "room_sensor_entity": "Sensor de temperatura ambiente"
+        }
+      },
+      "repair_or_setup": {
+        "title": "Restaurar o configurar un termostato",
+        "description": "Home Assistant ha encontrado estancias anteriores de Smart Offset Thermostat. Restaura una para conservar sus entidades y enlaces del panel, o configura otro termostato independiente.",
+        "menu_options": {
+          "repair_select": "Restaurar una estancia existente",
+          "setup_new": "Configurar un termostato nuevo"
+        },
+        "menu_option_descriptions": {
+          "repair_select": "Vuelve a conectar una estancia anterior y reutiliza sus entidades.",
+          "setup_new": "Crea un termostato independiente sin modificar las estancias anteriores."
+        }
+      },
+      "repair_select": {
+        "title": "Elige una estancia para restaurarla",
+        "description": "Elige la estancia que quieres volver a conectar. Se reutilizarán sus entidades existentes.",
+        "data": {
+          "recovery_candidate": "Estancia anterior"
+        }
+      },
+      "repair_sources": {
+        "title": "Volver a conectar {room_name}",
+        "description": "Selecciona el termostato físico y el sensor de temperatura ambiente que pertenecen a {room_name}. Comprueba bien ambas opciones. A continuación confirmarás los ajustes de confort.",
+        "data": {
+          "climate_entity": "Termostato físico",
+          "room_sensor_entity": "Sensor de temperatura ambiente"
+        },
+        "data_description": {
+          "climate_entity": "El termostato de calefacción o refrigeración que controla realmente la estancia.",
+          "room_sensor_entity": "El sensor externo de temperatura cuyo valor se utiliza como temperatura ambiente."
+        }
+      },
+      "setup_new": {
+        "title": "Elige los dispositivos del nuevo termostato",
+        "description": "Configura un Smart Offset Thermostat independiente. Las estancias anteriores y sus entidades no se modificarán.",
+        "data": {
+          "climate_entity": "Termostato",
+          "room_sensor_entity": "Sensor de temperatura ambiente"
+        }
+      },
+      "comfort": {
+        "title": "Confort y funciones",
+        "description": "Define la temperatura de confort inicial y elige las funciones que quieras utilizar. Podrás ajustar todos los detalles más adelante en las opciones de la integración.",
+        "data": {
+          "room_target": "Temperatura ambiente objetivo",
+          "hvac_mode": "Modo inicial del termostato",
+          "window_sensor_entities": "Sensores de ventana (opcionales)",
+          "window_delay_sec": "Espera antes de reducir por ventana abierta",
+          "enable_learning": "Aprender la compensación óptima del termostato",
+          "manual_target_sync": "Adoptar los cambios manuales del termostato",
+          "pause_on_hvac_off": "Pausar el control mientras el termostato esté apagado"
+        }
+      },
+      "reconfigure": {
+        "title": "Cambiar los dispositivos conectados",
+        "description": "Selecciona otro termostato físico o sensor de temperatura ambiente. Se conservarán tus preajustes, la compensación aprendida y las opciones.",
+        "data": {
+          "climate_entity": "Termostato",
+          "room_sensor_entity": "Sensor de temperatura ambiente"
         }
       }
+    },
+    "create_entry": {
+      "repair_successful": "{room_name} se ha restaurado correctamente. Se han conservado sus entidades y enlaces del panel."
+    },
+    "error": {
+      "entity_not_found": "La entidad seleccionada ya no está disponible. Elige otra.",
+      "unsupported_climate": "Elige un termostato que admita una única temperatura objetivo y Calefacción o Refrigeración. No se admiten dispositivos que solo funcionen con un intervalo de Calefacción/Refrigeración.",
+      "already_configured": "Este termostato físico ya está controlado por otro Smart Offset Thermostat."
+    },
+    "abort": {
+      "reconfigure_successful": "Los dispositivos conectados se han actualizado correctamente.",
+      "repair_not_available": "Esta estancia ya se ha restaurado o ya no está disponible. Inicia de nuevo la configuración para actualizar la lista.",
+      "already_configured": "Este termostato físico ya está configurado.",
+      "already_in_progress": "Ya hay una configuración en curso para este termostato físico."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Opciones de control",
-        "description": "Ajusta el comportamiento del controlador.",
+        "title": "Ajustes de Smart Offset Thermostat",
+        "description": "Elige el apartado que quieras configurar.",
+        "menu_options": {
+          "presets": "Preajustes de confort",
+          "window_boost": "Ventanas y boost",
+          "manual": "Control manual",
+          "learning": "Aprendizaje y sobrecalentamiento",
+          "expert": "Ajustes avanzados"
+        },
+        "menu_option_descriptions": {
+          "presets": "Crea, edita o elimina preajustes de temperatura ambiente.",
+          "window_boost": "Configura la protección por ventana abierta y la duración del boost.",
+          "manual": "Elige cómo se gestionan los cambios del termostato físico y el modo apagado.",
+          "learning": "Ajusta el aprendizaje de compensación y la protección adaptativa contra el sobrecalentamiento.",
+          "expert": "Ajusta los tiempos, los límites y la respuesta del controlador."
+        }
+      },
+      "presets": {
+        "title": "Preajustes de confort",
+        "description": "Crea un preajuste o edita uno existente.",
+        "menu_options": {
+          "preset_new": "Crear preajuste",
+          "preset_select": "Editar preajuste"
+        },
+        "menu_option_descriptions": {
+          "preset_new": "Añade otro objetivo, estado de pausa y modo del termostato.",
+          "preset_select": "Modifica o elimina un preajuste existente."
+        }
+      },
+      "preset_select": {
+        "title": "Elige un preajuste",
+        "description": "Selecciona el preajuste que quieras editar o eliminar.",
         "data": {
-          "interval_sec": "Intervalo de control (segundos)",
-          "deadband": "Banda muerta (°C)",
-          "step_max": "Cambio máximo por paso (°C)",
-          "step_min": "Paso de redondeo (°C)",
-          "learn_rate": "Tasa de aprendizaje",
-          "trv_min": "Consigna mínima del termostato (°C)",
-          "trv_max": "Consigna máxima del termostato (°C)",
-          "cooldown_sec": "Enfriamiento entre cambios (segundos)",
-          "boost_duration_sec": "Duración del boost (segundos)",
-          "enable_learning": "Habilitar aprendizaje",
-          "pause_on_hvac_off": "Pausar control cuando el termostato está apagado",
-          "manual_target_sync": "Sincronizar cambios manuales del termostato",
-          "manual_delay_sec": "Retardo tras cambio manual antes de sobrescribir (segundos)",
-          "modes": "Modos (JSON: id, target, pause)",
-          "stuck_enable": "Corrección adaptativa de sobretemperatura (baja la consigna si la habitación sigue demasiado caliente)",
-          "stuck_seconds": "Ventana de evaluación de sobretemperatura (segundos)",
-          "stuck_min_drop": "Enfriamiento requerido en la ventana (°C)",
-          "stuck_step": "Paso extra de reducción en sobretemperatura (°C)",
-          "window_sensor_entities": "Sensor de ventana (binary_sensor, opcional)",
-          "window_delay_sec": "Retraso de ventana abierta antes de la reduccion (segundos)"
+          "preset_id": "Preajuste"
+        }
+      },
+      "preset_new": {
+        "title": "Crear preajuste",
+        "description": "Utiliza un ID corto en minúsculas, con letras, números y guiones bajos; por ejemplo, `sleep` o `home_office`.",
+        "data": {
+          "preset_id": "ID del preajuste",
+          "room_target": "Temperatura ambiente objetivo",
+          "pause": "Pausar el control con este preajuste",
+          "hvac_mode": "Modo del termostato físico"
+        }
+      },
+      "preset_edit": {
+        "title": "Editar {preset_id}",
+        "description": "Actualiza este preajuste o activa la eliminación para borrarlo. Debe quedar al menos un preajuste.",
+        "data": {
+          "preset_id": "ID del preajuste",
+          "room_target": "Temperatura ambiente objetivo",
+          "pause": "Pausar el control con este preajuste",
+          "hvac_mode": "Modo del termostato físico",
+          "delete_preset": "Eliminar este preajuste"
+        }
+      },
+      "window_boost": {
+        "title": "Ventanas y boost",
+        "description": "Tras una espera, las ventanas abiertas aplican una consigna de ahorro energético. El boost solicita temporalmente la máxima potencia regulada.",
+        "data": {
+          "window_sensor_entities": "Sensores de ventana",
+          "window_delay_sec": "Espera antes de reducir por ventana abierta",
+          "boost_duration_sec": "Duración del boost"
+        }
+      },
+      "manual": {
+        "title": "Control manual",
+        "description": "Elige cómo reacciona el controlador cuando alguien cambia o apaga el termostato físico.",
+        "data": {
+          "manual_target_sync": "Adoptar los cambios manuales del termostato",
+          "manual_delay_sec": "Espera antes de adoptar un cambio manual",
+          "pause_on_hvac_off": "Pausar el control mientras el termostato esté apagado"
+        }
+      },
+      "learning": {
+        "title": "Aprendizaje y sobrecalentamiento",
+        "description": "El aprendizaje adapta la compensación con el tiempo. La protección contra el sobrecalentamiento puede reducir aún más la consigna si la estancia no se enfría como se esperaba.",
+        "data": {
+          "enable_learning": "Activar el aprendizaje de compensación",
+          "learn_rate": "Velocidad de aprendizaje",
+          "stuck_enable": "Activar la protección adaptativa contra el sobrecalentamiento",
+          "stuck_seconds": "Periodo de evaluación del sobrecalentamiento",
+          "stuck_min_drop": "Enfriamiento mínimo esperado",
+          "stuck_step": "Paso de reducción adicional"
+        }
+      },
+      "expert": {
+        "title": "Ajustes avanzados",
+        "description": "Estos valores afectan directamente a la estabilidad y la rapidez de respuesta del controlador. Cámbialos poco a poco.",
+        "data": {
+          "interval_sec": "Intervalo de control",
+          "deadband": "Banda de confort",
+          "control_gain": "Ganancia del controlador",
+          "step_max": "Cambio máximo de consigna por ciclo",
+          "step_min": "Paso de redondeo del termostato",
+          "trv_min": "Consigna mínima del termostato físico",
+          "trv_max": "Consigna máxima del termostato físico",
+          "cooldown_sec": "Tiempo mínimo entre cambios"
         }
       }
+    },
+    "error": {
+      "invalid_preset_id": "Utiliza entre 1 y 64 letras minúsculas, números o guiones bajos; el primer carácter debe ser una letra o un número.",
+      "duplicate_preset": "Ya existe un preajuste con este ID.",
+      "last_preset": "No se puede eliminar el último preajuste.",
+      "min_max": "La consigna mínima del termostato debe ser inferior a la máxima.",
+      "step_order": "El paso de redondeo debe ser menor o igual que el cambio máximo por ciclo."
     }
   },
   "entity": {
+    "climate": {
+      "thermostat": {
+        "name": "Termostato",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verano",
+              "winter": "Invierno"
+            }
+          }
+        }
+      }
+    },
     "sensor": {
       "error": {
         "name": "Error de control"
+      },
+      "absolute_error": {
+        "name": "Error absoluto de control"
+      },
+      "mean_absolute_error": {
+        "name": "Error absoluto medio"
+      },
+      "comfort_score": {
+        "name": "Índice de confort"
+      },
+      "temperature_trend": {
+        "name": "Tendencia de temperatura"
+      },
+      "control_output": {
+        "name": "Salida de control"
       },
       "offset": {
         "name": "Offset aprendido"
@@ -59,6 +256,12 @@
       "last_set": {
         "name": "Última consigna establecida del termostato"
       },
+      "confirmed_setpoint": {
+        "name": "Consigna confirmada del termostato"
+      },
+      "correction": {
+        "name": "Corrección aplicada"
+      },
       "last_action": {
         "name": "Última decisión (código)"
       },
@@ -66,24 +269,34 @@
         "name": "Última decisión",
         "state": {
           "init": "Inicialización",
-          "deadband": "En banda muerta (sin cambio)",
-          "deadband_rebase": "Consigna cambiada (línea base establecida)",
-          "cooldown": "Enfriamiento activo (sin cambio)",
+          "deadband_init": "Consigna inicial establecida",
+          "deadband_rebase": "Objetivo cambiado; referencia actualizada",
+          "hold": "Manteniendo la consigna en la zona de confort",
+          "stable_learn": "Offset estable aprendido",
+          "cooldown": "Esperando el intervalo de protección",
           "set_temperature": "Consigna enviada al termostato",
-          "skipped_no_change": "No se necesita cambio",
-          "skipped_unavailable_entities": "Entidades no disponibles",
-          "skipped_invalid_room_temp": "Temperatura de habitación no válida",
-          "boost": "Boost activo (máxima potencia de calefacción)",
-          "window_open": "Ventana abierta (reducida)",
+          "skipped_no_change": "No se requiere cambiar la consigna",
+          "skipped_unavailable_entities": "Entidad de origen no disponible",
+          "skipped_invalid_room_temp": "Temperatura ambiente no válida",
+          "boost": "Boost activo",
+          "window_open": "Protección de ventana activa",
           "paused": "Control en pausa",
-          "stuck_overtemp_down": "Sobretemperatura: adicionalmente reducida",
-          "reset_offset": "Offset restablecido",
-          "manual_target_sync": "Cambio manual detectado (objetivo actualizado)",
-          "manual_hold": "Espera tras cambio manual"
+          "hvac_off": "Termostato apagado",
+          "hvac_mode_set": "Modo del termostato cambiado",
+          "passive_mode": "Modo pasivo del termostato",
+          "stuck_overtemp_down": "Corrección adicional por sobretemperatura",
+          "reset_offset": "Offset aprendido restablecido",
+          "manual_target_sync": "Cambio manual adoptado",
+          "manual_hold": "Espera tras el cambio manual",
+          "manual_echo": "Orden propia al termostato confirmada",
+          "service_error": "Error al enviar la orden al termostato"
         }
       },
       "change_count": {
         "name": "Número de cambios de consigna"
+      },
+      "manual_change_count": {
+        "name": "Número de cambios manuales"
       },
       "window_state": {
         "name": "Estado de ventana"
@@ -98,12 +311,40 @@
         "name": "Control pausado"
       }
     },
+    "binary_sensor": {
+      "window_open": {
+        "name": "Ventana abierta"
+      },
+      "boost_running": {
+        "name": "Boost en curso"
+      },
+      "control_active": {
+        "name": "Control activo"
+      },
+      "controller_problem": {
+        "name": "Problema del controlador"
+      }
+    },
+    "switch": {
+      "boost": {
+        "name": "Boost"
+      }
+    },
     "button": {
       "reset_offset": {
         "name": "Restablecer offset"
       }
     },
     "select": {
+      "preset_legacy": {
+        "name": "Preajuste",
+        "state": {
+          "present": "Presente",
+          "away": "Ausente",
+          "summer": "Verano",
+          "winter": "Invierno"
+        }
+      },
       "mode": {
         "name": "Modo",
         "state": {

@@ -1,54 +1,251 @@
 {
   "title": "Smart Offset Thermostat",
+  "selector": {
+    "hvac_mode": {
+      "options": {
+        "keep": "Manter o modo atual",
+        "heat": "Aquecimento",
+        "cool": "Arrefecimento",
+        "auto": "Automático (controlado pelo dispositivo)",
+        "dry": "Desumidificação",
+        "fan_only": "Apenas ventilação",
+        "off": "Desligado"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "title": "Smart Offset Thermostat",
-        "description": "Selecione o termóstato, o sensor de temperatura da divisão (e opcionalmente o sensor de janela) e a temperatura desejada.",
+        "title": "Escolha os seus dispositivos",
+        "description": "Ligue um termóstato físico a um sensor externo fiável de temperatura da divisão.",
         "data": {
           "climate_entity": "Termóstato",
-          "room_sensor_entity": "Sensor externo de temperatura da divisão",
-          "room_target": "Temperatura alvo da divisão",
-          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)",
-          "window_delay_sec": "Atraso de janela aberta antes da reducao (segundos)"
+          "room_sensor_entity": "Sensor de temperatura da divisão"
+        }
+      },
+      "repair_or_setup": {
+        "title": "Restaurar ou configurar um termóstato",
+        "description": "O Home Assistant encontrou divisões anteriores do Smart Offset Thermostat. Restaure uma para manter as entidades e ligações existentes nos painéis, ou configure um novo termóstato em separado.",
+        "menu_options": {
+          "repair_select": "Restaurar uma divisão existente",
+          "setup_new": "Configurar um novo termóstato"
+        },
+        "menu_option_descriptions": {
+          "repair_select": "Volte a ligar uma divisão anterior e reutilize as entidades existentes.",
+          "setup_new": "Crie um termóstato separado sem alterar as divisões anteriores."
+        }
+      },
+      "repair_select": {
+        "title": "Escolha uma divisão para restaurar",
+        "description": "Escolha a divisão que pretende voltar a ligar. As entidades existentes serão reutilizadas.",
+        "data": {
+          "recovery_candidate": "Divisão anterior"
+        }
+      },
+      "repair_sources": {
+        "title": "Voltar a ligar {room_name}",
+        "description": "Selecione o termóstato físico e o sensor de temperatura da divisão que pertencem a {room_name}. Verifique cuidadosamente ambas as seleções. Em seguida, confirmará as definições de conforto.",
+        "data": {
+          "climate_entity": "Termóstato físico",
+          "room_sensor_entity": "Sensor de temperatura da divisão"
+        },
+        "data_description": {
+          "climate_entity": "O termóstato de aquecimento ou arrefecimento que controla efetivamente a divisão.",
+          "room_sensor_entity": "O sensor externo de temperatura cujo valor é utilizado como temperatura da divisão."
+        }
+      },
+      "setup_new": {
+        "title": "Escolha os dispositivos para um novo termóstato",
+        "description": "Configure um Smart Offset Thermostat em separado. As divisões anteriores e as respetivas entidades existentes não serão alteradas.",
+        "data": {
+          "climate_entity": "Termóstato",
+          "room_sensor_entity": "Sensor de temperatura da divisão"
+        }
+      },
+      "comfort": {
+        "title": "Conforto e funcionalidades",
+        "description": "Defina a temperatura inicial de conforto e escolha as funcionalidades que pretende utilizar. Pode ajustar tudo mais tarde nas opções da integração.",
+        "data": {
+          "room_target": "Temperatura-alvo da divisão",
+          "hvac_mode": "Modo inicial do termóstato",
+          "window_sensor_entities": "Sensores de janela (opcional)",
+          "window_delay_sec": "Atraso antes da redução por janela aberta",
+          "enable_learning": "Aprender o offset ideal do termóstato",
+          "manual_target_sync": "Adotar alterações manuais do termóstato",
+          "pause_on_hvac_off": "Colocar o controlo em pausa enquanto o termóstato estiver desligado"
+        }
+      },
+      "reconfigure": {
+        "title": "Alterar os dispositivos ligados",
+        "description": "Selecione outro termóstato físico ou sensor de temperatura da divisão. As predefinições, o offset aprendido e as opções serão preservados.",
+        "data": {
+          "climate_entity": "Termóstato",
+          "room_sensor_entity": "Sensor de temperatura da divisão"
         }
       }
+    },
+    "create_entry": {
+      "repair_successful": "{room_name} foi restaurada com êxito. As entidades e ligações existentes nos painéis foram mantidas."
+    },
+    "error": {
+      "entity_not_found": "A entidade selecionada já não está disponível. Escolha outra entidade.",
+      "unsupported_climate": "Escolha um termóstato que suporte uma única temperatura-alvo e Aquecimento ou Arrefecimento. Os dispositivos de Aquecimento/Arrefecimento que suportam apenas um intervalo de temperatura não são compatíveis.",
+      "already_configured": "Este termóstato físico já é controlado por outro Smart Offset Thermostat."
+    },
+    "abort": {
+      "reconfigure_successful": "Os dispositivos ligados foram atualizados com êxito.",
+      "repair_not_available": "Esta divisão já foi restaurada ou já não está disponível. Reinicie a configuração para atualizar a lista.",
+      "already_configured": "Este termóstato físico já está configurado.",
+      "already_in_progress": "A configuração deste termóstato físico já está em curso."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Opções de controlo",
-        "description": "Ajuste o comportamento do controlador.",
+        "title": "Definições do Smart Offset Thermostat",
+        "description": "Escolha a área que pretende configurar.",
+        "menu_options": {
+          "presets": "Predefinições de conforto",
+          "window_boost": "Janelas e boost",
+          "manual": "Controlo manual",
+          "learning": "Aprendizagem e sobreaquecimento",
+          "expert": "Definições avançadas"
+        },
+        "menu_option_descriptions": {
+          "presets": "Crie, edite ou remova predefinições de temperatura da divisão.",
+          "window_boost": "Configure a proteção contra janelas abertas e a duração do boost.",
+          "manual": "Escolha como são tratadas as alterações no termóstato físico e o modo desligado.",
+          "learning": "Ajuste a aprendizagem do offset e a proteção adaptativa contra sobreaquecimento.",
+          "expert": "Ajuste os tempos, os limites e a resposta do controlador."
+        }
+      },
+      "presets": {
+        "title": "Predefinições de conforto",
+        "description": "Crie uma nova predefinição ou edite uma existente.",
+        "menu_options": {
+          "preset_new": "Criar predefinição",
+          "preset_select": "Editar predefinição"
+        },
+        "menu_option_descriptions": {
+          "preset_new": "Adicione outra temperatura-alvo, estado de pausa e modo do termóstato.",
+          "preset_select": "Altere ou remova uma predefinição existente."
+        }
+      },
+      "preset_select": {
+        "title": "Escolha uma predefinição",
+        "description": "Selecione a predefinição que pretende editar ou remover.",
         "data": {
-          "interval_sec": "Intervalo de controlo (segundos)",
-          "deadband": "Zona morta (°C)",
-          "step_max": "Alteração máx. por passo (°C)",
-          "step_min": "Passo de arredondamento (°C)",
+          "preset_id": "Predefinição"
+        }
+      },
+      "preset_new": {
+        "title": "Criar predefinição",
+        "description": "Utilize um ID curto com letras minúsculas, números e sublinhados, por exemplo, `sleep` ou `home_office`.",
+        "data": {
+          "preset_id": "ID da predefinição",
+          "room_target": "Temperatura-alvo da divisão",
+          "pause": "Colocar o controlo em pausa nesta predefinição",
+          "hvac_mode": "Modo do termóstato físico"
+        }
+      },
+      "preset_edit": {
+        "title": "Editar {preset_id}",
+        "description": "Atualize esta predefinição ou ative a eliminação para a remover. Tem de permanecer pelo menos uma predefinição.",
+        "data": {
+          "preset_id": "ID da predefinição",
+          "room_target": "Temperatura-alvo da divisão",
+          "pause": "Colocar o controlo em pausa nesta predefinição",
+          "hvac_mode": "Modo do termóstato físico",
+          "delete_preset": "Eliminar esta predefinição"
+        }
+      },
+      "window_boost": {
+        "title": "Janelas e boost",
+        "description": "As janelas abertas aplicam uma temperatura-alvo de poupança de energia após um atraso. O boost solicita temporariamente a potência regulada máxima.",
+        "data": {
+          "window_sensor_entities": "Sensores de janela",
+          "window_delay_sec": "Atraso antes da redução por janela aberta",
+          "boost_duration_sec": "Duração do boost"
+        }
+      },
+      "manual": {
+        "title": "Controlo manual",
+        "description": "Escolha como o controlador reage quando alguém altera ou desliga o termóstato físico.",
+        "data": {
+          "manual_target_sync": "Adotar alterações manuais do termóstato",
+          "manual_delay_sec": "Atraso antes de adotar uma alteração manual",
+          "pause_on_hvac_off": "Colocar o controlo em pausa enquanto o termóstato estiver desligado"
+        }
+      },
+      "learning": {
+        "title": "Aprendizagem e sobreaquecimento",
+        "description": "A aprendizagem adapta o offset ao longo do tempo. A proteção contra sobreaquecimento pode reduzir ainda mais a temperatura-alvo se a divisão não arrefecer como esperado.",
+        "data": {
+          "enable_learning": "Ativar a aprendizagem do offset",
           "learn_rate": "Taxa de aprendizagem",
-          "trv_min": "Setpoint mínimo do termóstato (°C)",
-          "trv_max": "Setpoint máximo do termóstato (°C)",
-          "cooldown_sec": "Tempo de espera entre alterações (segundos)",
-          "boost_duration_sec": "Duração do boost (segundos)",
-          "enable_learning": "Ativar aprendizagem",
-          "pause_on_hvac_off": "Pausar controlo quando o termóstato estiver desligado",
-          "manual_target_sync": "Sincronizar alterações manuais do termóstato",
-          "manual_delay_sec": "Atraso após alteração manual antes de substituir (segundos)",
-          "modes": "Modos (JSON: id, target, pause)",
-          "stuck_enable": "Correção adaptativa de sobretemperatura (reduz a consigna se a divisão continuar demasiado quente)",
-          "stuck_seconds": "Janela de avaliação de sobretemperatura (segundos)",
-          "stuck_min_drop": "Arrefecimento necessário na janela (°C)",
-          "stuck_step": "Passo extra de redução em sobretemperatura (°C)",
-          "window_sensor_entities": "Sensor de janela (binary_sensor, opcional)",
-          "window_delay_sec": "Atraso de janela aberta antes da reducao (segundos)"
+          "stuck_enable": "Ativar a proteção adaptativa contra sobreaquecimento",
+          "stuck_seconds": "Janela de avaliação do sobreaquecimento",
+          "stuck_min_drop": "Arrefecimento mínimo esperado",
+          "stuck_step": "Passo adicional de redução"
+        }
+      },
+      "expert": {
+        "title": "Definições avançadas",
+        "description": "Estes valores afetam diretamente a estabilidade e a rapidez de resposta do controlador. Altere-os gradualmente.",
+        "data": {
+          "interval_sec": "Intervalo de controlo",
+          "deadband": "Zona morta de conforto",
+          "control_gain": "Ganho do controlador",
+          "step_max": "Alteração máxima da temperatura-alvo por ciclo",
+          "step_min": "Passo de arredondamento do termóstato",
+          "trv_min": "Temperatura-alvo mínima do termóstato físico",
+          "trv_max": "Temperatura-alvo máxima do termóstato físico",
+          "cooldown_sec": "Tempo mínimo entre alterações"
         }
       }
+    },
+    "error": {
+      "invalid_preset_id": "Utilize entre 1 e 64 letras minúsculas, números ou sublinhados; o primeiro caráter tem de ser uma letra ou um número.",
+      "duplicate_preset": "Já existe uma predefinição com este ID.",
+      "last_preset": "Não é possível eliminar a última predefinição.",
+      "min_max": "A temperatura-alvo mínima do termóstato tem de ser inferior à máxima.",
+      "step_order": "O passo de arredondamento tem de ser menor ou igual à alteração máxima por ciclo."
     }
   },
   "entity": {
+    "climate": {
+      "thermostat": {
+        "name": "Termóstato",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          }
+        }
+      }
+    },
     "sensor": {
       "error": {
         "name": "Erro de controlo"
+      },
+      "absolute_error": {
+        "name": "Erro absoluto de controlo"
+      },
+      "mean_absolute_error": {
+        "name": "Erro absoluto médio"
+      },
+      "comfort_score": {
+        "name": "Índice de conforto"
+      },
+      "temperature_trend": {
+        "name": "Tendência da temperatura"
+      },
+      "control_output": {
+        "name": "Saída de controlo"
       },
       "offset": {
         "name": "Offset aprendido"
@@ -59,6 +256,12 @@
       "last_set": {
         "name": "Último setpoint definido no termóstato"
       },
+      "confirmed_setpoint": {
+        "name": "Setpoint confirmado do termóstato"
+      },
+      "correction": {
+        "name": "Correção aplicada"
+      },
       "last_action": {
         "name": "Última decisão (código)"
       },
@@ -66,24 +269,34 @@
         "name": "Última decisão",
         "state": {
           "init": "Inicialização",
-          "deadband": "Na zona morta (sem alteração)",
-          "deadband_rebase": "Setpoint alterado (linha de base definida)",
-          "cooldown": "Tempo de espera ativo (sem alteração)",
+          "deadband_init": "Setpoint inicial definido",
+          "deadband_rebase": "Alvo alterado; referência atualizada",
+          "hold": "A manter o setpoint na zona de conforto",
+          "stable_learn": "Offset estável aprendido",
+          "cooldown": "A aguardar o tempo de espera",
           "set_temperature": "Setpoint enviado ao termóstato",
-          "skipped_no_change": "Nenhuma alteração necessária",
-          "skipped_unavailable_entities": "Entidades indisponíveis",
+          "skipped_no_change": "Nenhuma alteração do setpoint necessária",
+          "skipped_unavailable_entities": "Entidade de origem indisponível",
           "skipped_invalid_room_temp": "Temperatura da divisão inválida",
-          "boost": "Boost ativo (potência máxima de aquecimento)",
-          "window_open": "Janela aberta (reduzido)",
+          "boost": "Boost ativo",
+          "window_open": "Proteção de janela ativa",
           "paused": "Controlo em pausa",
-          "stuck_overtemp_down": "Sobretemperatura: adicionalmente reduzido",
-          "reset_offset": "Offset reiniciado",
-          "manual_target_sync": "Alteração manual detetada (alvo atualizado)",
-          "manual_hold": "Espera após alteração manual"
+          "hvac_off": "Termóstato desligado",
+          "hvac_mode_set": "Modo do termóstato alterado",
+          "passive_mode": "Modo passivo do termóstato",
+          "stuck_overtemp_down": "Correção adicional de sobretemperatura",
+          "reset_offset": "Offset aprendido reiniciado",
+          "manual_target_sync": "Alteração manual adotada",
+          "manual_hold": "A aguardar após alteração manual",
+          "manual_echo": "Comando próprio do termóstato confirmado",
+          "service_error": "Falha no comando do termóstato"
         }
       },
       "change_count": {
         "name": "Número de alterações de setpoint"
+      },
+      "manual_change_count": {
+        "name": "Número de alterações manuais"
       },
       "window_state": {
         "name": "Estado da janela"
@@ -98,12 +311,40 @@
         "name": "Controlo pausado"
       }
     },
+    "binary_sensor": {
+      "window_open": {
+        "name": "Janela aberta"
+      },
+      "boost_running": {
+        "name": "Boost ativo"
+      },
+      "control_active": {
+        "name": "Controlo ativo"
+      },
+      "controller_problem": {
+        "name": "Problema do controlador"
+      }
+    },
+    "switch": {
+      "boost": {
+        "name": "Boost"
+      }
+    },
     "button": {
       "reset_offset": {
         "name": "Reiniciar offset"
       }
     },
     "select": {
+      "preset_legacy": {
+        "name": "Predefinição",
+        "state": {
+          "present": "Presente",
+          "away": "Ausente",
+          "summer": "Verão",
+          "winter": "Inverno"
+        }
+      },
       "mode": {
         "name": "Modo",
         "state": {

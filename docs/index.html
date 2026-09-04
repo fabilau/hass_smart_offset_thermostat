@@ -13,10 +13,11 @@
     <div class="max-w-3xl mx-auto">
       <img src="assets/logo.png" alt="Smart Offset Thermostat Logo" class="mx-auto mb-6 w-32 h-32" />
       <h1 class="text-4xl font-bold mb-4">Smart Offset Thermostat</h1>
+      <p class="inline-block mb-5 rounded-full bg-white/20 px-4 py-1 text-sm font-semibold">Version 2.0 · Native Home Assistant climate control</p>
       <p class="text-lg leading-relaxed mb-8">
-        Virtual thermostat for Home Assistant with automatic temperature calibration.
-        Smart Offset Thermostat intelligently compensates for the measurement offset of real radiator thermostats using an external sensor —
-        for consistently accurate temperature values and efficient heating.
+        Combine an existing physical thermostat with an accurate external room sensor.
+        Smart Offset Thermostat learns the useful offset, regulates Heat and Cool, controls Off where supported,
+        and puts presets, comfort settings and diagnostics into a modern Home Assistant UI.
       </p>
       <a href="#installation" class="bg-white text-blue-600 font-semibold py-3 px-6 rounded shadow hover:bg-gray-100">
         Install via HACS
@@ -52,8 +53,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-orange-500">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5A2.25 2.25 0 008.25 22.5h7.5A2.25 2.25 0 0018 20.25V3.75A2.25 2.25 0 0015.75 1.5H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
           </svg>
-          <h3 class="mt-4 font-semibold">Virtual Thermostat</h3>
-          <p class="text-sm mt-1 text-gray-700">Dedicated climate entity for dashboards &amp; HomeKit</p>
+          <h3 class="mt-4 font-semibold">Native Climate UI</h3>
+          <p class="text-sm mt-1 text-gray-700">Target, HVAC modes, Off and presets in one standard climate entity</p>
         </div>
         <!-- Feature 4 -->
         <div class="flex flex-col items-center">
@@ -62,7 +63,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
           </svg>
           <h3 class="mt-4 font-semibold">Adaptive Learning Logic</h3>
-          <p class="text-sm mt-1 text-gray-700">Dynamically adapts to changing conditions</p>
+          <p class="text-sm mt-1 text-gray-700">Bounded, device-step-aware Heat and Cool correction without aggressive oscillation</p>
         </div>
         <!-- Feature 5 -->
         <div class="flex flex-col items-center">
@@ -71,7 +72,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 8.25V18a2.25 2.25 0 002.25 2.25h13.5A2.25 2.25 0 0021 18V8.25M3 8.25V6A2.25 2.25 0 015.25 3.75h13.5A2.25 2.25 0 0121 6v2.25M3 8.25h18M5.25 6h.008v.008H5.25V6zM7.5 6h.008v.008H7.5V6zm2.25 6h.008v.008H9.75V6z" />
           </svg>
           <h3 class="mt-4 font-semibold">Window Detection</h3>
-          <p class="text-sm mt-1 text-gray-700">Detects open windows and automatically restores settings</p>
+          <p class="text-sm mt-1 text-gray-700">Multiple contacts, configurable delay and immediate safe recovery</p>
         </div>
         <!-- Feature 6 -->
         <div class="flex flex-col items-center">
@@ -89,8 +90,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-12 h-12 text-orange-500">
             <path fill="currentColor" fill-rule="evenodd" d="M1.22 4.22a.75.75 0 011.06 0L6 7.94l2.761-2.762a.75.75 0 011.158.12 24.9 24.9 0 012.718 5.556l.729-1.261a.75.75 0 011.299.75l-1.591 2.755a.75.75 0 01-1.025.275l-2.756-1.591a.75.75 0 11.75-1.3l1.097.634a23.417 23.417 0 00-1.984-4.211L6.53 9.53a.75.75 0 01-1.06 0L1.22 5.28a.75.75 0 010-1.06z" clip-rule="evenodd" />
           </svg>
-          <h3 class="mt-4 font-semibold">Overtemperature Correction</h3>
-          <p class="text-sm mt-1 text-gray-700">Prevents overheating through automatic adjustments</p>
+          <h3 class="mt-4 font-semibold">Statistics &amp; Diagnostics</h3>
+          <p class="text-sm mt-1 text-gray-700">Comfort score, error trends, control output, counters and problem status</p>
         </div>
         <!-- Feature 8 -->
         <div class="flex flex-col items-center">
@@ -100,7 +101,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <h3 class="mt-4 font-semibold">UI-Based Configuration</h3>
-          <p class="text-sm mt-1 text-gray-700">Convenient setup without YAML</p>
+          <p class="text-sm mt-1 text-gray-700">Two-step setup and focused Options pages—no YAML or preset JSON</p>
         </div>
       </div>
     </div>
@@ -119,22 +120,41 @@
           and continuously adjusts the control behavior. This maintains a comfortable room temperature without overheating.
         </p>
       </div>
+      <!-- Native Climate and Presets -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Native Climate Modes &amp; Presets</h3>
+        <p class="leading-relaxed">
+          The main entity exposes the modes supported by the physical climate device, with native target-temperature,
+          preset and Off/On controls. Presets such as Present, Away, Summer and Winter can each define a room target,
+          pause behaviour and physical HVAC mode. Custom presets are created and edited with regular Home Assistant forms.
+          Auto, Dry and Fan-only are passed through as device-controlled passive modes; offset regulation is active in Heat and Cool.
+        </p>
+      </div>
       <!-- Window Sensor Integration -->
       <div class="mb-8">
         <h3 class="text-xl font-semibold mb-2">Window Sensor Integration</h3>
         <p class="leading-relaxed">
-          The integration reliably detects open windows via connected window/door contacts or sudden temperature drops.
-          While airing the room, Smart Offset Thermostat automatically pauses heating control so the learned offset is not distorted.
-          As soon as the window is closed, all settings are restored automatically and normal control resumes.
+          The integration watches one or more configured binary window or door contacts. After the optional delay, an open
+          window applies an energy-safe Heat/Cool setback and pauses learning so the learned offset is not distorted.
+          As soon as closure is confirmed, the override ends and normal control resumes with a safe rebase.
         </p>
       </div>
       <!-- Boost Mode -->
       <div class="mb-8">
         <h3 class="text-xl font-semibold mb-2">Boost Mode</h3>
         <p class="leading-relaxed">
-          Need cozy warmth quickly? With Boost Mode, you can set the radiator to maximum output for a defined duration at the push of a button.
-          This heats the room rapidly. Afterwards, Smart Offset Thermostat returns to normal control
-          to avoid wasting energy.
+          The Boost switch requests maximum heating or minimum cooling for a configured duration. Passive modes keep their device-owned target.
+          Afterwards, Smart Offset Thermostat returns to normal control automatically. Boost and window overrides are kept out
+          of the learning data.
+        </p>
+      </div>
+      <!-- Manual Target Sync -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Manual Changes Without Feedback Loops</h3>
+        <p class="leading-relaxed">
+          An optional change made at the physical thermostat is confirmed after a short delay and transferred to the active room
+          target as the same delta. Commands issued by the controller, acknowledgements and intermediate device transitions are
+          tracked as echoes, so they cannot repeatedly amplify the target.
         </p>
       </div>
       <!-- Offset Reset -->
@@ -146,6 +166,15 @@
           or if the room situation has changed.
         </p>
       </div>
+      <!-- Statistics -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Useful Statistics and Diagnostics</h3>
+        <p class="leading-relaxed">
+          Recorder-friendly sensors expose signed and absolute error, mean absolute error, comfort score, temperature trend,
+          normalised control output, learned offset, correction and persistent change counters. Binary sensors show Window open,
+          Boost running, Control active and Controller problem. Home Assistant can also download a focused integration diagnostic report.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -154,27 +183,39 @@
     <div class="max-w-3xl mx-auto text-center">
       <h3 class="text-xl font-semibold mb-3">Easy Setup Without YAML</h3>
       <p class="leading-relaxed text-gray-800">
-        All settings can be configured conveniently via the Home Assistant UI — with no manual YAML configuration.
-        This makes setup and adjustments especially user-friendly.
+        A two-step wizard selects the physical climate entity, room sensor, initial target, HVAC mode and optional windows.
+        Focused Options pages cover Presets, Windows &amp; Boost, Manual control, Learning and Expert tuning. Presets can be
+        created, renamed and deleted visually—there is no YAML or JSON to maintain.
       </p>
     </div>
   </section>
 
   <!-- HomeKit Compatibility -->
   <section class="py-16 px-6 bg-gray-50">
-    <div class="max-w-5xl mx-auto md:flex md:items-center md:justify-between md:gap-12">
-      <div class="md:w-1/2 mb-8 md:mb-0">
+    <div class="max-w-3xl mx-auto text-center">
+      <div>
         <h3 class="text-xl font-semibold mb-3">HomeKit Compatibility</h3>
         <p class="leading-relaxed text-gray-800">
-          Smart Offset Thermostat can be integrated seamlessly into Apple HomeKit.
-          Using Home Assistant’s HomeKit integration, the virtual thermostat appears in the Apple Home app like a regular thermostat —
-          including precise temperature values calibrated by the external sensor.
-          This lets you control your heating via Siri or the Home app without sacrificing accurate measurements.
+          The native climate entity can be exposed through Home Assistant’s HomeKit Bridge and appears like a regular thermostat.
+          Available controls depend on the common capabilities of HomeKit and the physical climate entity; presets and diagnostics
+          remain available in Home Assistant.
         </p>
       </div>
-      <div class="md:w-1/2 text-center">
-        <img src="homekit_steuerung.png" alt="Thermostat control via Apple HomeKit" class="inline-block max-w-full rounded-lg shadow" />
-      </div>
+    </div>
+  </section>
+
+  <!-- Upgrade Safety -->
+  <section class="py-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-center mb-6">Safe Upgrade to 2.0</h2>
+      <p class="leading-relaxed text-gray-800 mb-4">
+        Existing entries are migrated automatically to native presets and the multi-window format. Targets, pause behaviour,
+        legacy defaults, learned offset and active preset are retained. Migrated presets keep the physical HVAC mode unless a new
+        mode is explicitly selected, and the first 2.0 start adopts the device’s current mode to avoid an unexpected Heat/Cool change.
+      </p>
+      <p class="text-center">
+        <a href="https://github.com/fabilau/hass_smart_offset_thermostat/blob/main/CHANGELOG.md" class="text-blue-600 hover:underline">Read the complete 2.0 changelog and issue fixes</a>
+      </p>
     </div>
   </section>
 
@@ -214,7 +255,7 @@
       <p class="leading-relaxed text-gray-800 mb-4">
         Like this project? Support development with a donation — every contribution is welcome and helps improve the project.
       </p>
-      <a href="https://revolut.me/fabian599" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded">
+      <a href="https://revolut.me/fabilrzs" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded">
         Support via Revolut
       </a>
     </div>
@@ -224,7 +265,7 @@
   <footer class="bg-gray-800 text-gray-300 text-sm py-4">
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between px-6">
       <div class="mb-2 md:mb-0">&copy; 2026 fabilau</div>
-      <div class="mb-2 md:mb-0">Released under the PolyForm Noncommercial License 1.0.0</div>
+      <div class="mb-2 md:mb-0">Released under the <a href="https://github.com/fabilau/hass_smart_offset_thermostat/blob/main/LICENSE" class="hover:underline">PolyForm Noncommercial License 1.0.0</a></div>
       <div><a href="https://github.com/fabilau/hass_smart_offset_thermostat" class="hover:underline">GitHub</a></div>
     </div>
   </footer>

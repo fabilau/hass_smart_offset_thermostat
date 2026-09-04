@@ -1,54 +1,251 @@
 {
   "title": "Smart Offset Thermostat",
+  "selector": {
+    "hvac_mode": {
+      "options": {
+        "keep": "Behold gjeldende modus",
+        "heat": "Oppvarming",
+        "cool": "Kjøling",
+        "auto": "Automatisk (styrt av enheten)",
+        "dry": "Avfukting",
+        "fan_only": "Kun vifte",
+        "off": "Av"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "title": "Smart Offset Thermostat",
-        "description": "Velg termostat, romtemperatursensor (og valgfri vindussensor) og ønsket romtemperatur.",
+        "title": "Velg enhetene dine",
+        "description": "Koble én fysisk termostat til en pålitelig ekstern romtemperatursensor.",
         "data": {
           "climate_entity": "Termostat",
-          "room_sensor_entity": "Ekstern romtemperatursensor",
+          "room_sensor_entity": "Romtemperatursensor"
+        }
+      },
+      "repair_or_setup": {
+        "title": "Gjenopprett eller konfigurer en termostat",
+        "description": "Home Assistant fant tidligere rom fra Smart Offset Thermostat. Gjenopprett ett for å beholde eksisterende entiteter og dashbordkoblinger, eller konfigurer en separat ny termostat.",
+        "menu_options": {
+          "repair_select": "Gjenopprett et eksisterende rom",
+          "setup_new": "Konfigurer en ny termostat"
+        },
+        "menu_option_descriptions": {
+          "repair_select": "Koble til et tidligere rom på nytt og bruk de eksisterende entitetene igjen.",
+          "setup_new": "Opprett en separat termostat uten å endre tidligere rom."
+        }
+      },
+      "repair_select": {
+        "title": "Velg et rom som skal gjenopprettes",
+        "description": "Velg rommet du vil koble til på nytt. De eksisterende entitetene blir brukt igjen.",
+        "data": {
+          "recovery_candidate": "Tidligere rom"
+        }
+      },
+      "repair_sources": {
+        "title": "Koble til {room_name} på nytt",
+        "description": "Velg den fysiske termostaten og romtemperatursensoren som tilhører {room_name}. Kontroller begge valgene nøye. Deretter bekrefter du komfortinnstillingene.",
+        "data": {
+          "climate_entity": "Fysisk termostat",
+          "room_sensor_entity": "Romtemperatursensor"
+        },
+        "data_description": {
+          "climate_entity": "Termostaten for oppvarming eller kjøling som faktisk styrer rommet.",
+          "room_sensor_entity": "Den eksterne temperatursensoren hvis verdi brukes som romtemperatur."
+        }
+      },
+      "setup_new": {
+        "title": "Velg enheter for en ny termostat",
+        "description": "Konfigurer en separat Smart Offset Thermostat. Tidligere rom og deres eksisterende entiteter blir ikke endret.",
+        "data": {
+          "climate_entity": "Termostat",
+          "room_sensor_entity": "Romtemperatursensor"
+        }
+      },
+      "comfort": {
+        "title": "Komfort og funksjoner",
+        "description": "Angi ønsket komforttemperatur og velg funksjonene du vil bruke. Alt kan finjusteres senere i integrasjonsalternativene.",
+        "data": {
           "room_target": "Ønsket romtemperatur",
-          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)",
-          "window_delay_sec": "Forsinkelse ved apent vindu for senking (sekunder)"
+          "hvac_mode": "Termostatens startmodus",
+          "window_sensor_entities": "Vindussensorer (valgfritt)",
+          "window_delay_sec": "Forsinkelse før senking ved åpent vindu",
+          "enable_learning": "Lær optimal termostat-offset",
+          "manual_target_sync": "Overta manuelle termostatendringer",
+          "pause_on_hvac_off": "Sett styringen på pause når termostaten er av"
+        }
+      },
+      "reconfigure": {
+        "title": "Endre tilkoblede enheter",
+        "description": "Velg en annen fysisk termostat eller romtemperatursensor. Forhåndsinnstillinger, lært offset og alternativer beholdes.",
+        "data": {
+          "climate_entity": "Termostat",
+          "room_sensor_entity": "Romtemperatursensor"
         }
       }
+    },
+    "create_entry": {
+      "repair_successful": "{room_name} ble gjenopprettet. De eksisterende entitetene og dashbordkoblingene er beholdt."
+    },
+    "error": {
+      "entity_not_found": "Den valgte entiteten er ikke lenger tilgjengelig. Velg en annen entitet.",
+      "unsupported_climate": "Velg en termostat som støtter én måltemperatur og oppvarming eller kjøling. Enheter med kun temperaturintervall for oppvarming/kjøling støttes ikke.",
+      "already_configured": "Denne fysiske termostaten styres allerede av en annen Smart Offset Thermostat."
+    },
+    "abort": {
+      "reconfigure_successful": "De tilkoblede enhetene ble oppdatert.",
+      "repair_not_available": "Dette rommet er allerede gjenopprettet eller er ikke lenger tilgjengelig. Start oppsettet på nytt for å oppdatere listen.",
+      "already_configured": "Denne fysiske termostaten er allerede konfigurert.",
+      "already_in_progress": "Konfigurasjon av denne fysiske termostaten pågår allerede."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Kontrollvalg",
-        "description": "Finjuster hvordan kontrolleren oppfører seg.",
+        "title": "Innstillinger for Smart Offset Thermostat",
+        "description": "Velg området du vil konfigurere.",
+        "menu_options": {
+          "presets": "Komfortinnstillinger",
+          "window_boost": "Vinduer og boost",
+          "manual": "Manuell styring",
+          "learning": "Læring og overoppheting",
+          "expert": "Avanserte innstillinger"
+        },
+        "menu_option_descriptions": {
+          "presets": "Opprett, rediger eller fjern forhåndsinnstillinger for romtemperatur.",
+          "window_boost": "Konfigurer beskyttelse ved åpent vindu og boost-varighet.",
+          "manual": "Velg hvordan endringer på den fysiske termostaten og avslått modus håndteres.",
+          "learning": "Juster offset-læring og adaptiv beskyttelse mot overoppheting.",
+          "expert": "Juster tidsstyring, grenser og regulatorrespons."
+        }
+      },
+      "presets": {
+        "title": "Komfortinnstillinger",
+        "description": "Opprett en ny forhåndsinnstilling eller rediger en eksisterende.",
+        "menu_options": {
+          "preset_new": "Opprett forhåndsinnstilling",
+          "preset_select": "Rediger forhåndsinnstilling"
+        },
+        "menu_option_descriptions": {
+          "preset_new": "Legg til en ny måltemperatur, pausestatus og termostatmodus.",
+          "preset_select": "Endre eller fjern en eksisterende forhåndsinnstilling."
+        }
+      },
+      "preset_select": {
+        "title": "Velg en forhåndsinnstilling",
+        "description": "Velg forhåndsinnstillingen du vil redigere eller fjerne.",
         "data": {
-          "interval_sec": "Kontrollintervall (sekunder)",
-          "deadband": "Dødbånd (°C)",
-          "step_max": "Maks endring per steg (°C)",
-          "step_min": "Avrundingssteg (°C)",
+          "preset_id": "Forhåndsinnstilling"
+        }
+      },
+      "preset_new": {
+        "title": "Opprett forhåndsinnstilling",
+        "description": "Bruk en kort ID med små bokstaver, tall og understreker, for eksempel `sleep` eller `home_office`.",
+        "data": {
+          "preset_id": "ID for forhåndsinnstilling",
+          "room_target": "Ønsket romtemperatur",
+          "pause": "Sett styringen på pause i denne forhåndsinnstillingen",
+          "hvac_mode": "Modus for fysisk termostat"
+        }
+      },
+      "preset_edit": {
+        "title": "Rediger {preset_id}",
+        "description": "Oppdater denne forhåndsinnstillingen, eller aktiver sletting for å fjerne den. Minst én forhåndsinnstilling må beholdes.",
+        "data": {
+          "preset_id": "ID for forhåndsinnstilling",
+          "room_target": "Ønsket romtemperatur",
+          "pause": "Sett styringen på pause i denne forhåndsinnstillingen",
+          "hvac_mode": "Modus for fysisk termostat",
+          "delete_preset": "Slett denne forhåndsinnstillingen"
+        }
+      },
+      "window_boost": {
+        "title": "Vinduer og boost",
+        "description": "Åpne vinduer aktiverer et energisparende settpunkt etter en forsinkelse. Boost ber midlertidig om den kraftigste regulerte effekten.",
+        "data": {
+          "window_sensor_entities": "Vindussensorer",
+          "window_delay_sec": "Forsinkelse før senking ved åpent vindu",
+          "boost_duration_sec": "Boost-varighet"
+        }
+      },
+      "manual": {
+        "title": "Manuell styring",
+        "description": "Velg hvordan regulatoren reagerer når noen endrer eller slår av den fysiske termostaten.",
+        "data": {
+          "manual_target_sync": "Overta manuelle termostatendringer",
+          "manual_delay_sec": "Forsinkelse før en manuell endring overtas",
+          "pause_on_hvac_off": "Sett styringen på pause når termostaten er av"
+        }
+      },
+      "learning": {
+        "title": "Læring og overoppheting",
+        "description": "Læring tilpasser offset over tid. Beskyttelse mot overoppheting kan senke settpunktet ytterligere hvis rommet ikke kjøles ned som forventet.",
+        "data": {
+          "enable_learning": "Aktiver offset-læring",
           "learn_rate": "Læringsrate",
-          "trv_min": "Min termostat-settpunkt (°C)",
-          "trv_max": "Maks termostat-settpunkt (°C)",
-          "cooldown_sec": "Sperretid mellom endringer (sekunder)",
-          "boost_duration_sec": "Boost-varighet (sekunder)",
-          "enable_learning": "Aktiver læring",
-          "pause_on_hvac_off": "Pause styring når termostaten er av",
-          "manual_target_sync": "Synkroniser manuelle endringer på termostaten",
-          "manual_delay_sec": "Forsinkelse etter manuell endring før overskriving (sekunder)",
-          "modes": "Moduser (JSON: id, target, pause)",
-          "stuck_enable": "Adaptiv overtemperatur-korrigering (senker settpunkt hvis rommet forblir for varmt)",
-          "stuck_seconds": "Evalueringsvindu for overtemperatur (sekunder)",
-          "stuck_min_drop": "Krav til nedkjøling i vinduet (°C)",
-          "stuck_step": "Ekstra senkesteg ved overtemperatur (°C)",
-          "window_sensor_entities": "Vindussensor (binary_sensor, valgfri)",
-          "window_delay_sec": "Forsinkelse ved apent vindu for senking (sekunder)"
+          "stuck_enable": "Aktiver adaptiv beskyttelse mot overoppheting",
+          "stuck_seconds": "Evalueringsvindu for overoppheting",
+          "stuck_min_drop": "Minste forventede nedkjøling",
+          "stuck_step": "Ekstra senketrinn"
+        }
+      },
+      "expert": {
+        "title": "Avanserte innstillinger",
+        "description": "Disse verdiene påvirker regulatorens stabilitet og reaksjon direkte. Endre dem gradvis.",
+        "data": {
+          "interval_sec": "Styringsintervall",
+          "deadband": "Komfortdødbånd",
+          "control_gain": "Regulatorforsterkning",
+          "step_max": "Maksimal settpunktendring per syklus",
+          "step_min": "Termostatens avrundingstrinn",
+          "trv_min": "Laveste settpunkt for fysisk termostat",
+          "trv_max": "Høyeste settpunkt for fysisk termostat",
+          "cooldown_sec": "Minste tid mellom endringer"
         }
       }
+    },
+    "error": {
+      "invalid_preset_id": "Bruk 1–64 små bokstaver, tall eller understreker. Det første tegnet må være en bokstav eller et tall.",
+      "duplicate_preset": "Det finnes allerede en forhåndsinnstilling med denne ID-en.",
+      "last_preset": "Den siste forhåndsinnstillingen kan ikke slettes.",
+      "min_max": "Termostatens laveste settpunkt må være lavere enn det høyeste.",
+      "step_order": "Avrundingstrinnet må være mindre enn eller lik den maksimale endringen per syklus."
     }
   },
   "entity": {
+    "climate": {
+      "thermostat": {
+        "name": "Termostat",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "present": "Hjemme",
+              "away": "Borte",
+              "summer": "Sommer",
+              "winter": "Vinter"
+            }
+          }
+        }
+      }
+    },
     "sensor": {
       "error": {
         "name": "Kontrollfeil"
+      },
+      "absolute_error": {
+        "name": "Absolutt kontrollfeil"
+      },
+      "mean_absolute_error": {
+        "name": "Gjennomsnittlig absolutt feil"
+      },
+      "comfort_score": {
+        "name": "Komfortscore"
+      },
+      "temperature_trend": {
+        "name": "Temperaturtrend"
+      },
+      "control_output": {
+        "name": "Regulatorutgang"
       },
       "offset": {
         "name": "Lært offset"
@@ -59,6 +256,12 @@
       "last_set": {
         "name": "Sist satt termostat-settpunkt"
       },
+      "confirmed_setpoint": {
+        "name": "Bekreftet termostat-settpunkt"
+      },
+      "correction": {
+        "name": "Anvendt korreksjon"
+      },
       "last_action": {
         "name": "Siste avgjørelse (kode)"
       },
@@ -66,24 +269,34 @@
         "name": "Siste avgjørelse",
         "state": {
           "init": "Initialisering",
-          "deadband": "I dødbåndet (ingen endring)",
-          "deadband_rebase": "Settpunkt endret (basislinje satt)",
-          "cooldown": "Sperretid aktiv (ingen endring)",
+          "deadband_init": "Første settpunkt fastsatt",
+          "deadband_rebase": "Mål endret; basisverdi oppdatert",
+          "hold": "Holder settpunktet i komfortsonen",
+          "stable_learn": "Stabil offset lært",
+          "cooldown": "Venter på sperretid",
           "set_temperature": "Settpunkt sendt til termostat",
-          "skipped_no_change": "Ingen endring nødvendig",
-          "skipped_unavailable_entities": "Entiteter ikke tilgjengelige",
-          "skipped_invalid_room_temp": "Romtemperatur ugyldig",
-          "boost": "Boost aktiv (maks. varmeeffekt)",
-          "window_open": "Vindu åpent (senket)",
+          "skipped_no_change": "Ingen endring av settpunkt nødvendig",
+          "skipped_unavailable_entities": "Kildeentitet utilgjengelig",
+          "skipped_invalid_room_temp": "Ugyldig romtemperatur",
+          "boost": "Boost aktiv",
+          "window_open": "Vindusbeskyttelse aktiv",
           "paused": "Styring pauset",
-          "stuck_overtemp_down": "Overtemperatur: ytterligere senket",
-          "reset_offset": "Offset tilbakestilt",
-          "manual_target_sync": "Manuell endring oppdaget (mål oppdatert)",
-          "manual_hold": "Ventetid etter manuell endring"
+          "hvac_off": "Termostat avslått",
+          "hvac_mode_set": "Termostatmodus endret",
+          "passive_mode": "Passiv termostatmodus",
+          "stuck_overtemp_down": "Ekstra korreksjon for overtemperatur",
+          "reset_offset": "Lært offset tilbakestilt",
+          "manual_target_sync": "Manuell endring overtatt",
+          "manual_hold": "Venter etter manuell endring",
+          "manual_echo": "Egen termostatkommando bekreftet",
+          "service_error": "Termostatkommando mislyktes"
         }
       },
       "change_count": {
         "name": "Antall settpunkt-endringer"
+      },
+      "manual_change_count": {
+        "name": "Antall manuelle endringer"
       },
       "window_state": {
         "name": "Vindustatus"
@@ -98,12 +311,40 @@
         "name": "Kontroll pauset"
       }
     },
+    "binary_sensor": {
+      "window_open": {
+        "name": "Vindu åpent"
+      },
+      "boost_running": {
+        "name": "Boost kjører"
+      },
+      "control_active": {
+        "name": "Regulering aktiv"
+      },
+      "controller_problem": {
+        "name": "Regulatorproblem"
+      }
+    },
+    "switch": {
+      "boost": {
+        "name": "Boost"
+      }
+    },
     "button": {
       "reset_offset": {
         "name": "Tilbakestill offset"
       }
     },
     "select": {
+      "preset_legacy": {
+        "name": "Forhåndsinnstilling",
+        "state": {
+          "present": "Hjemme",
+          "away": "Borte",
+          "summer": "Sommer",
+          "winter": "Vinter"
+        }
+      },
       "mode": {
         "name": "Modus",
         "state": {

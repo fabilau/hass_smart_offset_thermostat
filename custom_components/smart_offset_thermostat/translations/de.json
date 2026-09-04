@@ -1,54 +1,251 @@
 {
   "title": "Smart Offset Thermostat",
+  "selector": {
+    "hvac_mode": {
+      "options": {
+        "keep": "Aktuellen Modus beibehalten",
+        "heat": "Heizen",
+        "cool": "Kühlen",
+        "auto": "Automatisch (Gerätesteuerung)",
+        "dry": "Entfeuchten",
+        "fan_only": "Nur Lüfter",
+        "off": "Aus"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "title": "Smart Offset Thermostat",
-        "description": "Wähle Thermostat, Raumfühler und die gewünschte Raum-Solltemperatur.",
+        "title": "Geräte auswählen",
+        "description": "Verbinde ein physisches Thermostat mit einem zuverlässigen externen Raumtemperatur-Sensor.",
         "data": {
           "climate_entity": "Thermostat",
-          "room_sensor_entity": "Externer Raumtemperatur-Sensor",
+          "room_sensor_entity": "Raumtemperatur-Sensor"
+        }
+      },
+      "repair_or_setup": {
+        "title": "Thermostat wiederherstellen oder neu einrichten",
+        "description": "Home Assistant hat frühere Smart Offset Thermostate gefunden. Stelle einen Raum wieder her, um seine bisherigen Entitäten und Dashboard-Verknüpfungen zu behalten, oder richte ein separates neues Thermostat ein.",
+        "menu_options": {
+          "repair_select": "Vorhandenen Raum wiederherstellen",
+          "setup_new": "Neues Thermostat einrichten"
+        },
+        "menu_option_descriptions": {
+          "repair_select": "Verbindet einen früheren Raum neu und übernimmt seine bisherigen Entitäten.",
+          "setup_new": "Erstellt ein separates Thermostat, ohne frühere Räume zu verändern."
+        }
+      },
+      "repair_select": {
+        "title": "Raum zum Wiederherstellen auswählen",
+        "description": "Wähle den Raum, den du wieder verbinden möchtest. Seine vorhandenen Entitäten werden weiterverwendet.",
+        "data": {
+          "recovery_candidate": "Bisheriger Raum"
+        }
+      },
+      "repair_sources": {
+        "title": "{room_name} neu verbinden",
+        "description": "Wähle das physische Thermostat und den Raumtemperatur-Sensor, die zu {room_name} gehören. Prüfe beide Auswahlen sorgfältig. Anschließend bestätigst du die Komforteinstellungen.",
+        "data": {
+          "climate_entity": "Physisches Thermostat",
+          "room_sensor_entity": "Raumtemperatur-Sensor"
+        },
+        "data_description": {
+          "climate_entity": "Das Heizungs- oder Klimathermostat, das den Raum tatsächlich regelt.",
+          "room_sensor_entity": "Der externe Temperatursensor, dessen Wert als Raumtemperatur verwendet wird."
+        }
+      },
+      "setup_new": {
+        "title": "Geräte für neues Thermostat auswählen",
+        "description": "Richtet ein separates Smart Offset Thermostat ein. Frühere Räume und deren vorhandene Entitäten werden nicht verändert.",
+        "data": {
+          "climate_entity": "Thermostat",
+          "room_sensor_entity": "Raumtemperatur-Sensor"
+        }
+      },
+      "comfort": {
+        "title": "Komfort und Funktionen",
+        "description": "Lege dein erstes Komfortziel fest und wähle die gewünschten Funktionen. In den Integrationsoptionen kannst du später alles fein abstimmen.",
+        "data": {
           "room_target": "Raum-Solltemperatur",
-          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)",
-          "window_delay_sec": "Verzoegerung bei offenem Fenster vor Absenkung (Sekunden)"
+          "hvac_mode": "Anfänglicher Thermostatmodus",
+          "window_sensor_entities": "Fenstersensoren (optional)",
+          "window_delay_sec": "Verzögerung vor Fensterabsenkung",
+          "enable_learning": "Optimales Thermostat-Offset lernen",
+          "manual_target_sync": "Manuelle Thermostatänderungen übernehmen",
+          "pause_on_hvac_off": "Regelung bei ausgeschaltetem Thermostat pausieren"
+        }
+      },
+      "reconfigure": {
+        "title": "Verbundene Geräte ändern",
+        "description": "Wähle ein anderes physisches Thermostat oder einen anderen Raumtemperatur-Sensor. Presets, gelerntes Offset und Optionen bleiben erhalten.",
+        "data": {
+          "climate_entity": "Thermostat",
+          "room_sensor_entity": "Raumtemperatur-Sensor"
         }
       }
+    },
+    "create_entry": {
+      "repair_successful": "{room_name} wurde erfolgreich wiederhergestellt. Die bisherigen Entitäten und Dashboard-Verknüpfungen bleiben erhalten."
+    },
+    "error": {
+      "entity_not_found": "Die ausgewählte Entität ist nicht mehr verfügbar. Wähle eine andere Entität.",
+      "unsupported_climate": "Wähle ein Thermostat mit einfachem Temperatur-Sollwert und Heizen oder Kühlen. Geräte ausschließlich mit Heizen/Kühlen-Bereich werden nicht unterstützt.",
+      "already_configured": "Dieses physische Thermostat wird bereits von einem anderen Smart Offset Thermostat gesteuert."
+    },
+    "abort": {
+      "reconfigure_successful": "Die verbundenen Geräte wurden erfolgreich aktualisiert.",
+      "repair_not_available": "Dieser Raum wurde bereits wiederhergestellt oder ist nicht mehr verfügbar. Starte die Einrichtung erneut, um die Liste zu aktualisieren.",
+      "already_configured": "Dieses physische Thermostat ist bereits konfiguriert.",
+      "already_in_progress": "Die Konfiguration dieses physischen Thermostats läuft bereits."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Regel-Optionen",
-        "description": "Feinabstimmung der Regelung.",
+        "title": "Smart Offset Thermostat einstellen",
+        "description": "Wähle den Bereich, den du konfigurieren möchtest.",
+        "menu_options": {
+          "presets": "Komfort-Presets",
+          "window_boost": "Fenster und Boost",
+          "manual": "Manuelle Bedienung",
+          "learning": "Lernen und Überhitzung",
+          "expert": "Experteneinstellungen"
+        },
+        "menu_option_descriptions": {
+          "presets": "Raumtemperatur-Presets erstellen, bearbeiten oder entfernen.",
+          "window_boost": "Fensterschutz und Boost-Dauer konfigurieren.",
+          "manual": "Verhalten bei manuellen Änderungen und ausgeschaltetem Thermostat festlegen.",
+          "learning": "Offset-Lernen und adaptiven Überhitzungsschutz abstimmen.",
+          "expert": "Zeitverhalten, Grenzen und Reglerreaktion anpassen."
+        }
+      },
+      "presets": {
+        "title": "Komfort-Presets",
+        "description": "Erstelle ein neues Preset oder bearbeite ein bestehendes.",
+        "menu_options": {
+          "preset_new": "Preset erstellen",
+          "preset_select": "Preset bearbeiten"
+        },
+        "menu_option_descriptions": {
+          "preset_new": "Ein weiteres Ziel mit Pausenstatus und Thermostatmodus hinzufügen.",
+          "preset_select": "Ein bestehendes Preset ändern oder entfernen."
+        }
+      },
+      "preset_select": {
+        "title": "Preset auswählen",
+        "description": "Wähle das Preset, das du bearbeiten oder entfernen möchtest.",
         "data": {
-          "interval_sec": "Regelintervall (Sekunden)",
-          "deadband": "Toleranzbereich (Deadband) in °C",
-          "step_max": "Maximale Änderung pro Schritt (°C)",
-          "step_min": "Rundungsschritt (°C)",
+          "preset_id": "Preset"
+        }
+      },
+      "preset_new": {
+        "title": "Preset erstellen",
+        "description": "Verwende eine kurze, kleingeschriebene ID mit Buchstaben, Zahlen und Unterstrichen, zum Beispiel `schlafen` oder `home_office`.",
+        "data": {
+          "preset_id": "Preset-ID",
+          "room_target": "Raum-Solltemperatur",
+          "pause": "Regelung in diesem Preset pausieren",
+          "hvac_mode": "Modus des physischen Thermostats"
+        }
+      },
+      "preset_edit": {
+        "title": "{preset_id} bearbeiten",
+        "description": "Aktualisiere dieses Preset oder aktiviere das Löschen, um es zu entfernen. Mindestens ein Preset muss erhalten bleiben.",
+        "data": {
+          "preset_id": "Preset-ID",
+          "room_target": "Raum-Solltemperatur",
+          "pause": "Regelung in diesem Preset pausieren",
+          "hvac_mode": "Modus des physischen Thermostats",
+          "delete_preset": "Dieses Preset löschen"
+        }
+      },
+      "window_boost": {
+        "title": "Fenster und Boost",
+        "description": "Offene Fenster wenden nach einer Verzögerung einen energiesparenden Sollwert an. Boost fordert vorübergehend die stärkste geregelte Leistung an.",
+        "data": {
+          "window_sensor_entities": "Fenstersensoren",
+          "window_delay_sec": "Verzögerung vor Fensterabsenkung",
+          "boost_duration_sec": "Boost-Dauer"
+        }
+      },
+      "manual": {
+        "title": "Manuelle Bedienung",
+        "description": "Lege fest, wie der Regler reagiert, wenn jemand das physische Thermostat ändert oder ausschaltet.",
+        "data": {
+          "manual_target_sync": "Manuelle Thermostatänderungen übernehmen",
+          "manual_delay_sec": "Verzögerung vor Übernahme einer manuellen Änderung",
+          "pause_on_hvac_off": "Regelung bei ausgeschaltetem Thermostat pausieren"
+        }
+      },
+      "learning": {
+        "title": "Lernen und Überhitzung",
+        "description": "Das Lernen passt das Offset mit der Zeit an. Der Überhitzungsschutz kann den Sollwert weiter senken, wenn der Raum nicht wie erwartet abkühlt.",
+        "data": {
+          "enable_learning": "Offset-Lernen aktivieren",
           "learn_rate": "Lernrate",
-          "trv_min": "Min. Thermostat-Sollwert (°C)",
-          "trv_max": "Max. Thermostat-Sollwert (°C)",
-          "cooldown_sec": "Sperrzeit zwischen Änderungen (Sekunden)",
-          "enable_learning": "Lernen aktivieren",
-          "pause_on_hvac_off": "Regelung pausieren, wenn Thermostat aus ist",
-          "manual_target_sync": "Manuelle Thermostat-Änderungen übernehmen",
-          "manual_delay_sec": "Verzögerung nach manueller Änderung vor Überschreiben (Sekunden)",
-          "modes": "Modi (JSON: id, target, pause)",
-          "boost_duration_sec": "Boost-Dauer (Sekunden)",
-          "stuck_enable": "Adaptive Übertemperatur-Korrektur (senkt Sollwert, wenn Raum zu warm bleibt)",
-          "stuck_seconds": "Übertemperatur-Auswertefenster (Sekunden)",
-          "stuck_min_drop": "Erforderliche Abkühlung im Fenster (°C)",
-          "stuck_step": "Zusätzlicher Absenk-Schritt bei Übertemperatur (°C)",
-          "window_sensor_entities": "Fenstersensor (binary_sensor, optional)",
-          "window_delay_sec": "Verzoegerung bei offenem Fenster vor Absenkung (Sekunden)"
+          "stuck_enable": "Adaptiven Überhitzungsschutz aktivieren",
+          "stuck_seconds": "Auswertefenster für Überhitzung",
+          "stuck_min_drop": "Mindestens erwartete Abkühlung",
+          "stuck_step": "Zusätzlicher Absenkschritt"
+        }
+      },
+      "expert": {
+        "title": "Experteneinstellungen",
+        "description": "Diese Werte beeinflussen Stabilität und Reaktionsgeschwindigkeit des Reglers direkt. Ändere sie schrittweise.",
+        "data": {
+          "interval_sec": "Regelintervall",
+          "deadband": "Komfort-Toleranzbereich",
+          "control_gain": "Reglerverstärkung",
+          "step_max": "Maximale Sollwertänderung pro Zyklus",
+          "step_min": "Rundungsschritt des Thermostats",
+          "trv_min": "Minimaler Sollwert des physischen Thermostats",
+          "trv_max": "Maximaler Sollwert des physischen Thermostats",
+          "cooldown_sec": "Mindestzeit zwischen Änderungen"
         }
       }
+    },
+    "error": {
+      "invalid_preset_id": "Verwende 1–64 Kleinbuchstaben, Zahlen oder Unterstriche; das erste Zeichen muss ein Buchstabe oder eine Zahl sein.",
+      "duplicate_preset": "Ein Preset mit dieser ID ist bereits vorhanden.",
+      "last_preset": "Das letzte Preset kann nicht gelöscht werden.",
+      "min_max": "Der minimale Thermostat-Sollwert muss kleiner als der maximale sein.",
+      "step_order": "Der Rundungsschritt muss kleiner oder gleich der maximalen Änderung pro Zyklus sein."
     }
   },
   "entity": {
+    "climate": {
+      "thermostat": {
+        "name": "Thermostat",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          }
+        }
+      }
+    },
     "sensor": {
       "error": {
         "name": "Regelabweichung"
+      },
+      "absolute_error": {
+        "name": "Absolute Regelabweichung"
+      },
+      "mean_absolute_error": {
+        "name": "Mittlere absolute Regelabweichung"
+      },
+      "comfort_score": {
+        "name": "Komfortwert"
+      },
+      "temperature_trend": {
+        "name": "Temperaturtrend"
+      },
+      "control_output": {
+        "name": "Reglerausgang"
       },
       "offset": {
         "name": "Gelerntes Offset"
@@ -59,6 +256,12 @@
       "last_set": {
         "name": "Zuletzt gesetzter Thermostat-Sollwert"
       },
+      "confirmed_setpoint": {
+        "name": "Bestätigter Thermostat-Sollwert"
+      },
+      "correction": {
+        "name": "Angewendete Korrektur"
+      },
       "last_action": {
         "name": "Letzte Entscheidung (Code)"
       },
@@ -66,24 +269,34 @@
         "name": "Letzte Entscheidung",
         "state": {
           "init": "Initialisierung",
-          "deadband": "Im Toleranzbereich (keine Änderung)",
-          "deadband_rebase": "Sollwert geändert (Basiswert gesetzt)",
-          "cooldown": "Sperrzeit aktiv (keine Änderung)",
+          "deadband_init": "Anfangssollwert gesetzt",
+          "deadband_rebase": "Ziel geändert; Basiswert aktualisiert",
+          "hold": "Sollwert im Komfortbereich halten",
+          "stable_learn": "Stabiles Offset gelernt",
+          "cooldown": "Sperrzeit abwarten",
           "set_temperature": "Sollwert an Thermostat gesendet",
-          "skipped_no_change": "Keine Änderung nötig",
-          "skipped_unavailable_entities": "Entitäten nicht verfügbar",
-          "skipped_invalid_room_temp": "Raumtemperatur ungültig",
-          "boost": "Boost aktiv (max. Heizleistung)",
-          "window_open": "Fenster offen (Absenkung)",
+          "skipped_no_change": "Keine Sollwertänderung nötig",
+          "skipped_unavailable_entities": "Quellentität nicht verfügbar",
+          "skipped_invalid_room_temp": "Ungültige Raumtemperatur",
+          "boost": "Boost aktiv",
+          "window_open": "Fensterschutz aktiv",
           "paused": "Regelung pausiert",
-          "stuck_overtemp_down": "Übertemperatur: zusätzlich abgesenkt",
-          "reset_offset": "Offset zurückgesetzt",
-          "manual_target_sync": "Manuelle Änderung erkannt (Ziel übernommen)",
-          "manual_hold": "Manuelle Änderung: Wartezeit aktiv"
+          "hvac_off": "Thermostat ausgeschaltet",
+          "hvac_mode_set": "Thermostatmodus geändert",
+          "passive_mode": "Passiver Thermostatmodus",
+          "stuck_overtemp_down": "Zusätzliche Übertemperaturkorrektur",
+          "reset_offset": "Gelerntes Offset zurückgesetzt",
+          "manual_target_sync": "Manuelle Änderung übernommen",
+          "manual_hold": "Wartezeit nach manueller Änderung",
+          "manual_echo": "Eigener Thermostatbefehl bestätigt",
+          "service_error": "Thermostatbefehl fehlgeschlagen"
         }
       },
       "change_count": {
         "name": "Anzahl Sollwert-Änderungen"
+      },
+      "manual_change_count": {
+        "name": "Anzahl manueller Änderungen"
       },
       "window_state": {
         "name": "Fensterstatus"
@@ -98,12 +311,40 @@
         "name": "Regelung pausiert"
       }
     },
+    "binary_sensor": {
+      "window_open": {
+        "name": "Fenster offen"
+      },
+      "boost_running": {
+        "name": "Boost läuft"
+      },
+      "control_active": {
+        "name": "Regelung aktiv"
+      },
+      "controller_problem": {
+        "name": "Reglerproblem"
+      }
+    },
+    "switch": {
+      "boost": {
+        "name": "Boost"
+      }
+    },
     "button": {
       "reset_offset": {
         "name": "Offset zurücksetzen"
       }
     },
     "select": {
+      "preset_legacy": {
+        "name": "Voreinstellung",
+        "state": {
+          "present": "Anwesend",
+          "away": "Abwesend",
+          "summer": "Sommer",
+          "winter": "Winter"
+        }
+      },
       "mode": {
         "name": "Modus",
         "state": {

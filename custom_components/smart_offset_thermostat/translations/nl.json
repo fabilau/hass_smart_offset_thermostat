@@ -1,54 +1,251 @@
 {
   "title": "Smart Offset Thermostat",
+  "selector": {
+    "hvac_mode": {
+      "options": {
+        "keep": "Huidige modus behouden",
+        "heat": "Verwarmen",
+        "cool": "Koelen",
+        "auto": "Automatisch (door apparaat geregeld)",
+        "dry": "Drogen",
+        "fan_only": "Alleen ventileren",
+        "off": "Uit"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "title": "Smart Offset Thermostat",
-        "description": "Selecteer de thermostaat, de kamertemperatuursensor (en optioneel een raamsensor) en de gewenste kamertemperatuur.",
+        "title": "Kies je apparaten",
+        "description": "Koppel één fysieke thermostaat aan een betrouwbare externe kamertemperatuursensor.",
         "data": {
           "climate_entity": "Thermostaat",
-          "room_sensor_entity": "Externe kamertemperatuursensor",
-          "room_target": "Doeltemperatuur kamer",
-          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)",
-          "window_delay_sec": "Vertraging bij open raam voor verlaging (seconden)"
+          "room_sensor_entity": "Kamertemperatuursensor"
+        }
+      },
+      "repair_or_setup": {
+        "title": "Een thermostaat herstellen of instellen",
+        "description": "Home Assistant heeft eerdere Smart Offset Thermostat-ruimtes gevonden. Herstel er een om de bestaande entiteiten en dashboardkoppelingen te behouden, of stel een aparte nieuwe thermostaat in.",
+        "menu_options": {
+          "repair_select": "Bestaande ruimte herstellen",
+          "setup_new": "Nieuwe thermostaat instellen"
+        },
+        "menu_option_descriptions": {
+          "repair_select": "Verbind een eerdere ruimte opnieuw en hergebruik de bestaande entiteiten.",
+          "setup_new": "Maak een aparte thermostaat zonder eerdere ruimtes te wijzigen."
+        }
+      },
+      "repair_select": {
+        "title": "Kies een ruimte om te herstellen",
+        "description": "Kies de ruimte die je opnieuw wilt verbinden. De bestaande entiteiten worden hergebruikt.",
+        "data": {
+          "recovery_candidate": "Eerdere ruimte"
+        }
+      },
+      "repair_sources": {
+        "title": "{room_name} opnieuw verbinden",
+        "description": "Selecteer de fysieke thermostaat en kamertemperatuursensor die bij {room_name} horen. Controleer beide keuzes zorgvuldig. Hierna bevestig je de comfortinstellingen.",
+        "data": {
+          "climate_entity": "Fysieke thermostaat",
+          "room_sensor_entity": "Kamertemperatuursensor"
+        },
+        "data_description": {
+          "climate_entity": "De verwarmings- of koelthermostaat die de ruimte daadwerkelijk regelt.",
+          "room_sensor_entity": "De externe temperatuursensor waarvan de waarde als kamertemperatuur wordt gebruikt."
+        }
+      },
+      "setup_new": {
+        "title": "Kies apparaten voor een nieuwe thermostaat",
+        "description": "Stel een aparte Smart Offset Thermostat in. Eerdere ruimtes en hun bestaande entiteiten worden niet gewijzigd.",
+        "data": {
+          "climate_entity": "Thermostaat",
+          "room_sensor_entity": "Kamertemperatuursensor"
+        }
+      },
+      "comfort": {
+        "title": "Comfort en functies",
+        "description": "Stel de gewenste begintemperatuur in en kies de functies die je wilt gebruiken. Je kunt alles later verfijnen via de integratieopties.",
+        "data": {
+          "room_target": "Gewenste kamertemperatuur",
+          "hvac_mode": "Beginmodus van thermostaat",
+          "window_sensor_entities": "Raamsensoren (optioneel)",
+          "window_delay_sec": "Vertraging voordat raamverlaging ingaat",
+          "enable_learning": "Optimale thermostaatcorrectie leren",
+          "manual_target_sync": "Handmatige thermostaatwijzigingen overnemen",
+          "pause_on_hvac_off": "Regeling pauzeren terwijl thermostaat uit staat"
+        }
+      },
+      "reconfigure": {
+        "title": "Gekoppelde apparaten wijzigen",
+        "description": "Selecteer een andere fysieke thermostaat of kamertemperatuursensor. Je voorkeuzes, geleerde correctie en opties blijven behouden.",
+        "data": {
+          "climate_entity": "Thermostaat",
+          "room_sensor_entity": "Kamertemperatuursensor"
         }
       }
+    },
+    "create_entry": {
+      "repair_successful": "{room_name} is hersteld. De bestaande entiteiten en dashboardkoppelingen zijn behouden."
+    },
+    "error": {
+      "entity_not_found": "De geselecteerde entiteit is niet meer beschikbaar. Kies een andere entiteit.",
+      "unsupported_climate": "Kies een thermostaat die één doeltemperatuur en Verwarmen of Koelen ondersteunt. Apparaten die alleen een temperatuurgebied voor Verwarmen/Koelen ondersteunen, zijn niet geschikt.",
+      "already_configured": "Deze fysieke thermostaat wordt al geregeld door een andere Smart Offset Thermostat."
+    },
+    "abort": {
+      "reconfigure_successful": "De gekoppelde apparaten zijn bijgewerkt.",
+      "repair_not_available": "Deze ruimte is al hersteld of niet meer beschikbaar. Start de instelling opnieuw om de lijst te vernieuwen.",
+      "already_configured": "Deze fysieke thermostaat is al ingesteld.",
+      "already_in_progress": "De instelling van deze fysieke thermostaat is al bezig."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Regelopties",
-        "description": "Stel het gedrag van de regeling nauwkeurig af.",
+        "title": "Instellingen voor Smart Offset Thermostat",
+        "description": "Kies het onderdeel dat je wilt instellen.",
+        "menu_options": {
+          "presets": "Comfortvoorkeuzes",
+          "window_boost": "Ramen en boost",
+          "manual": "Handmatige bediening",
+          "learning": "Leren en oververhitting",
+          "expert": "Geavanceerde instellingen"
+        },
+        "menu_option_descriptions": {
+          "presets": "Maak, wijzig of verwijder voorkeuzes voor de kamertemperatuur.",
+          "window_boost": "Stel de bescherming bij open ramen en de boostduur in.",
+          "manual": "Kies hoe wijzigingen aan de fysieke thermostaat en de uit-modus worden verwerkt.",
+          "learning": "Stel het leren van de correctie en adaptieve bescherming tegen oververhitting af.",
+          "expert": "Pas timing, grenzen en regelreactie aan."
+        }
+      },
+      "presets": {
+        "title": "Comfortvoorkeuzes",
+        "description": "Maak een nieuwe voorkeuze of wijzig een bestaande.",
+        "menu_options": {
+          "preset_new": "Voorkeuze maken",
+          "preset_select": "Voorkeuze wijzigen"
+        },
+        "menu_option_descriptions": {
+          "preset_new": "Voeg een ander doel, een pauzestand en thermostaatmodus toe.",
+          "preset_select": "Wijzig of verwijder een bestaande voorkeuze."
+        }
+      },
+      "preset_select": {
+        "title": "Kies een voorkeuze",
+        "description": "Selecteer de voorkeuze die je wilt wijzigen of verwijderen.",
         "data": {
-          "interval_sec": "Regelinterval (seconden)",
-          "deadband": "Dode zone (°C)",
-          "step_max": "Max. wijziging per stap (°C)",
-          "step_min": "Afrondstap (°C)",
+          "preset_id": "Voorkeuze"
+        }
+      },
+      "preset_new": {
+        "title": "Voorkeuze maken",
+        "description": "Gebruik een korte ID in kleine letters met letters, cijfers en lage streepjes, bijvoorbeeld `sleep` of `home_office`.",
+        "data": {
+          "preset_id": "Voorkeuze-ID",
+          "room_target": "Gewenste kamertemperatuur",
+          "pause": "Regeling pauzeren bij deze voorkeuze",
+          "hvac_mode": "Modus van fysieke thermostaat"
+        }
+      },
+      "preset_edit": {
+        "title": "{preset_id} wijzigen",
+        "description": "Werk deze voorkeuze bij of schakel verwijderen in om deze te wissen. Er moet minstens één voorkeuze overblijven.",
+        "data": {
+          "preset_id": "Voorkeuze-ID",
+          "room_target": "Gewenste kamertemperatuur",
+          "pause": "Regeling pauzeren bij deze voorkeuze",
+          "hvac_mode": "Modus van fysieke thermostaat",
+          "delete_preset": "Deze voorkeuze verwijderen"
+        }
+      },
+      "window_boost": {
+        "title": "Ramen en boost",
+        "description": "Na een vertraging zorgen open ramen voor een energiebesparende temperatuur. Boost vraagt tijdelijk de sterkste gereguleerde uitvoer.",
+        "data": {
+          "window_sensor_entities": "Raamsensoren",
+          "window_delay_sec": "Vertraging voordat raamverlaging ingaat",
+          "boost_duration_sec": "Boostduur"
+        }
+      },
+      "manual": {
+        "title": "Handmatige bediening",
+        "description": "Kies hoe de regeling reageert wanneer iemand de fysieke thermostaat wijzigt of uitschakelt.",
+        "data": {
+          "manual_target_sync": "Handmatige thermostaatwijzigingen overnemen",
+          "manual_delay_sec": "Vertraging voordat een handmatige wijziging wordt overgenomen",
+          "pause_on_hvac_off": "Regeling pauzeren terwijl thermostaat uit staat"
+        }
+      },
+      "learning": {
+        "title": "Leren en oververhitting",
+        "description": "Het leerproces past de correctie in de loop van de tijd aan. Bescherming tegen oververhitting kan de temperatuur verder verlagen als de ruimte niet zoals verwacht afkoelt.",
+        "data": {
+          "enable_learning": "Leren van correctie inschakelen",
           "learn_rate": "Leersnelheid",
-          "trv_min": "Min. thermostaatsetpoint (°C)",
-          "trv_max": "Max. thermostaatsetpoint (°C)",
-          "cooldown_sec": "Wachttijd tussen wijzigingen (seconden)",
-          "boost_duration_sec": "Boostduur (seconden)",
-          "enable_learning": "Leren inschakelen",
-          "pause_on_hvac_off": "Pauzeer de regeling wanneer de thermostaat uit staat",
-          "manual_target_sync": "Handmatige wijzigingen van de thermostaat synchroniseren",
-          "manual_delay_sec": "Vertraging na handmatige wijziging vóór overschrijven (seconden)",
-          "modes": "Modi (JSON: id, target, pause)",
-          "stuck_enable": "Adaptieve overtemperatuur-correctie (verlaagt setpoint als de kamer te warm blijft)",
-          "stuck_seconds": "Evaluatievenster overtemperatuur (seconden)",
-          "stuck_min_drop": "Benodigde afkoeling in venster (°C)",
-          "stuck_step": "Extra verlaagstap bij overtemperatuur (°C)",
-          "window_sensor_entities": "Raamsensor (binary_sensor, optioneel)",
-          "window_delay_sec": "Vertraging bij open raam voor verlaging (seconden)"
+          "stuck_enable": "Adaptieve bescherming tegen oververhitting inschakelen",
+          "stuck_seconds": "Meetperiode voor oververhitting",
+          "stuck_min_drop": "Minimaal verwachte afkoeling",
+          "stuck_step": "Extra verlagingsstap"
+        }
+      },
+      "expert": {
+        "title": "Geavanceerde instellingen",
+        "description": "Deze waarden hebben direct invloed op de stabiliteit en reactiesnelheid van de regeling. Wijzig ze geleidelijk.",
+        "data": {
+          "interval_sec": "Regelinterval",
+          "deadband": "Comfortband",
+          "control_gain": "Regelversterking",
+          "step_max": "Maximale temperatuurwijziging per cyclus",
+          "step_min": "Afrondingsstap van thermostaat",
+          "trv_min": "Minimale temperatuur van fysieke thermostaat",
+          "trv_max": "Maximale temperatuur van fysieke thermostaat",
+          "cooldown_sec": "Minimale tijd tussen wijzigingen"
         }
       }
+    },
+    "error": {
+      "invalid_preset_id": "Gebruik 1–64 kleine letters, cijfers of lage streepjes; het eerste teken moet een letter of cijfer zijn.",
+      "duplicate_preset": "Er bestaat al een voorkeuze met deze ID.",
+      "last_preset": "De laatste voorkeuze kan niet worden verwijderd.",
+      "min_max": "De minimale thermostaattemperatuur moet lager zijn dan de maximale.",
+      "step_order": "De afrondingsstap moet kleiner dan of gelijk zijn aan de maximale wijziging per cyclus."
     }
   },
   "entity": {
+    "climate": {
+      "thermostat": {
+        "name": "Thermostaat",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          }
+        }
+      }
+    },
     "sensor": {
       "error": {
         "name": "Regelfout"
+      },
+      "absolute_error": {
+        "name": "Absolute regelfout"
+      },
+      "mean_absolute_error": {
+        "name": "Gemiddelde absolute fout"
+      },
+      "comfort_score": {
+        "name": "Comfortscore"
+      },
+      "temperature_trend": {
+        "name": "Temperatuurtrend"
+      },
+      "control_output": {
+        "name": "Regeluitgang"
       },
       "offset": {
         "name": "Geleerde offset"
@@ -59,6 +256,12 @@
       "last_set": {
         "name": "Laatst ingesteld thermostaatsetpoint"
       },
+      "confirmed_setpoint": {
+        "name": "Bevestigd thermostaatsetpoint"
+      },
+      "correction": {
+        "name": "Toegepaste correctie"
+      },
       "last_action": {
         "name": "Laatste beslissing (code)"
       },
@@ -66,24 +269,34 @@
         "name": "Laatste beslissing",
         "state": {
           "init": "Initialisatie",
-          "deadband": "In dode zone (geen wijziging)",
-          "deadband_rebase": "Setpoint gewijzigd (basislijn ingesteld)",
-          "cooldown": "Wachttijd actief (geen wijziging)",
+          "deadband_init": "Eerste setpoint vastgesteld",
+          "deadband_rebase": "Doel gewijzigd; basislijn bijgewerkt",
+          "hold": "Setpoint binnen comfortzone vasthouden",
+          "stable_learn": "Stabiele offset geleerd",
+          "cooldown": "Wachten op minimale interval",
           "set_temperature": "Setpoint naar thermostaat gestuurd",
-          "skipped_no_change": "Geen wijziging nodig",
-          "skipped_unavailable_entities": "Entiteiten niet beschikbaar",
-          "skipped_invalid_room_temp": "Kamertemperatuur ongeldig",
-          "boost": "Boost actief (max. verwarmingsvermogen)",
-          "window_open": "Raam open (verlaagd)",
+          "skipped_no_change": "Geen setpointwijziging nodig",
+          "skipped_unavailable_entities": "Bronentiteit niet beschikbaar",
+          "skipped_invalid_room_temp": "Ongeldige kamertemperatuur",
+          "boost": "Boost actief",
+          "window_open": "Raambeveiliging actief",
           "paused": "Regeling gepauzeerd",
-          "stuck_overtemp_down": "Overtemperatuur: extra verlaagd",
-          "reset_offset": "Offset gereset",
-          "manual_target_sync": "Handmatige wijziging gedetecteerd (doel bijgewerkt)",
-          "manual_hold": "Wachten na handmatige wijziging"
+          "hvac_off": "Thermostaat uitgeschakeld",
+          "hvac_mode_set": "Thermostaatmodus gewijzigd",
+          "passive_mode": "Passieve thermostaatmodus",
+          "stuck_overtemp_down": "Extra correctie voor overtemperatuur",
+          "reset_offset": "Geleerde offset gereset",
+          "manual_target_sync": "Handmatige wijziging overgenomen",
+          "manual_hold": "Wachten na handmatige wijziging",
+          "manual_echo": "Eigen thermostaatopdracht bevestigd",
+          "service_error": "Thermostaatopdracht mislukt"
         }
       },
       "change_count": {
         "name": "Aantal setpointwijzigingen"
+      },
+      "manual_change_count": {
+        "name": "Aantal handmatige wijzigingen"
       },
       "window_state": {
         "name": "Raamstatus"
@@ -98,12 +311,40 @@
         "name": "Regeling gepauzeerd"
       }
     },
+    "binary_sensor": {
+      "window_open": {
+        "name": "Raam open"
+      },
+      "boost_running": {
+        "name": "Boost actief"
+      },
+      "control_active": {
+        "name": "Regeling actief"
+      },
+      "controller_problem": {
+        "name": "Regelaarprobleem"
+      }
+    },
+    "switch": {
+      "boost": {
+        "name": "Boost"
+      }
+    },
     "button": {
       "reset_offset": {
         "name": "Offset resetten"
       }
     },
     "select": {
+      "preset_legacy": {
+        "name": "Voorinstelling",
+        "state": {
+          "present": "Aanwezig",
+          "away": "Afwezig",
+          "summer": "Zomer",
+          "winter": "Winter"
+        }
+      },
       "mode": {
         "name": "Modus",
         "state": {

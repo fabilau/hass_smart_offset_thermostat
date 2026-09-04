@@ -5,8 +5,9 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/fabilau/hass_smart_offset_thermostat",
+  "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/fabilau/hass_smart_offset_thermostat/issues",
   "requirements": [],
-  "version": "1.1.33"
+  "version": "2.0.4"
 }

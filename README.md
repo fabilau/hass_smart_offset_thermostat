@@ -1,167 +1,107 @@
-# Smart Offset Thermostat
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Smart Offset Thermostat logo" width="160">
+</p>
 
-[![HACS](https://img.shields.io/badge/HACS-Custom-blue.svg)](#installation)
-[![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg)](LICENSE)
+# 🌡️ Smart Offset Thermostat
 
-**Smart Offset Thermostat** is a Home Assistant integration that creates a virtual thermostat which learns and compensates the temperature offset of physical radiator thermostats using an external room temperature sensor.
+<p align="center">
+  <strong>Comfortable rooms—even when your thermostat measures in the wrong place.</strong>
+</p>
 
-It is designed for setups where the built-in thermostat sensor is inaccurate (e.g. behind curtains, in niches, near windows or radiators).
+Smart radiator thermostats often sit right next to the heat source. That can make the temperature on the display look perfect while the rest of the room still feels too cold—or already too warm.
 
-Smart Offset Thermostat is **manufacturer-agnostic by design**.  
-It operates exclusively by adjusting the **target (setpoint) temperature** and continuously learns from the system behavior.  
-Because it does **not require direct valve control or vendor-specific APIs**, it works with a wide range of thermostats and heating systems.
+Smart Offset Thermostat combines your existing thermostat with a separate room-temperature sensor. You choose how warm or cool the room should feel, and it takes care of the rest directly in Home Assistant.
 
-This approach ensures **broad compatibility** across different manufacturers, protocols, and hardware generations, as long as the device is exposed as a standard Home Assistant climate entity.
+<p align="center">
+  <a href="#installation"><strong>Install Smart Offset Thermostat</strong></a>
+  ·
+  <a href="https://github.com/fabilau/hass_smart_offset_thermostat/issues">Get help</a>
+</p>
 
----
+## ✨ Why you'll love it
 
-## ✨ Key Features
+- 🎯 **The temperature that really matters:** comfort is based on the room, not the warm spot beside the radiator.
+- 🧠 **Gets better over time:** automatic learning adapts to the way your room heats and cools.
+- 🏠 **Feels at home in Home Assistant:** temperature, mode and presets are available in one familiar thermostat card.
+- 🚪 **Saves energy when windows are open:** connect one or more window or door sensors.
+- 🚀 **Warms up quickly when you need it:** Boost gives the room an extra push and stops automatically.
+- 🎛️ **Keeps the real knob useful:** manual changes on the physical thermostat can be adopted automatically.
+- 📊 **Makes comfort visible:** clear insights show temperature trends, comfort and recent activity.
+- ✨ **Easy from the start:** everything is set up with friendly forms—no YAML or JSON editing.
 
-- 📏 Learns thermostat temperature offset automatically
-- 🌡️ Uses an external temperature sensor for accurate room temperature
-- 🎯 Virtual climate entity (usable in dashboards and HomeKit)
-- 🧠 Adaptive learning without aggressive oscillation
-- 🪟 Multi Window sensor support (automatic setback)
-- 🚀 Boost mode (temporary full heating)
-- ♻️ Reset learned offset at any time
-- 🧊 Adaptive over-temperature correction
-- 🧭 Mode select with per-mode targets and pause control
-- 🔁 Manual thermostat change sync with delay (optional, default 10s)
-- ⚙️ Fully configurable via UI (no YAML required)
+## 🏡 Everything you need for smarter comfort
 
----
+Smart Offset Thermostat is designed to quietly fit into everyday life. Set your preferred room temperature from the regular Home Assistant thermostat card and let it handle the physical thermostat for you.
 
-## 🧠 How It Works
+Choose a preset when you leave home, pause control for summer, switch between supported heating and cooling modes, or turn everything off with a single tap. You can change the settings whenever your routine changes.
 
-1. Select:
-   - a physical thermostat
-   - an external room temperature sensor
-   - a window sensor
-   - a desired room temperature
+### 🪟 Fresh air without wasted energy
 
-2. The integration compares:
-   - thermostat temperature
-   - real room temperature
+Connect one or more window or door sensors. When one stays open, Smart Offset Thermostat automatically reduces energy use. Normal comfort control returns when everything is closed again.
 
-3. It adjusts the thermostat setpoint until the room matches the target and learns the required offset.
+### 🚀 Boost when you need it
 
----
+Start Boost from Home Assistant for a quick burst of heating or cooling. It ends automatically after your chosen time and gently returns to normal comfort control.
 
-## 🌡️ Adaptive Over-Temperature Correction
+### 🎛️ Keep using the physical thermostat
 
-If a room stays too warm for a longer time, the integration gradually reduces the thermostat setpoint further to avoid overheating.
+Prefer turning a real knob sometimes? Enable manual-change synchronisation and an adjustment on the physical thermostat can also update your desired room temperature—without the two controls fighting each other.
 
-Default values (configurable):
-- Evaluation window: 30 minutes
-- Required cooling: 0.1 °C
-- Reduction step: 0.5 °C
+### 📊 Understand your room at a glance
 
----
+Built-in insights help you see more than a single temperature value:
 
-## 🪟 Multi Window Sensor
+- how close the room is to your chosen temperature;
+- how consistently it stays inside your comfort range;
+- whether the temperature is rising or falling;
+- when the thermostat last made an adjustment;
+- whether a window, Boost or pause is currently affecting the room.
 
-- Define multiple window sensors
-- Window open → thermostat set to minimum
-- Optional delay before setback (default: 60 seconds)
-- Window closed → target restored immediately
-- Learning is paused while the window is open
+Add these insights to your dashboards and history views to discover what feels best in your home.
 
----
+## ✅ What you need
 
-## 🚀 Boost Mode
+- Home Assistant
+- A thermostat already connected to Home Assistant
+- A separate room-temperature sensor
+- Optional window or door sensors for open-window protection
 
-- Temporarily sets the thermostat to maximum temperature
-- Automatically returns after the configured duration
-- Learning is paused during boost
+It works with many brands. The available heating, cooling and Off controls depend on what your physical thermostat supports in Home Assistant.
 
----
+## 🔄 Updating normally
 
-## ♻️ Reset Offset
+Regular updates keep your existing settings and learned values automatically. As with every important Home Assistant update, creating a backup first is a good idea.
 
-A button entity resets the learned offset to 0.0 and applies it immediately.
-
----
-
-## ⚙️ Configuration
-
-All settings are configurable via the Home Assistant UI:
-- Learning behavior
-- Cooldown & deadband
-- Thermostat limits
-- Adaptive over-temperature correction
-- Window sensor
-- Window open delay
-- Boost duration
-- Manual thermostat change sync and delay
-- Mode settings (targets, pause, add/remove)
-
----
-
-## 🧭 Modes (customizable)
-
-In Options you can edit the `Modes` field as JSON.  
-Each mode is an object with:
-- `id` (string, used in the Mode select)
-- `target` (number)
-- `pause` (true/false)
-
-How to use:
-- After saving, the Mode select will update; pick the active mode there.
-- The current mode’s `target` becomes the room target.
-- If `pause` is true, learning and setpoint changes are suspended.
-- Remove a mode by deleting it from the JSON list and saving.
-
-Example:
-```
-[
-  {"id": "present", "target": 22.0, "pause": false},
-  {"id": "away", "target": 18.0, "pause": true},
-  {"id": "guest", "target": 21.0, "pause": false}
-]
-```
-
----
-
-## 🏠 HomeKit Support
-
-The integration exposes a proper climate entity and works seamlessly with HomeKit via the Home Assistant HomeKit Bridge.
-
----
+<a id="installation"></a>
 
 ## 📦 Installation
 
-### HACS (Custom Repository)
+### HACS (recommended)
 
-1. HACS → Integrations
-2. Custom repositories
-3. Add this GitHub repository
-4. Category: Integration
-5. Install and restart Home Assistant
+1. Open **HACS → Integrations → Custom repositories**.
+2. Add `https://github.com/fabilau/hass_smart_offset_thermostat` as an **Integration** repository.
+3. Install **Smart Offset Thermostat**.
+4. Restart Home Assistant and add the integration from **Settings → Devices & services**.
 
-### Manual
+<details>
+<summary><strong>Manual installation</strong></summary>
 
-Copy `custom_components/smart_offset_thermostat` to `config/custom_components/` and restart Home Assistant.
+<br>
 
----
+Copy `custom_components/smart_offset_thermostat` into your Home Assistant `config/custom_components/` folder, restart Home Assistant, and add the integration from **Settings → Devices & services**.
 
----
+</details>
 
-## ❤️ Support the Project
+## 🍎 HomeKit
 
-If you like this project and want to support its further development, you are very welcome to do so.
+Want thermostat control in the Apple Home app? Share Smart Offset Thermostat through Home Assistant's HomeKit Bridge. The controls shown there depend on what HomeKit and your physical thermostat support.
 
-Your support helps to:
-- improve stability and algorithms
-- add new features
-- maintain compatibility with future Home Assistant versions
+## ❤️ Support the project
 
-👉 **Revolut donation:**  
-`https://revolut.me/fabilrzs`
+Questions, ideas and bug reports are welcome in [GitHub Issues](https://github.com/fabilau/hass_smart_offset_thermostat/issues).
 
-Thank you for your support! 🙏
+If Smart Offset Thermostat makes your home more comfortable and you would like to support its continued development, you can [leave a donation](https://revolut.me/fabilrzs). Thank you! 🙏
 
-## 🧾 License
+## 📄 License
 
-This project is licensed under the PolyForm Noncommercial License.
-You may use, modify and share it for non-commercial purposes.
-Commercial use, selling, or offering this software as part of a paid product or service is not permitted.
+Smart Offset Thermostat is available under the [PolyForm Noncommercial License 1.0.0](LICENSE) for non-commercial use.

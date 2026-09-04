@@ -1,54 +1,251 @@
 {
   "title": "Smart Offset Thermostat",
+  "selector": {
+    "hvac_mode": {
+      "options": {
+        "keep": "Behåll aktuellt läge",
+        "heat": "Värme",
+        "cool": "Kyla",
+        "auto": "Automatiskt (styrs av enheten)",
+        "dry": "Avfuktning",
+        "fan_only": "Endast fläkt",
+        "off": "Av"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "title": "Smart Offset Thermostat",
-        "description": "Välj termostat, rumstemperatursensor (och valfri fönstersensor) samt önskad rumstemperatur.",
+        "title": "Välj dina enheter",
+        "description": "Anslut en fysisk termostat till en tillförlitlig extern rumstemperatursensor.",
         "data": {
           "climate_entity": "Termostat",
-          "room_sensor_entity": "Extern rumstemperatursensor",
-          "room_target": "Måltemperatur för rummet",
-          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)",
-          "window_delay_sec": "Forsening vid oppet fonster fore sankning (sekunder)"
+          "room_sensor_entity": "Rumstemperatursensor"
+        }
+      },
+      "repair_or_setup": {
+        "title": "Återställ eller konfigurera en termostat",
+        "description": "Home Assistant hittade tidigare Smart Offset Thermostat-rum. Återställ ett för att behålla befintliga entiteter och länkar i kontrollpanelen, eller konfigurera en separat ny termostat.",
+        "menu_options": {
+          "repair_select": "Återställ ett befintligt rum",
+          "setup_new": "Konfigurera en ny termostat"
+        },
+        "menu_option_descriptions": {
+          "repair_select": "Återanslut ett tidigare rum och återanvänd dess befintliga entiteter.",
+          "setup_new": "Skapa en separat termostat utan att ändra tidigare rum."
+        }
+      },
+      "repair_select": {
+        "title": "Välj ett rum att återställa",
+        "description": "Välj rummet som du vill återansluta. Dess befintliga entiteter återanvänds.",
+        "data": {
+          "recovery_candidate": "Tidigare rum"
+        }
+      },
+      "repair_sources": {
+        "title": "Återanslut {room_name}",
+        "description": "Välj den fysiska termostaten och rumstemperatursensorn som tillhör {room_name}. Kontrollera båda valen noggrant. Därefter bekräftar du komfortinställningarna.",
+        "data": {
+          "climate_entity": "Fysisk termostat",
+          "room_sensor_entity": "Rumstemperatursensor"
+        },
+        "data_description": {
+          "climate_entity": "Termostaten för värme eller kyla som faktiskt styr rummet.",
+          "room_sensor_entity": "Den externa temperatursensorn vars värde används som rumstemperatur."
+        }
+      },
+      "setup_new": {
+        "title": "Välj enheter för en ny termostat",
+        "description": "Konfigurera en separat Smart Offset Thermostat. Tidigare rum och deras befintliga entiteter ändras inte.",
+        "data": {
+          "climate_entity": "Termostat",
+          "room_sensor_entity": "Rumstemperatursensor"
+        }
+      },
+      "comfort": {
+        "title": "Komfort och funktioner",
+        "description": "Ställ in den första komforttemperaturen och välj de funktioner du vill använda. Du kan finjustera allt senare i integrationens alternativ.",
+        "data": {
+          "room_target": "Önskad rumstemperatur",
+          "hvac_mode": "Termostatens startläge",
+          "window_sensor_entities": "Fönstersensorer (valfritt)",
+          "window_delay_sec": "Fördröjning innan fönstersänkning",
+          "enable_learning": "Lär in optimal termostatkorrigering",
+          "manual_target_sync": "Ta över manuella termostatändringar",
+          "pause_on_hvac_off": "Pausa styrningen när termostaten är avstängd"
+        }
+      },
+      "reconfigure": {
+        "title": "Ändra anslutna enheter",
+        "description": "Välj en annan fysisk termostat eller rumstemperatursensor. Dina förinställningar, den inlärda korrigeringen och alternativen behålls.",
+        "data": {
+          "climate_entity": "Termostat",
+          "room_sensor_entity": "Rumstemperatursensor"
         }
       }
+    },
+    "create_entry": {
+      "repair_successful": "{room_name} har återställts. Befintliga entiteter och länkar i kontrollpanelen har behållits."
+    },
+    "error": {
+      "entity_not_found": "Den valda entiteten är inte längre tillgänglig. Välj en annan entitet.",
+      "unsupported_climate": "Välj en termostat som stöder en enda måltemperatur och Värme eller Kyla. Enheter som endast stöder ett temperaturintervall för Värme/Kyla stöds inte.",
+      "already_configured": "Den här fysiska termostaten styrs redan av en annan Smart Offset Thermostat."
+    },
+    "abort": {
+      "reconfigure_successful": "De anslutna enheterna har uppdaterats.",
+      "repair_not_available": "Det här rummet har redan återställts eller är inte längre tillgängligt. Starta konfigurationen igen för att uppdatera listan.",
+      "already_configured": "Den här fysiska termostaten är redan konfigurerad.",
+      "already_in_progress": "Konfigurationen av den här fysiska termostaten pågår redan."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Styralternativ",
-        "description": "Finjustera hur styrningen beter sig.",
+        "title": "Inställningar för Smart Offset Thermostat",
+        "description": "Välj området som du vill konfigurera.",
+        "menu_options": {
+          "presets": "Komfortförinställningar",
+          "window_boost": "Fönster och boost",
+          "manual": "Manuell styrning",
+          "learning": "Inlärning och överhettning",
+          "expert": "Avancerade inställningar"
+        },
+        "menu_option_descriptions": {
+          "presets": "Skapa, ändra eller ta bort förinställningar för rumstemperatur.",
+          "window_boost": "Konfigurera skydd vid öppna fönster och boostens varaktighet.",
+          "manual": "Välj hur ändringar på den fysiska termostaten och avstängt läge hanteras.",
+          "learning": "Justera inlärning av korrigering och adaptivt skydd mot överhettning.",
+          "expert": "Justera tider, gränser och styrenhetens respons."
+        }
+      },
+      "presets": {
+        "title": "Komfortförinställningar",
+        "description": "Skapa en ny förinställning eller ändra en befintlig.",
+        "menu_options": {
+          "preset_new": "Skapa förinställning",
+          "preset_select": "Ändra förinställning"
+        },
+        "menu_option_descriptions": {
+          "preset_new": "Lägg till ett annat mål, pausläge och termostatläge.",
+          "preset_select": "Ändra eller ta bort en befintlig förinställning."
+        }
+      },
+      "preset_select": {
+        "title": "Välj en förinställning",
+        "description": "Välj förinställningen som du vill ändra eller ta bort.",
         "data": {
-          "interval_sec": "Styrintervall (sekunder)",
-          "deadband": "Dödband (°C)",
-          "step_max": "Max ändring per steg (°C)",
-          "step_min": "Avrundningssteg (°C)",
+          "preset_id": "Förinställning"
+        }
+      },
+      "preset_new": {
+        "title": "Skapa förinställning",
+        "description": "Använd ett kort ID med små bokstäver, siffror och understreck, till exempel `sleep` eller `home_office`.",
+        "data": {
+          "preset_id": "Förinställnings-ID",
+          "room_target": "Önskad rumstemperatur",
+          "pause": "Pausa styrningen med denna förinställning",
+          "hvac_mode": "Den fysiska termostatens läge"
+        }
+      },
+      "preset_edit": {
+        "title": "Ändra {preset_id}",
+        "description": "Uppdatera förinställningen eller aktivera borttagning för att radera den. Minst en förinställning måste finnas kvar.",
+        "data": {
+          "preset_id": "Förinställnings-ID",
+          "room_target": "Önskad rumstemperatur",
+          "pause": "Pausa styrningen med denna förinställning",
+          "hvac_mode": "Den fysiska termostatens läge",
+          "delete_preset": "Ta bort denna förinställning"
+        }
+      },
+      "window_boost": {
+        "title": "Fönster och boost",
+        "description": "Efter en fördröjning använder öppna fönster en energisparande temperatur. Boost begär tillfälligt den starkaste reglerade effekten.",
+        "data": {
+          "window_sensor_entities": "Fönstersensorer",
+          "window_delay_sec": "Fördröjning innan fönstersänkning",
+          "boost_duration_sec": "Boostens varaktighet"
+        }
+      },
+      "manual": {
+        "title": "Manuell styrning",
+        "description": "Välj hur styrenheten reagerar när någon ändrar eller stänger av den fysiska termostaten.",
+        "data": {
+          "manual_target_sync": "Ta över manuella termostatändringar",
+          "manual_delay_sec": "Fördröjning innan en manuell ändring tas över",
+          "pause_on_hvac_off": "Pausa styrningen när termostaten är avstängd"
+        }
+      },
+      "learning": {
+        "title": "Inlärning och överhettning",
+        "description": "Inlärningen anpassar korrigeringen över tid. Skyddet mot överhettning kan sänka temperaturen ytterligare om rummet inte svalnar som förväntat.",
+        "data": {
+          "enable_learning": "Aktivera inlärning av korrigering",
           "learn_rate": "Inlärningshastighet",
-          "trv_min": "Min termostatbörvärde (°C)",
-          "trv_max": "Max termostatbörvärde (°C)",
-          "cooldown_sec": "Spärrtid mellan ändringar (sekunder)",
-          "boost_duration_sec": "Boostlängd (sekunder)",
-          "enable_learning": "Aktivera inlärning",
-          "pause_on_hvac_off": "Pausa styrning när termostaten är av",
-          "manual_target_sync": "Synkronisera manuella ändringar på termostaten",
-          "manual_delay_sec": "Fördröjning efter manuell ändring innan överskrivning (sekunder)",
-          "modes": "Lägen (JSON: id, target, pause)",
-          "stuck_enable": "Adaptiv övertemperatur-korrigering (sänker börvärdet om rummet förblir för varmt)",
-          "stuck_seconds": "Utvärderingsfönster övertemperatur (sekunder)",
-          "stuck_min_drop": "Krav på nedkylning i fönstret (°C)",
-          "stuck_step": "Extra sänkningssteg vid övertemperatur (°C)",
-          "window_sensor_entities": "Fönstersensor (binary_sensor, valfri)",
-          "window_delay_sec": "Forsening vid oppet fonster fore sankning (sekunder)"
+          "stuck_enable": "Aktivera adaptivt skydd mot överhettning",
+          "stuck_seconds": "Utvärderingsperiod för överhettning",
+          "stuck_min_drop": "Minsta förväntade avkylning",
+          "stuck_step": "Ytterligare sänkningssteg"
+        }
+      },
+      "expert": {
+        "title": "Avancerade inställningar",
+        "description": "Dessa värden påverkar direkt styrenhetens stabilitet och reaktionsförmåga. Ändra dem stegvis.",
+        "data": {
+          "interval_sec": "Styrintervall",
+          "deadband": "Komfortband",
+          "control_gain": "Styrenhetens förstärkning",
+          "step_max": "Största temperaturändring per cykel",
+          "step_min": "Termostatens avrundningssteg",
+          "trv_min": "Minsta temperatur för fysisk termostat",
+          "trv_max": "Högsta temperatur för fysisk termostat",
+          "cooldown_sec": "Minsta tid mellan ändringar"
         }
       }
+    },
+    "error": {
+      "invalid_preset_id": "Använd 1–64 små bokstäver, siffror eller understreck. Det första tecknet måste vara en bokstav eller siffra.",
+      "duplicate_preset": "Det finns redan en förinställning med detta ID.",
+      "last_preset": "Den sista förinställningen kan inte tas bort.",
+      "min_max": "Termostatens lägsta temperatur måste vara lägre än den högsta.",
+      "step_order": "Avrundningssteget måste vara mindre än eller lika med den största ändringen per cykel."
     }
   },
   "entity": {
+    "climate": {
+      "thermostat": {
+        "name": "Termostat",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          }
+        }
+      }
+    },
     "sensor": {
       "error": {
         "name": "Styrfel"
+      },
+      "absolute_error": {
+        "name": "Absolut styravvikelse"
+      },
+      "mean_absolute_error": {
+        "name": "Genomsnittlig absolut avvikelse"
+      },
+      "comfort_score": {
+        "name": "Komfortpoäng"
+      },
+      "temperature_trend": {
+        "name": "Temperaturtrend"
+      },
+      "control_output": {
+        "name": "Reglerutgång"
       },
       "offset": {
         "name": "Inlärd offset"
@@ -59,6 +256,12 @@
       "last_set": {
         "name": "Senast inställt termostatbörvärde"
       },
+      "confirmed_setpoint": {
+        "name": "Bekräftat termostatbörvärde"
+      },
+      "correction": {
+        "name": "Tillämpad korrigering"
+      },
       "last_action": {
         "name": "Senaste beslut (kod)"
       },
@@ -66,24 +269,34 @@
         "name": "Senaste beslut",
         "state": {
           "init": "Initialisering",
-          "deadband": "I dödbandet (ingen ändring)",
-          "deadband_rebase": "Börvärde ändrat (baslinje satt)",
-          "cooldown": "Spärrtid aktiv (ingen ändring)",
+          "deadband_init": "Första börvärdet fastställt",
+          "deadband_rebase": "Mål ändrat; basvärde uppdaterat",
+          "hold": "Håller börvärdet inom komfortzonen",
+          "stable_learn": "Stabil offset inlärd",
+          "cooldown": "Väntar på spärrtid",
           "set_temperature": "Börvärde skickat till termostat",
-          "skipped_no_change": "Ingen ändring behövs",
-          "skipped_unavailable_entities": "Entiteter inte tillgängliga",
-          "skipped_invalid_room_temp": "Rumstemperatur ogiltig",
-          "boost": "Boost aktiv (max. värmeeffekt)",
-          "window_open": "Fönster öppet (sänkt)",
+          "skipped_no_change": "Ingen börvärdesändring behövs",
+          "skipped_unavailable_entities": "Källentitet inte tillgänglig",
+          "skipped_invalid_room_temp": "Ogiltig rumstemperatur",
+          "boost": "Boost aktiv",
+          "window_open": "Fönsterskydd aktivt",
           "paused": "Styrning pausad",
-          "stuck_overtemp_down": "Övertemperatur: ytterligare sänkt",
-          "reset_offset": "Offset återställd",
-          "manual_target_sync": "Manuell ändring upptäckt (mål uppdaterat)",
-          "manual_hold": "Väntar efter manuell ändring"
+          "hvac_off": "Termostat avstängd",
+          "hvac_mode_set": "Termostatläge ändrat",
+          "passive_mode": "Passivt termostatläge",
+          "stuck_overtemp_down": "Extra korrigering för övertemperatur",
+          "reset_offset": "Inlärd offset återställd",
+          "manual_target_sync": "Manuell ändring övertagen",
+          "manual_hold": "Väntar efter manuell ändring",
+          "manual_echo": "Eget termostatkommando bekräftat",
+          "service_error": "Termostatkommandot misslyckades"
         }
       },
       "change_count": {
         "name": "Antal börvärdesändringar"
+      },
+      "manual_change_count": {
+        "name": "Antal manuella ändringar"
       },
       "window_state": {
         "name": "Fönsterstatus"
@@ -98,12 +311,40 @@
         "name": "Styrning pausad"
       }
     },
+    "binary_sensor": {
+      "window_open": {
+        "name": "Fönster öppet"
+      },
+      "boost_running": {
+        "name": "Boost aktiv"
+      },
+      "control_active": {
+        "name": "Reglering aktiv"
+      },
+      "controller_problem": {
+        "name": "Reglerproblem"
+      }
+    },
+    "switch": {
+      "boost": {
+        "name": "Boost"
+      }
+    },
     "button": {
       "reset_offset": {
         "name": "Återställ offset"
       }
     },
     "select": {
+      "preset_legacy": {
+        "name": "Förinställning",
+        "state": {
+          "present": "Hemma",
+          "away": "Borta",
+          "summer": "Sommar",
+          "winter": "Vinter"
+        }
+      },
       "mode": {
         "name": "Läge",
         "state": {

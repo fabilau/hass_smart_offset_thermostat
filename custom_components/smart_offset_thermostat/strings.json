@@ -1,51 +1,252 @@
 {
   "title": "Smart Offset Thermostat",
+  "selector": {
+    "hvac_mode": {
+      "options": {
+        "keep": "Keep current mode",
+        "heat": "Heat",
+        "cool": "Cool",
+        "auto": "Automatic (device controlled)",
+        "dry": "Dry",
+        "fan_only": "Fan only",
+        "off": "Off"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
-        "title": "Smart Offset Thermostat",
-        "description": "Select thermostat, room sensor and the desired room temperature.",
+        "title": "Choose your devices",
+        "description": "Connect one physical thermostat to a reliable external room temperature sensor.",
         "data": {
           "climate_entity": "Thermostat",
-          "room_sensor_entity": "Room temperature sensor",
+          "room_sensor_entity": "Room temperature sensor"
+        }
+      },
+      "repair_or_setup": {
+        "title": "Restore or set up a thermostat",
+        "description": "Home Assistant found previous Smart Offset Thermostat rooms. Restore one to retain its existing entities and dashboard links, or set up a separate new thermostat.",
+        "menu_options": {
+          "repair_select": "Restore an existing room",
+          "setup_new": "Set up a new thermostat"
+        },
+        "menu_option_descriptions": {
+          "repair_select": "Reconnect a previous room and reuse its existing entities.",
+          "setup_new": "Create a separate thermostat without changing previous rooms."
+        }
+      },
+      "repair_select": {
+        "title": "Choose a room to restore",
+        "description": "Choose the room you want to reconnect. Its existing entities will be reused.",
+        "data": {
+          "recovery_candidate": "Previous room"
+        }
+      },
+      "repair_sources": {
+        "title": "Reconnect {room_name}",
+        "description": "Select the physical thermostat and room temperature sensor that belong to {room_name}. Check both selections carefully. You will confirm the comfort settings next.",
+        "data": {
+          "climate_entity": "Physical thermostat",
+          "room_sensor_entity": "Room temperature sensor"
+        },
+        "data_description": {
+          "climate_entity": "The heating or cooling thermostat that actually controls the room.",
+          "room_sensor_entity": "The external temperature sensor whose value is used as the room temperature."
+        }
+      },
+      "setup_new": {
+        "title": "Choose devices for a new thermostat",
+        "description": "Set up a separate Smart Offset Thermostat. Previous rooms and their existing entities will not be changed.",
+        "data": {
+          "climate_entity": "Thermostat",
+          "room_sensor_entity": "Room temperature sensor"
+        }
+      },
+
+      "comfort": {
+        "title": "Comfort and features",
+        "description": "Set your initial comfort target and choose the features you want to use. You can fine-tune everything later in the integration options.",
+        "data": {
           "room_target": "Room target temperature",
-          "window_sensor_entities": "Window sensors (optional, multiple)",
-          "window_delay_sec": "Window open delay before setback (seconds)"
+          "hvac_mode": "Initial thermostat mode",
+          "window_sensor_entities": "Window sensors (optional)",
+          "window_delay_sec": "Delay before window setback",
+          "enable_learning": "Learn the optimal thermostat offset",
+          "manual_target_sync": "Adopt manual thermostat changes",
+          "pause_on_hvac_off": "Pause control while the thermostat is off"
+        }
+      },
+      "reconfigure": {
+        "title": "Change connected devices",
+        "description": "Select a different physical thermostat or room temperature sensor. Your presets, learned offset and options are preserved.",
+        "data": {
+          "climate_entity": "Thermostat",
+          "room_sensor_entity": "Room temperature sensor"
         }
       }
+    },
+    "create_entry": {
+      "repair_successful": "{room_name} was restored successfully. Its existing entities and dashboard links have been retained."
+    },
+    "error": {
+      "entity_not_found": "The selected entity is no longer available. Choose another entity.",
+      "unsupported_climate": "Choose a thermostat that supports a single target temperature and Heat or Cool. Range-only Heat/Cool devices are not supported.",
+      "already_configured": "This physical thermostat is already controlled by another Smart Offset Thermostat."
+    },
+    "abort": {
+      "reconfigure_successful": "The connected devices were updated successfully.",
+      "repair_not_available": "This room was already restored or is no longer available. Start setup again to refresh the list.",
+      "already_configured": "This physical thermostat is already configured.",
+      "already_in_progress": "Configuration for this physical thermostat is already in progress."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Control options",
-        "description": "Fine-tune how the controller behaves.",
+        "title": "Smart Offset Thermostat settings",
+        "description": "Choose the area you want to configure.",
+        "menu_options": {
+          "presets": "Comfort presets",
+          "window_boost": "Windows and boost",
+          "manual": "Manual control",
+          "learning": "Learning and overheating",
+          "expert": "Expert settings"
+        },
+        "menu_option_descriptions": {
+          "presets": "Create, edit or remove room-temperature presets.",
+          "window_boost": "Configure open-window protection and boost duration.",
+          "manual": "Choose how physical thermostat changes and off mode are handled.",
+          "learning": "Tune offset learning and adaptive overheating protection.",
+          "expert": "Adjust timing, limits and controller response."
+        }
+      },
+      "presets": {
+        "title": "Comfort presets",
+        "description": "Create a new preset or edit an existing one.",
+        "menu_options": {
+          "preset_new": "Create preset",
+          "preset_select": "Edit preset"
+        },
+        "menu_option_descriptions": {
+          "preset_new": "Add another target, pause state and thermostat mode.",
+          "preset_select": "Change or remove an existing preset."
+        }
+      },
+      "preset_select": {
+        "title": "Choose a preset",
+        "description": "Select the preset you want to edit or remove.",
         "data": {
-          "interval_sec": "Control interval (seconds)",
-          "deadband": "Deadband (°C)",
-          "step_max": "Max change per step (°C)",
-          "step_min": "Rounding step (°C)",
+          "preset_id": "Preset"
+        }
+      },
+      "preset_new": {
+        "title": "Create preset",
+        "description": "Use a short lowercase ID with letters, numbers and underscores, for example `sleep` or `home_office`.",
+        "data": {
+          "preset_id": "Preset ID",
+          "room_target": "Room target temperature",
+          "pause": "Pause control in this preset",
+          "hvac_mode": "Physical thermostat mode"
+        }
+      },
+      "preset_edit": {
+        "title": "Edit {preset_id}",
+        "description": "Update this preset or enable deletion to remove it. At least one preset must remain.",
+        "data": {
+          "preset_id": "Preset ID",
+          "room_target": "Room target temperature",
+          "pause": "Pause control in this preset",
+          "hvac_mode": "Physical thermostat mode",
+          "delete_preset": "Delete this preset"
+        }
+      },
+      "window_boost": {
+        "title": "Windows and boost",
+        "description": "Open windows apply an energy-saving setpoint after a delay. Boost temporarily requests the strongest regulated output.",
+        "data": {
+          "window_sensor_entities": "Window sensors",
+          "window_delay_sec": "Delay before window setback",
+          "boost_duration_sec": "Boost duration"
+        }
+      },
+      "manual": {
+        "title": "Manual control",
+        "description": "Choose how the controller reacts when somebody changes or turns off the physical thermostat.",
+        "data": {
+          "manual_target_sync": "Adopt manual thermostat changes",
+          "manual_delay_sec": "Delay before adopting a manual change",
+          "pause_on_hvac_off": "Pause control while the thermostat is off"
+        }
+      },
+      "learning": {
+        "title": "Learning and overheating",
+        "description": "Learning adapts the offset over time. Overheating protection can reduce the setpoint further if the room does not cool as expected.",
+        "data": {
+          "enable_learning": "Enable offset learning",
           "learn_rate": "Learning rate",
-          "trv_min": "Min thermostat setpoint (°C)",
-          "trv_max": "Max thermostat setpoint (°C)",
-          "cooldown_sec": "Cooldown between changes (seconds)",
-          "enable_learning": "Enable learning",
-          "pause_on_hvac_off": "Pause control when thermostat is off",
-          "modes": "Modes (JSON: id, target, pause)",
-          "boost_duration_sec": "Boost duration (seconds)",
-          "stuck_enable": "Adaptive over-temp correction (reduce setpoint if room stays too warm)",
-          "stuck_seconds": "Over-temp evaluation window (seconds)",
-          "stuck_min_drop": "Required cooling within window (°C)",
-          "stuck_step": "Extra reduction step when too warm (°C)",
-          "window_sensor_entities": "Window sensors (optional, multiple)"
+          "stuck_enable": "Enable adaptive overheating protection",
+          "stuck_seconds": "Overheating evaluation window",
+          "stuck_min_drop": "Minimum expected cooling",
+          "stuck_step": "Additional reduction step"
+        }
+      },
+      "expert": {
+        "title": "Expert settings",
+        "description": "These values directly affect controller stability and responsiveness. Change them gradually.",
+        "data": {
+          "interval_sec": "Control interval",
+          "deadband": "Comfort deadband",
+          "control_gain": "Controller gain",
+          "step_max": "Maximum setpoint change per cycle",
+          "step_min": "Thermostat rounding step",
+          "trv_min": "Minimum physical thermostat setpoint",
+          "trv_max": "Maximum physical thermostat setpoint",
+          "cooldown_sec": "Minimum time between changes"
         }
       }
+    },
+    "error": {
+      "invalid_preset_id": "Use 1–64 lowercase letters, numbers or underscores; the first character must be a letter or number.",
+      "duplicate_preset": "A preset with this ID already exists.",
+      "last_preset": "The last preset cannot be deleted.",
+      "min_max": "The minimum thermostat setpoint must be lower than the maximum.",
+      "step_order": "The rounding step must be smaller than or equal to the maximum change per cycle."
     }
   },
   "entity": {
+    "climate": {
+      "thermostat": {
+        "name": "Thermostat",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          }
+        }
+      }
+    },
     "sensor": {
       "error": {
         "name": "Control error"
+      },
+      "absolute_error": {
+        "name": "Absolute control error"
+      },
+      "mean_absolute_error": {
+        "name": "Mean absolute error"
+      },
+      "comfort_score": {
+        "name": "Comfort score"
+      },
+      "temperature_trend": {
+        "name": "Temperature trend"
+      },
+      "control_output": {
+        "name": "Control output"
       },
       "offset": {
         "name": "Learned offset"
@@ -56,6 +257,12 @@
       "last_set": {
         "name": "Last set thermostat setpoint"
       },
+      "confirmed_setpoint": {
+        "name": "Confirmed thermostat setpoint"
+      },
+      "correction": {
+        "name": "Applied correction"
+      },
       "last_action": {
         "name": "Last decision (code)"
       },
@@ -63,22 +270,34 @@
         "name": "Last decision",
         "state": {
           "init": "Initialization",
-          "deadband": "In deadband (no change)",
-          "deadband_rebase": "Setpoint changed (baseline set)",
-          "cooldown": "Cooldown active (no change)",
+          "deadband_init": "Initial setpoint established",
+          "deadband_rebase": "Target changed; baseline updated",
+          "hold": "Holding setpoint in comfort band",
+          "stable_learn": "Stable offset learned",
+          "cooldown": "Waiting for cooldown",
           "set_temperature": "Setpoint sent to thermostat",
-          "skipped_no_change": "No change needed",
-          "skipped_unavailable_entities": "Entities unavailable",
-          "skipped_invalid_room_temp": "Room temperature invalid",
-          "boost": "Boost active (max heating power)",
-          "window_open": "Window open (reduced)",
+          "skipped_no_change": "No setpoint change needed",
+          "skipped_unavailable_entities": "Source entity unavailable",
+          "skipped_invalid_room_temp": "Invalid room temperature",
+          "boost": "Boost active",
+          "window_open": "Window protection active",
           "paused": "Control paused",
-          "stuck_overtemp_down": "Over-temperature: additionally reduced",
-          "reset_offset": "Offset reset"
+          "hvac_off": "Thermostat is off",
+          "hvac_mode_set": "Thermostat mode changed",
+          "passive_mode": "Passive thermostat mode",
+          "stuck_overtemp_down": "Additional overheating correction",
+          "reset_offset": "Learned offset reset",
+          "manual_target_sync": "Manual change adopted",
+          "manual_hold": "Waiting after manual change",
+          "manual_echo": "Own thermostat command confirmed",
+          "service_error": "Thermostat command failed"
         }
       },
       "change_count": {
         "name": "Number of setpoint changes"
+      },
+      "manual_change_count": {
+        "name": "Number of manual changes"
       },
       "window_state": {
         "name": "Window state"
@@ -93,12 +312,40 @@
         "name": "Control paused"
       }
     },
+    "binary_sensor": {
+      "window_open": {
+        "name": "Window open"
+      },
+      "boost_running": {
+        "name": "Boost running"
+      },
+      "control_active": {
+        "name": "Control active"
+      },
+      "controller_problem": {
+        "name": "Controller problem"
+      }
+    },
+    "switch": {
+      "boost": {
+        "name": "Boost"
+      }
+    },
     "button": {
       "reset_offset": {
         "name": "Reset offset"
       }
     },
     "select": {
+      "preset_legacy": {
+        "name": "Preset",
+        "state": {
+          "present": "Present",
+          "away": "Away",
+          "summer": "Summer",
+          "winter": "Winter"
+        }
+      },
       "mode": {
         "name": "Mode",
         "state": {
