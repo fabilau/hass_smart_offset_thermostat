@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.5
+
+- Fixed window status updates after a window is closed.
+
 ## v2.0.4
 
 ### Reliable repair of the 2.0 UI regression

@@ -646,10 +646,10 @@ class SmartOffsetController:
         self._ensure_window_listener()
 
     def _ensure_window_listener(self) -> None:
-        entities = tuple(normalize_entity_ids(self.opt(CONF_WINDOW_SENSORS)))
-        legacy = self.opt(CONF_WINDOW_SENSOR)
-        if legacy and legacy not in entities:
-            entities = (*entities, str(legacy))
+        configured = self.opt(CONF_WINDOW_SENSORS)
+        if configured is None:
+            configured = self.opt(CONF_WINDOW_SENSOR)
+        entities = tuple(normalize_entity_ids(configured))
         if entities == self._window_entities:
             return
         if self._window_unsub is not None:
@@ -1077,6 +1077,9 @@ class SmartOffsetController:
         room_entity = self.entry.data[CONF_ROOM_SENSOR]
         climate = self.hass.states.get(climate_entity)
         room = self.hass.states.get(room_entity)
+        now = self.hass.loop.time()
+        window_setback = self._window_setback(now)
+        self._window_setback_active = window_setback
         if (
             climate is None
             or room is None
@@ -1097,7 +1100,6 @@ class SmartOffsetController:
             self._notify()
             return
 
-        now = self.hass.loop.time()
         minimum, maximum, device_step = self._device_limits(climate)
         device_target = to_celsius(
             climate.attributes.get(ATTR_TEMPERATURE),
@@ -1137,8 +1139,6 @@ class SmartOffsetController:
             self._reset_dynamic_state(rebase=True)
             self._block_learning_for_settle()
 
-        window_setback = self._window_setback(now)
-        self._window_setback_active = window_setback
         boost_active = self.boost_active and now < self.boost_until
         if self.boost_active and not boost_active:
             self._cancel_boost(mark_rebase=True)
@@ -1340,6 +1340,7 @@ class SmartOffsetController:
                 override, normal_control=False
             ):
                 return
+            self._update_control_output(hvac_mode, override, minimum, maximum)
             self.last_action = "window_open"
             self._reset_dynamic_state(rebase=False)
             self._notify()
@@ -1359,6 +1360,7 @@ class SmartOffsetController:
                 override, normal_control=False
             ):
                 return
+            self._update_control_output(hvac_mode, override, minimum, maximum)
             self.last_action = "boost"
             self._reset_dynamic_state(rebase=False)
             self._notify()

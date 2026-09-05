@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Final
 
 DOMAIN: Final = "smart_offset_thermostat"
-INTEGRATION_VERSION: Final = "2.0.4"
+INTEGRATION_VERSION: Final = "2.0.5"
 CONFIG_ENTRY_VERSION: Final = 3
 CONFIG_ENTRY_MINOR_VERSION: Final = 5
 
