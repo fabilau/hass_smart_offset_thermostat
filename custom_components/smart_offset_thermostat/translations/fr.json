@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Conserver le mode actuel",
-        "heat": "Chauffage",
-        "cool": "Climatisation",
+        "heat": "Chauffage (régulé par Smart Offset Thermostat)",
+        "cool": "Climatisation (régulée par Smart Offset Thermostat)",
         "auto": "Automatique (contrôlé par l’appareil)",
         "dry": "Déshumidification",
         "fan_only": "Ventilation seule",
         "off": "Arrêt"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Présent",
+        "away": "Absent",
+        "summer": "Été",
+        "winter": "Hiver"
       }
     }
   },
@@ -69,7 +77,7 @@
           "room_target": "Température ambiante cible",
           "hvac_mode": "Mode initial du thermostat",
           "window_sensor_entities": "Capteurs de fenêtre (facultatifs)",
-          "window_delay_sec": "Délai avant l’abaissement pour fenêtre ouverte",
+          "window_delay_sec": "Délai avant la protection pour fenêtre ouverte",
           "enable_learning": "Apprendre le décalage optimal du thermostat",
           "manual_target_sync": "Adopter les modifications manuelles du thermostat",
           "pause_on_hvac_off": "Suspendre la régulation lorsque le thermostat est éteint"
@@ -106,14 +114,14 @@
         "description": "Choisissez la rubrique à configurer.",
         "menu_options": {
           "presets": "Préréglages de confort",
-          "window_boost": "Fenêtres et boost",
+          "window_boost": "Fenêtres et mode turbo",
           "manual": "Commande manuelle",
           "learning": "Apprentissage et surchauffe",
           "expert": "Réglages avancés"
         },
         "menu_option_descriptions": {
           "presets": "Créez, modifiez ou supprimez des préréglages de température ambiante.",
-          "window_boost": "Configurez la protection pour fenêtre ouverte et la durée du boost.",
+          "window_boost": "Configurez la protection pour fenêtre ouverte et la durée du mode turbo.",
           "manual": "Choisissez la gestion des modifications du thermostat physique et du mode arrêt.",
           "learning": "Réglez l’apprentissage du décalage et la protection adaptative contre la surchauffe.",
           "expert": "Ajustez les temporisations, les limites et la réponse du contrôleur."
@@ -127,7 +135,7 @@
           "preset_select": "Modifier un préréglage"
         },
         "menu_option_descriptions": {
-          "preset_new": "Ajoutez une autre cible, un état de pause et un mode de thermostat.",
+          "preset_new": "Ajoutez une autre température cible, un état de pause et un mode de thermostat.",
           "preset_select": "Modifiez ou supprimez un préréglage existant."
         }
       },
@@ -140,7 +148,7 @@
       },
       "preset_new": {
         "title": "Créer un préréglage",
-        "description": "Utilisez un identifiant court en minuscules avec des lettres, des chiffres et des tirets bas, par exemple `sleep` ou `home_office`.",
+        "description": "Utilisez un identifiant court en minuscules avec des lettres, des chiffres et des tirets bas, par exemple `nuit` ou `bureau_maison`.",
         "data": {
           "preset_id": "Identifiant du préréglage",
           "room_target": "Température ambiante cible",
@@ -149,7 +157,7 @@
         }
       },
       "preset_edit": {
-        "title": "Modifier {preset_id}",
+        "title": "Modifier un préréglage",
         "description": "Mettez à jour ce préréglage ou activez la suppression pour l’effacer. Au moins un préréglage doit être conservé.",
         "data": {
           "preset_id": "Identifiant du préréglage",
@@ -160,12 +168,12 @@
         }
       },
       "window_boost": {
-        "title": "Fenêtres et boost",
-        "description": "Après un délai, une fenêtre ouverte applique une consigne économe en énergie. Le boost demande temporairement la puissance régulée maximale.",
+        "title": "Fenêtres et mode turbo",
+        "description": "Après un délai, une fenêtre ouverte active une consigne économe en énergie. Le mode turbo demande temporairement la puissance régulée maximale.",
         "data": {
           "window_sensor_entities": "Capteurs de fenêtre",
-          "window_delay_sec": "Délai avant l’abaissement pour fenêtre ouverte",
-          "boost_duration_sec": "Durée du boost"
+          "window_delay_sec": "Délai avant la protection pour fenêtre ouverte",
+          "boost_duration_sec": "Durée du mode turbo"
         }
       },
       "manual": {
@@ -216,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Thermostat",
+        "state": {
+          "heat": "Chauffage",
+          "cool": "Climatisation",
+          "auto": "Automatique"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -223,47 +236,435 @@
               "away": "Absent",
               "summer": "Été",
               "winter": "Hiver"
-            }
+            },
+            "name": "Préréglage"
+          },
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "external_temperature_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "learned_offset": {
+            "name": "Décalage appris"
+          },
+          "control_error": {
+            "name": "Erreur de régulation"
+          },
+          "control_output": {
+            "name": "Sortie de régulation"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Erreur de régulation"
+        "name": "Erreur de régulation",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Erreur absolue de régulation"
+        "name": "Erreur absolue de régulation",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Erreur absolue moyenne"
+        "name": "Erreur absolue moyenne",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Indice de confort"
+        "name": "Indice de confort",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Tendance de température"
+        "name": "Tendance de température",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "control_output": {
-        "name": "Sortie de régulation"
+        "name": "Sortie de régulation",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "offset": {
-        "name": "Offset appris"
+        "name": "Décalage appris",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "target_trv": {
-        "name": "Consigne calculée du thermostat"
+        "name": "Consigne calculée du thermostat",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "last_set": {
-        "name": "Dernière consigne envoyée au thermostat"
+        "name": "Dernière consigne envoyée au thermostat",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Consigne confirmée du thermostat"
+        "name": "Consigne confirmée du thermostat",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "correction": {
-        "name": "Correction appliquée"
+        "name": "Correction appliquée",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "last_action": {
-        "name": "Dernière décision (code)"
+        "name": "Dernière décision (code)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "last_action_text": {
         "name": "Dernière décision",
@@ -272,51 +673,289 @@
           "deadband_init": "Consigne initiale établie",
           "deadband_rebase": "Cible modifiée ; référence mise à jour",
           "hold": "Maintien de la consigne dans la zone de confort",
-          "stable_learn": "Offset stable appris",
-          "cooldown": "Attente du délai de protection",
+          "stable_learn": "Décalage stable appris",
+          "cooldown": "Attente entre les réglages",
           "set_temperature": "Consigne envoyée au thermostat",
           "skipped_no_change": "Aucun changement de consigne nécessaire",
           "skipped_unavailable_entities": "Entité source indisponible",
           "skipped_invalid_room_temp": "Température ambiante invalide",
-          "boost": "Boost actif",
+          "boost": "Mode turbo actif",
           "window_open": "Protection de fenêtre active",
           "paused": "Régulation en pause",
           "hvac_off": "Thermostat éteint",
           "hvac_mode_set": "Mode du thermostat modifié",
           "passive_mode": "Mode passif du thermostat",
           "stuck_overtemp_down": "Correction supplémentaire de surchauffe",
-          "reset_offset": "Offset appris réinitialisé",
+          "reset_offset": "Décalage appris réinitialisé",
           "manual_target_sync": "Modification manuelle adoptée",
           "manual_hold": "Attente après modification manuelle",
-          "manual_echo": "Commande propre au thermostat confirmée",
+          "manual_echo": "Commande du régulateur confirmée",
           "service_error": "Échec de la commande du thermostat"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
         }
       },
       "change_count": {
-        "name": "Nombre de changements de consigne"
+        "name": "Nombre de changements de consigne",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Nombre de modifications manuelles"
+        "name": "Nombre de modifications manuelles",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "window_state": {
-        "name": "État de fenêtre"
+        "name": "État de la fenêtre",
+        "state": {
+          "open": "Ouverte",
+          "closed": "Fermée"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Temps restant boost"
+        "name": "Temps restant du mode turbo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost actif"
+        "name": "Mode turbo actif",
+        "state": {
+          "True": "Oui",
+          "False": "Non"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       },
       "control_paused": {
-        "name": "Régulation en pause"
+        "name": "Régulation en pause",
+        "state": {
+          "True": "Oui",
+          "False": "Non"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Thermostat physique"
+          },
+          "room_sensor": {
+            "name": "Capteur de température ambiante"
+          },
+          "preset": {
+            "name": "Préréglage",
+            "state": {
+              "present": "Présent",
+              "away": "Absent",
+              "summer": "Été",
+              "winter": "Hiver"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Chauffage",
+              "cool": "Climatisation",
+              "auto": "Automatique",
+              "dry": "Déshumidification",
+              "fan_only": "Ventilation seule",
+              "off": "Arrêt"
+            }
+          },
+          "room_target": {
+            "name": "Température ambiante cible"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Fenêtre ouverte"
+        "name": "Fenêtre ouverte",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "État du capteur de fenêtre inconnu",
+            "state": {
+              "true": "Oui",
+              "false": "Non"
+            }
+          }
+        }
       },
       "boost_running": {
-        "name": "Boost en cours"
+        "name": "Mode turbo en cours"
       },
       "control_active": {
         "name": "Régulation active"
@@ -327,12 +966,12 @@
     },
     "switch": {
       "boost": {
-        "name": "Boost"
+        "name": "Turbo"
       }
     },
     "button": {
       "reset_offset": {
-        "name": "Réinitialiser l’offset"
+        "name": "Réinitialiser le décalage"
       }
     },
     "select": {
@@ -354,6 +993,44 @@
           "winter": "Hiver"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "Le thermostat ou le capteur de température ambiante est manquant. Reconfigurez les appareils connectés."
+    },
+    "duplicate_controller": {
+      "message": "{thermostat} est déjà contrôlé par {room_name}. Supprimez cette configuration en double ou choisissez un autre thermostat."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "Les données de restauration de la pièce sont incomplètes. Relancez la restauration."
+    },
+    "recovery_identity_conflict": {
+      "message": "Plusieurs thermostats utilisent la même identité de pièce enregistrée. Résolvez les configurations en double avant de restaurer cette pièce."
+    },
+    "recovery_failed": {
+      "message": "Cette pièce n’a pas pu être restaurée, car ses données enregistrées ou les attributions de ses entités ont changé. Relancez la restauration."
+    },
+    "recovery_storage_conflict": {
+      "message": "Les données enregistrées de la pièce sont en conflit avec ce thermostat. Résolvez le conflit avant de restaurer la pièce."
+    },
+    "recovery_storage_write": {
+      "message": "La restauration de la pièce n’a pas pu être enregistrée. Vérifiez le stockage de Home Assistant et réessayez."
+    },
+    "recovery_reload_failed": {
+      "message": "Les entités de la pièce restaurée n’ont pas pu être rechargées. Redémarrez Home Assistant et réessayez."
+    },
+    "unknown_preset": {
+      "message": "Le préréglage {preset} n’existe pas."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Le thermostat ne prend pas en charge le mode {mode}."
+    },
+    "hvac_mode_failed": {
+      "message": "Le thermostat n’a pas pu passer en mode {mode}."
+    },
+    "no_hvac_mode": {
+      "message": "Aucun mode de fonctionnement n’est disponible pour allumer ce thermostat."
     }
   }
 }

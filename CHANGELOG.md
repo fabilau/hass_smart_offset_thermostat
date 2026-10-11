@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.0.6
+
+- Improved room-temperature control when the room is too cold or too warm.
+- Heating resumes more promptly after a window is closed or Boost ends.
+- Improved learning so idle periods and waiting times do not delay later adjustments.
+- Previously learned offsets are reset once after updating, so rooms can learn afresh automatically.
+- Improved compatibility when restoring existing rooms in recent Home Assistant versions.
+- Completed translations for preset selection, status details and error messages in all 12 bundled languages; the product name is written out in full.
+
 ## v2.0.5
 
 - Fixed window status updates after a window is closed.

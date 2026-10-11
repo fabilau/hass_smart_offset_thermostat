@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Keep current mode",
-        "heat": "Heat",
-        "cool": "Cool",
+        "heat": "Heat (regulated by Smart Offset Thermostat)",
+        "cool": "Cool (regulated by Smart Offset Thermostat)",
         "auto": "Automatic (device controlled)",
         "dry": "Dry",
         "fan_only": "Fan only",
         "off": "Off"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Present",
+        "away": "Away",
+        "summer": "Summer",
+        "winter": "Winter"
       }
     }
   },
@@ -62,7 +70,6 @@
           "room_sensor_entity": "Room temperature sensor"
         }
       },
-
       "comfort": {
         "title": "Comfort and features",
         "description": "Set your initial comfort target and choose the features you want to use. You can fine-tune everything later in the integration options.",
@@ -70,7 +77,7 @@
           "room_target": "Room target temperature",
           "hvac_mode": "Initial thermostat mode",
           "window_sensor_entities": "Window sensors (optional)",
-          "window_delay_sec": "Delay before window setback",
+          "window_delay_sec": "Delay before window protection",
           "enable_learning": "Learn the optimal thermostat offset",
           "manual_target_sync": "Adopt manual thermostat changes",
           "pause_on_hvac_off": "Pause control while the thermostat is off"
@@ -150,7 +157,7 @@
         }
       },
       "preset_edit": {
-        "title": "Edit {preset_id}",
+        "title": "Edit preset",
         "description": "Update this preset or enable deletion to remove it. At least one preset must remain.",
         "data": {
           "preset_id": "Preset ID",
@@ -165,7 +172,7 @@
         "description": "Open windows apply an energy-saving setpoint after a delay. Boost temporarily requests the strongest regulated output.",
         "data": {
           "window_sensor_entities": "Window sensors",
-          "window_delay_sec": "Delay before window setback",
+          "window_delay_sec": "Delay before window protection",
           "boost_duration_sec": "Boost duration"
         }
       },
@@ -217,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Thermostat",
+        "state": {
+          "heat": "Heat",
+          "cool": "Cool",
+          "auto": "Automatic"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -224,47 +236,435 @@
               "away": "Away",
               "summer": "Summer",
               "winter": "Winter"
-            }
+            },
+            "name": "Preset"
+          },
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "external_temperature_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "learned_offset": {
+            "name": "Learned offset"
+          },
+          "control_error": {
+            "name": "Control error"
+          },
+          "control_output": {
+            "name": "Control output"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Control error"
+        "name": "Control error",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Absolute control error"
+        "name": "Absolute control error",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Mean absolute error"
+        "name": "Mean absolute error",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Comfort score"
+        "name": "Comfort score",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Temperature trend"
+        "name": "Temperature trend",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "control_output": {
-        "name": "Control output"
+        "name": "Control output",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "offset": {
-        "name": "Learned offset"
+        "name": "Learned offset",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "target_trv": {
-        "name": "Calculated thermostat setpoint"
+        "name": "Calculated thermostat setpoint",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "last_set": {
-        "name": "Last set thermostat setpoint"
+        "name": "Last set thermostat setpoint",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Confirmed thermostat setpoint"
+        "name": "Confirmed thermostat setpoint",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "correction": {
-        "name": "Applied correction"
+        "name": "Applied correction",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "last_action": {
-        "name": "Last decision (code)"
+        "name": "Last decision (code)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "last_action_text": {
         "name": "Last decision",
@@ -291,30 +691,268 @@
           "manual_hold": "Waiting after manual change",
           "manual_echo": "Own thermostat command confirmed",
           "service_error": "Thermostat command failed"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
         }
       },
       "change_count": {
-        "name": "Number of setpoint changes"
+        "name": "Number of setpoint changes",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Number of manual changes"
+        "name": "Number of manual changes",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "window_state": {
-        "name": "Window state"
+        "name": "Window state",
+        "state": {
+          "open": "Open",
+          "closed": "Closed"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Boost remaining time"
+        "name": "Boost remaining time",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost active"
+        "name": "Boost active",
+        "state": {
+          "True": "Yes",
+          "False": "No"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       },
       "control_paused": {
-        "name": "Control paused"
+        "name": "Control paused",
+        "state": {
+          "True": "Yes",
+          "False": "No"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physical thermostat"
+          },
+          "room_sensor": {
+            "name": "Room temperature sensor"
+          },
+          "preset": {
+            "name": "Preset",
+            "state": {
+              "present": "Present",
+              "away": "Away",
+              "summer": "Summer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Mode",
+            "state": {
+              "heat": "Heat",
+              "cool": "Cool",
+              "auto": "Automatic",
+              "dry": "Dry",
+              "fan_only": "Fan only",
+              "off": "Off"
+            }
+          },
+          "room_target": {
+            "name": "Room target temperature"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Window open"
+        "name": "Window open",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "Window sensor state unknown",
+            "state": {
+              "true": "Yes",
+              "false": "No"
+            }
+          }
+        }
       },
       "boost_running": {
         "name": "Boost running"
@@ -355,6 +993,44 @@
           "winter": "Winter"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "The thermostat or room temperature sensor is missing. Reconfigure the connected devices."
+    },
+    "duplicate_controller": {
+      "message": "{thermostat} is already controlled by {room_name}. Remove this duplicate or choose another thermostat."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "Room recovery data is incomplete. Start room recovery again."
+    },
+    "recovery_identity_conflict": {
+      "message": "More than one thermostat uses the same saved room identity. Resolve duplicate entries before restoring this room."
+    },
+    "recovery_failed": {
+      "message": "This room could not be restored because its saved data or entity assignments have changed. Start room recovery again."
+    },
+    "recovery_storage_conflict": {
+      "message": "The saved room data conflicts with this thermostat. Resolve the conflict before restoring the room."
+    },
+    "recovery_storage_write": {
+      "message": "Room recovery could not be saved. Check Home Assistant's storage and try again."
+    },
+    "recovery_reload_failed": {
+      "message": "The restored room's entities could not be reloaded. Restart Home Assistant and try again."
+    },
+    "unknown_preset": {
+      "message": "The preset {preset} does not exist."
+    },
+    "unsupported_hvac_mode": {
+      "message": "The thermostat does not support mode {mode}."
+    },
+    "hvac_mode_failed": {
+      "message": "The thermostat could not switch to mode {mode}."
+    },
+    "no_hvac_mode": {
+      "message": "No operating mode is available to turn on this thermostat."
     }
   }
 }

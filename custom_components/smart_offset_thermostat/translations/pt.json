@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Manter o modo atual",
-        "heat": "Aquecimento",
-        "cool": "Arrefecimento",
+        "heat": "Aquecimento (regulado pelo Smart Offset Thermostat)",
+        "cool": "Arrefecimento (regulado pelo Smart Offset Thermostat)",
         "auto": "Automático (controlado pelo dispositivo)",
         "dry": "Desumidificação",
         "fan_only": "Apenas ventilação",
         "off": "Desligado"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Presente",
+        "away": "Ausente",
+        "summer": "Verão",
+        "winter": "Inverno"
       }
     }
   },
@@ -68,16 +76,16 @@
         "data": {
           "room_target": "Temperatura-alvo da divisão",
           "hvac_mode": "Modo inicial do termóstato",
-          "window_sensor_entities": "Sensores de janela (opcional)",
-          "window_delay_sec": "Atraso antes da redução por janela aberta",
-          "enable_learning": "Aprender o offset ideal do termóstato",
+          "window_sensor_entities": "Sensores de janela (opcionais)",
+          "window_delay_sec": "Atraso antes da proteção contra janelas abertas",
+          "enable_learning": "Aprender a compensação ideal do termóstato",
           "manual_target_sync": "Adotar alterações manuais do termóstato",
           "pause_on_hvac_off": "Colocar o controlo em pausa enquanto o termóstato estiver desligado"
         }
       },
       "reconfigure": {
         "title": "Alterar os dispositivos ligados",
-        "description": "Selecione outro termóstato físico ou sensor de temperatura da divisão. As predefinições, o offset aprendido e as opções serão preservados.",
+        "description": "Selecione outro termóstato físico ou sensor de temperatura da divisão. As predefinições, a compensação aprendida e as opções serão preservadas.",
         "data": {
           "climate_entity": "Termóstato",
           "room_sensor_entity": "Sensor de temperatura da divisão"
@@ -106,16 +114,16 @@
         "description": "Escolha a área que pretende configurar.",
         "menu_options": {
           "presets": "Predefinições de conforto",
-          "window_boost": "Janelas e boost",
+          "window_boost": "Janelas e modo turbo",
           "manual": "Controlo manual",
           "learning": "Aprendizagem e sobreaquecimento",
           "expert": "Definições avançadas"
         },
         "menu_option_descriptions": {
           "presets": "Crie, edite ou remova predefinições de temperatura da divisão.",
-          "window_boost": "Configure a proteção contra janelas abertas e a duração do boost.",
+          "window_boost": "Configure a proteção contra janelas abertas e a duração do modo turbo.",
           "manual": "Escolha como são tratadas as alterações no termóstato físico e o modo desligado.",
-          "learning": "Ajuste a aprendizagem do offset e a proteção adaptativa contra sobreaquecimento.",
+          "learning": "Ajuste a aprendizagem da compensação e a proteção adaptativa contra sobreaquecimento.",
           "expert": "Ajuste os tempos, os limites e a resposta do controlador."
         }
       },
@@ -140,7 +148,7 @@
       },
       "preset_new": {
         "title": "Criar predefinição",
-        "description": "Utilize um ID curto com letras minúsculas, números e sublinhados, por exemplo, `sleep` ou `home_office`.",
+        "description": "Utilize um ID curto com letras minúsculas, números e sublinhados, por exemplo, `noite` ou `escritorio`.",
         "data": {
           "preset_id": "ID da predefinição",
           "room_target": "Temperatura-alvo da divisão",
@@ -149,7 +157,7 @@
         }
       },
       "preset_edit": {
-        "title": "Editar {preset_id}",
+        "title": "Editar predefinição",
         "description": "Atualize esta predefinição ou ative a eliminação para a remover. Tem de permanecer pelo menos uma predefinição.",
         "data": {
           "preset_id": "ID da predefinição",
@@ -160,12 +168,12 @@
         }
       },
       "window_boost": {
-        "title": "Janelas e boost",
-        "description": "As janelas abertas aplicam uma temperatura-alvo de poupança de energia após um atraso. O boost solicita temporariamente a potência regulada máxima.",
+        "title": "Janelas e modo turbo",
+        "description": "As janelas abertas ativam uma temperatura-alvo de poupança de energia após um atraso. O modo turbo solicita temporariamente a potência regulada máxima.",
         "data": {
           "window_sensor_entities": "Sensores de janela",
-          "window_delay_sec": "Atraso antes da redução por janela aberta",
-          "boost_duration_sec": "Duração do boost"
+          "window_delay_sec": "Atraso antes da proteção contra janelas abertas",
+          "boost_duration_sec": "Duração do modo turbo"
         }
       },
       "manual": {
@@ -179,9 +187,9 @@
       },
       "learning": {
         "title": "Aprendizagem e sobreaquecimento",
-        "description": "A aprendizagem adapta o offset ao longo do tempo. A proteção contra sobreaquecimento pode reduzir ainda mais a temperatura-alvo se a divisão não arrefecer como esperado.",
+        "description": "A aprendizagem adapta a compensação ao longo do tempo. A proteção contra sobreaquecimento pode reduzir ainda mais a temperatura-alvo se a divisão não arrefecer como esperado.",
         "data": {
-          "enable_learning": "Ativar a aprendizagem do offset",
+          "enable_learning": "Ativar a aprendizagem da compensação",
           "learn_rate": "Taxa de aprendizagem",
           "stuck_enable": "Ativar a proteção adaptativa contra sobreaquecimento",
           "stuck_seconds": "Janela de avaliação do sobreaquecimento",
@@ -194,7 +202,7 @@
         "description": "Estes valores afetam diretamente a estabilidade e a rapidez de resposta do controlador. Altere-os gradualmente.",
         "data": {
           "interval_sec": "Intervalo de controlo",
-          "deadband": "Zona morta de conforto",
+          "deadband": "Margem de conforto",
           "control_gain": "Ganho do controlador",
           "step_max": "Alteração máxima da temperatura-alvo por ciclo",
           "step_min": "Passo de arredondamento do termóstato",
@@ -216,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Termóstato",
+        "state": {
+          "heat": "Aquecimento",
+          "cool": "Arrefecimento",
+          "auto": "Automático"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -223,100 +236,726 @@
               "away": "Ausente",
               "summer": "Verão",
               "winter": "Inverno"
-            }
+            },
+            "name": "Predefinição"
+          },
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "external_temperature_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "learned_offset": {
+            "name": "Compensação aprendida"
+          },
+          "control_error": {
+            "name": "Erro de controlo"
+          },
+          "control_output": {
+            "name": "Saída de controlo"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Erro de controlo"
+        "name": "Erro de controlo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Erro absoluto de controlo"
+        "name": "Erro absoluto de controlo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Erro absoluto médio"
+        "name": "Erro absoluto médio",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Índice de conforto"
+        "name": "Índice de conforto",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Tendência da temperatura"
+        "name": "Tendência da temperatura",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "control_output": {
-        "name": "Saída de controlo"
+        "name": "Saída de controlo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "offset": {
-        "name": "Offset aprendido"
+        "name": "Compensação aprendida",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "target_trv": {
-        "name": "Setpoint calculado do termóstato"
+        "name": "Temperatura-alvo calculada do termóstato",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "last_set": {
-        "name": "Último setpoint definido no termóstato"
+        "name": "Última temperatura-alvo definida no termóstato",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Setpoint confirmado do termóstato"
+        "name": "Temperatura-alvo confirmada do termóstato",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "correction": {
-        "name": "Correção aplicada"
+        "name": "Correção aplicada",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "last_action": {
-        "name": "Última decisão (código)"
+        "name": "Última decisão (código)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "last_action_text": {
         "name": "Última decisão",
         "state": {
           "init": "Inicialização",
-          "deadband_init": "Setpoint inicial definido",
+          "deadband_init": "Temperatura-alvo inicial definida",
           "deadband_rebase": "Alvo alterado; referência atualizada",
-          "hold": "A manter o setpoint na zona de conforto",
-          "stable_learn": "Offset estável aprendido",
-          "cooldown": "A aguardar o tempo de espera",
-          "set_temperature": "Setpoint enviado ao termóstato",
-          "skipped_no_change": "Nenhuma alteração do setpoint necessária",
+          "hold": "A manter a temperatura-alvo na zona de conforto",
+          "stable_learn": "Compensação estável aprendida",
+          "cooldown": "À espera entre ajustes",
+          "set_temperature": "Temperatura-alvo enviada ao termóstato",
+          "skipped_no_change": "Nenhuma alteração necessária à temperatura-alvo",
           "skipped_unavailable_entities": "Entidade de origem indisponível",
           "skipped_invalid_room_temp": "Temperatura da divisão inválida",
-          "boost": "Boost ativo",
+          "boost": "Modo turbo ativo",
           "window_open": "Proteção de janela ativa",
           "paused": "Controlo em pausa",
           "hvac_off": "Termóstato desligado",
           "hvac_mode_set": "Modo do termóstato alterado",
           "passive_mode": "Modo passivo do termóstato",
           "stuck_overtemp_down": "Correção adicional de sobretemperatura",
-          "reset_offset": "Offset aprendido reiniciado",
+          "reset_offset": "Compensação aprendida reposta a zero",
           "manual_target_sync": "Alteração manual adotada",
           "manual_hold": "A aguardar após alteração manual",
-          "manual_echo": "Comando próprio do termóstato confirmado",
+          "manual_echo": "Comando do controlador confirmado",
           "service_error": "Falha no comando do termóstato"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
         }
       },
       "change_count": {
-        "name": "Número de alterações de setpoint"
+        "name": "Número de alterações da temperatura-alvo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Número de alterações manuais"
+        "name": "Número de alterações manuais",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "window_state": {
-        "name": "Estado da janela"
+        "name": "Estado da janela",
+        "state": {
+          "open": "Aberta",
+          "closed": "Fechada"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Tempo restante de boost"
+        "name": "Tempo restante do modo turbo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost ativo"
+        "name": "Modo turbo ativo",
+        "state": {
+          "True": "Sim",
+          "False": "Não"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       },
       "control_paused": {
-        "name": "Controlo pausado"
+        "name": "Controlo pausado",
+        "state": {
+          "True": "Sim",
+          "False": "Não"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termóstato físico"
+          },
+          "room_sensor": {
+            "name": "Sensor de temperatura da divisão"
+          },
+          "preset": {
+            "name": "Predefinição",
+            "state": {
+              "present": "Presente",
+              "away": "Ausente",
+              "summer": "Verão",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modo",
+            "state": {
+              "heat": "Aquecimento",
+              "cool": "Arrefecimento",
+              "auto": "Automático",
+              "dry": "Desumidificação",
+              "fan_only": "Apenas ventilação",
+              "off": "Desligado"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura-alvo da divisão"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Janela aberta"
+        "name": "Janela aberta",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "Estado do sensor de janela desconhecido",
+            "state": {
+              "true": "Sim",
+              "false": "Não"
+            }
+          }
+        }
       },
       "boost_running": {
-        "name": "Boost ativo"
+        "name": "Modo turbo ativo"
       },
       "control_active": {
         "name": "Controlo ativo"
@@ -327,12 +966,12 @@
     },
     "switch": {
       "boost": {
-        "name": "Boost"
+        "name": "Turbo"
       }
     },
     "button": {
       "reset_offset": {
-        "name": "Reiniciar offset"
+        "name": "Repor a compensação a zero"
       }
     },
     "select": {
@@ -354,6 +993,44 @@
           "winter": "Inverno"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "O termóstato ou o sensor de temperatura da divisão está em falta. Reconfigure os dispositivos ligados."
+    },
+    "duplicate_controller": {
+      "message": "{thermostat} já é controlado por {room_name}. Remova esta configuração duplicada ou escolha outro termóstato."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "Os dados de restauro da divisão estão incompletos. Inicie novamente o restauro."
+    },
+    "recovery_identity_conflict": {
+      "message": "Mais de um termóstato utiliza a mesma identidade guardada da divisão. Resolva as configurações duplicadas antes de restaurar esta divisão."
+    },
+    "recovery_failed": {
+      "message": "Não foi possível restaurar esta divisão porque os dados guardados ou as associações das entidades foram alterados. Inicie novamente o restauro."
+    },
+    "recovery_storage_conflict": {
+      "message": "Os dados guardados da divisão entram em conflito com este termóstato. Resolva o conflito antes de restaurar a divisão."
+    },
+    "recovery_storage_write": {
+      "message": "Não foi possível guardar o restauro da divisão. Verifique o armazenamento do Home Assistant e tente novamente."
+    },
+    "recovery_reload_failed": {
+      "message": "Não foi possível recarregar as entidades da divisão restaurada. Reinicie o Home Assistant e tente novamente."
+    },
+    "unknown_preset": {
+      "message": "A predefinição {preset} não existe."
+    },
+    "unsupported_hvac_mode": {
+      "message": "O termóstato não suporta o modo {mode}."
+    },
+    "hvac_mode_failed": {
+      "message": "O termóstato não conseguiu mudar para o modo {mode}."
+    },
+    "no_hvac_mode": {
+      "message": "Não existe nenhum modo de funcionamento disponível para ligar este termóstato."
     }
   }
 }

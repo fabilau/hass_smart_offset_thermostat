@@ -103,6 +103,11 @@ def _fingerprint(
 
 
 def _device_owners(device: Any) -> set[str]:
+    if hasattr(device, "config_entry_id") and not getattr(
+        device, "is_composite_device", False
+    ):
+        owner = device.config_entry_id
+        return {str(owner)} if owner is not None else set()
     return {str(owner) for owner in getattr(device, "config_entries", set())}
 
 
@@ -234,6 +239,8 @@ def _candidate_tombstone_group(
     device: Any,
     claimed_identities: set[str],
     area_names: Mapping[str, str],
+    *,
+    prepared: bool = False,
 ) -> OrphanedRegistryGroup | None:
     """Validate one group retained by HA after missing-owner cleanup.
 
@@ -249,14 +256,24 @@ def _candidate_tombstone_group(
         for entity in entities
     ):
         return None
-    if (
-        _device_owners(device) != {source_entry_id}
-        or getattr(device, "orphaned_timestamp", None) is not None
-    ):
-        return None
-    subentries = getattr(device, "config_entries_subentries", None)
-    if subentries is not None and subentries != {source_entry_id: {None}}:
-        return None
+    if prepared:
+        if (
+            not hasattr(device, "config_entry_id")
+            or device.config_entry_id is not None
+            or getattr(device, "domain", None) != DOMAIN
+            or getattr(device, "orphaned_timestamp", None) is None
+            or getattr(device, "config_subentry_id", None) is not None
+        ):
+            return None
+    else:
+        if (
+            _device_owners(device) != {source_entry_id}
+            or getattr(device, "orphaned_timestamp", None) is not None
+        ):
+            return None
+        subentries = getattr(device, "config_entries_subentries", None)
+        if subentries is not None and subentries != {source_entry_id: {None}}:
+            return None
 
     identities = _domain_identities(device)
     if len(identities) != 1:
@@ -307,6 +324,7 @@ def find_orphaned_registry_groups(
     deleted_device_entries: Iterable[Any] = (),
     claimed_registry_identities: Iterable[str] = (),
     area_names: Mapping[str, str] | None = None,
+    prepared_device_id: str | None = None,
 ) -> list[OrphanedRegistryGroup]:
     """Return strictly validated Smart Offset groups without a config entry.
 
@@ -363,6 +381,7 @@ def find_orphaned_registry_groups(
             device
             for device in deleted_devices
             if _device_owners(device) == {source_entry_id}
+            or getattr(device, "id", None) == prepared_device_id
         ]
         tombstone_candidates.extend(
             candidate
@@ -374,6 +393,10 @@ def find_orphaned_registry_groups(
                     device,
                     claimed,
                     dict(area_names or {}),
+                    prepared=(
+                        getattr(device, "id", None) == prepared_device_id
+                        and not _device_owners(device)
+                    ),
                 )
             )
             is not None
@@ -470,9 +493,9 @@ def adopt_orphaned_registry_group(
 ) -> RegistryRecoveryResult:
     """Rebind one fingerprinted orphan while preserving every stable ID.
 
-    All conflicts are checked before the first write. The write phases are
-    synchronous and resumable: device gets the new owner first, entity owners
-    change second, and the missing owner is removed from the device last.
+    All conflicts are checked before the first write. Active ownership changes
+    are synchronous and resumable. Modern HA requires moving entities before
+    their device; older versions add the device owner before moving entities.
     """
     if (
         not source_entry_id
@@ -513,13 +536,15 @@ def adopt_orphaned_registry_group(
         other_claimed = {
             identity for identity, owner in claimed.items() if owner != new_entry_id
         }
+        deleted_devices = _registry_deleted_devices(device_registry)
         candidates = find_orphaned_registry_groups(
             _registry_entities(entity_registry),
             _registry_devices(device_registry),
             configured,
             deleted_entity_entries=_registry_deleted_entities(entity_registry),
-            deleted_device_entries=_registry_deleted_devices(device_registry),
+            deleted_device_entries=deleted_devices,
             claimed_registry_identities=other_claimed,
+            prepared_device_id=device_id,
         )
         candidate = next(
             (
@@ -547,6 +572,24 @@ def adopt_orphaned_registry_group(
                 "entity_conflict",
                 "Config entry owns active entities outside the recovery tombstones",
             )
+        deleted_device = next(item for item in deleted_devices if item.id == device_id)
+        if hasattr(deleted_device, "config_entry_id"):
+            for other in [*_registry_devices(device_registry), *deleted_devices]:
+                if other.id == device_id:
+                    continue
+                if (
+                    source_entry_id in _device_owners(other)
+                    or set(getattr(other, "identifiers", ()))
+                    & set(deleted_device.identifiers)
+                    or set(getattr(other, "connections", ()))
+                    & set(getattr(deleted_device, "connections", ()))
+                ):
+                    raise RegistryRecoveryError(
+                        "device_conflict", "Recovery would affect another device"
+                    )
+            if deleted_device.config_entry_id is not None:
+                # Modern HA restores a deleted device under a new owner only after release.
+                device_registry.async_clear_config_entry(source_entry_id, domain=DOMAIN)
         return RegistryRecoveryResult(
             entity_count=candidate.entity_count,
             device_count=1,
@@ -645,7 +688,8 @@ def adopt_orphaned_registry_group(
     already_adopted = not source_entities
 
     try:
-        if new_entry_id not in owners:
+        modern_ownership = hasattr(device, "config_entry_id")
+        if new_entry_id not in owners and not modern_ownership:
             kwargs: dict[str, Any] = {"add_config_entry_id": new_entry_id}
             if getattr(device, "primary_config_entry", None) == source_entry_id:
                 kwargs["device_info_type"] = "primary"
@@ -659,6 +703,12 @@ def adopt_orphaned_registry_group(
                 disabled_by=(
                     None if _enum_value(disabled_by) == "config_entry" else disabled_by
                 ),
+            )
+
+        if new_entry_id not in owners and modern_ownership:
+            # HA removes entities still belonging to the previous device owner.
+            device_registry.async_update_device(
+                device_id, new_config_entry_id=new_entry_id
             )
 
         # Explicitly clear the derived config-entry state for a resumed

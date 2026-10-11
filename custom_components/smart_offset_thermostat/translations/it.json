@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Mantieni la modalità attuale",
-        "heat": "Riscaldamento",
-        "cool": "Raffrescamento",
+        "heat": "Riscaldamento (regolato da Smart Offset Thermostat)",
+        "cool": "Raffrescamento (regolato da Smart Offset Thermostat)",
         "auto": "Automatico (controllato dal dispositivo)",
         "dry": "Deumidificazione",
         "fan_only": "Solo ventilazione",
         "off": "Spento"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Presente",
+        "away": "Assente",
+        "summer": "Estate",
+        "winter": "Inverno"
       }
     }
   },
@@ -25,7 +33,7 @@
       },
       "repair_or_setup": {
         "title": "Ripristina o configura un termostato",
-        "description": "Home Assistant ha trovato stanze Smart Offset Thermostat precedenti. Ripristinane una per conservare le entità e i collegamenti nelle dashboard, oppure configura un nuovo termostato separato.",
+        "description": "Home Assistant ha trovato stanze configurate in precedenza con Smart Offset Thermostat. Ripristinane una per conservare le entità e i collegamenti nei pannelli di controllo, oppure configura un nuovo termostato separato.",
         "menu_options": {
           "repair_select": "Ripristina una stanza esistente",
           "setup_new": "Configura un nuovo termostato"
@@ -56,7 +64,7 @@
       },
       "setup_new": {
         "title": "Scegli i dispositivi per il nuovo termostato",
-        "description": "Configura un Smart Offset Thermostat separato. Le stanze precedenti e le relative entità non verranno modificate.",
+        "description": "Configura uno Smart Offset Thermostat separato. Le stanze precedenti e le relative entità non verranno modificate.",
         "data": {
           "climate_entity": "Termostato",
           "room_sensor_entity": "Sensore temperatura ambiente"
@@ -69,7 +77,7 @@
           "room_target": "Temperatura ambiente desiderata",
           "hvac_mode": "Modalità iniziale del termostato",
           "window_sensor_entities": "Sensori finestra (facoltativi)",
-          "window_delay_sec": "Ritardo prima della riduzione per finestra aperta",
+          "window_delay_sec": "Ritardo prima della protezione per finestra aperta",
           "enable_learning": "Apprendi la compensazione ottimale del termostato",
           "manual_target_sync": "Adotta le modifiche manuali del termostato",
           "pause_on_hvac_off": "Sospendi il controllo quando il termostato è spento"
@@ -85,7 +93,7 @@
       }
     },
     "create_entry": {
-      "repair_successful": "{room_name} è stata ripristinata correttamente. Le entità e i collegamenti nelle dashboard sono stati conservati."
+      "repair_successful": "{room_name} è stata ripristinata correttamente. Le entità e i collegamenti nei pannelli di controllo sono stati conservati."
     },
     "error": {
       "entity_not_found": "L’entità selezionata non è più disponibile. Scegline un’altra.",
@@ -106,17 +114,17 @@
         "description": "Scegli la sezione da configurare.",
         "menu_options": {
           "presets": "Preimpostazioni comfort",
-          "window_boost": "Finestre e boost",
+          "window_boost": "Finestre e modalità turbo",
           "manual": "Controllo manuale",
           "learning": "Apprendimento e surriscaldamento",
           "expert": "Impostazioni avanzate"
         },
         "menu_option_descriptions": {
           "presets": "Crea, modifica o rimuovi le preimpostazioni della temperatura ambiente.",
-          "window_boost": "Configura la protezione per finestra aperta e la durata del boost.",
+          "window_boost": "Configura la protezione per finestra aperta e la durata della modalità turbo.",
           "manual": "Scegli come gestire le modifiche al termostato fisico e la modalità spento.",
           "learning": "Regola l’apprendimento della compensazione e la protezione adattiva dal surriscaldamento.",
-          "expert": "Regola tempi, limiti e risposta del controller."
+          "expert": "Regola tempi, limiti e risposta del regolatore."
         }
       },
       "presets": {
@@ -127,7 +135,7 @@
           "preset_select": "Modifica preimpostazione"
         },
         "menu_option_descriptions": {
-          "preset_new": "Aggiungi un altro obiettivo, uno stato di pausa e una modalità del termostato.",
+          "preset_new": "Aggiungi un’altra temperatura desiderata, uno stato di pausa e una modalità del termostato.",
           "preset_select": "Modifica o rimuovi una preimpostazione esistente."
         }
       },
@@ -140,7 +148,7 @@
       },
       "preset_new": {
         "title": "Crea preimpostazione",
-        "description": "Usa un ID breve in minuscolo con lettere, numeri e trattini bassi, ad esempio `sleep` o `home_office`.",
+        "description": "Usa un ID breve in minuscolo con lettere, numeri e trattini bassi, ad esempio `notte` o `studio_casa`.",
         "data": {
           "preset_id": "ID preimpostazione",
           "room_target": "Temperatura ambiente desiderata",
@@ -149,7 +157,7 @@
         }
       },
       "preset_edit": {
-        "title": "Modifica {preset_id}",
+        "title": "Modifica preimpostazione",
         "description": "Aggiorna questa preimpostazione o abilita l’eliminazione per rimuoverla. Deve rimanere almeno una preimpostazione.",
         "data": {
           "preset_id": "ID preimpostazione",
@@ -160,17 +168,17 @@
         }
       },
       "window_boost": {
-        "title": "Finestre e boost",
-        "description": "Dopo un ritardo, le finestre aperte applicano una temperatura di risparmio energetico. Il boost richiede temporaneamente la massima potenza regolata.",
+        "title": "Finestre e modalità turbo",
+        "description": "Dopo un ritardo, le finestre aperte attivano una temperatura di risparmio energetico. La modalità turbo richiede temporaneamente la massima potenza regolata.",
         "data": {
           "window_sensor_entities": "Sensori finestra",
-          "window_delay_sec": "Ritardo prima della riduzione per finestra aperta",
-          "boost_duration_sec": "Durata boost"
+          "window_delay_sec": "Ritardo prima della protezione per finestra aperta",
+          "boost_duration_sec": "Durata della modalità turbo"
         }
       },
       "manual": {
         "title": "Controllo manuale",
-        "description": "Scegli come reagisce il controller quando qualcuno modifica o spegne il termostato fisico.",
+        "description": "Scegli come reagisce il regolatore quando qualcuno modifica o spegne il termostato fisico.",
         "data": {
           "manual_target_sync": "Adotta le modifiche manuali del termostato",
           "manual_delay_sec": "Ritardo prima di adottare una modifica manuale",
@@ -191,15 +199,15 @@
       },
       "expert": {
         "title": "Impostazioni avanzate",
-        "description": "Questi valori influiscono direttamente sulla stabilità e sulla reattività del controller. Modificali gradualmente.",
+        "description": "Questi valori influiscono direttamente sulla stabilità e sulla reattività del regolatore. Modificali gradualmente.",
         "data": {
           "interval_sec": "Intervallo di controllo",
           "deadband": "Banda di comfort",
-          "control_gain": "Guadagno del controller",
-          "step_max": "Variazione massima della temperatura per ciclo",
+          "control_gain": "Guadagno del regolatore",
+          "step_max": "Variazione massima della temperatura impostata per ciclo",
           "step_min": "Passo di arrotondamento del termostato",
-          "trv_min": "Temperatura minima del termostato fisico",
-          "trv_max": "Temperatura massima del termostato fisico",
+          "trv_min": "Temperatura minima impostabile sul termostato fisico",
+          "trv_max": "Temperatura massima impostabile sul termostato fisico",
           "cooldown_sec": "Tempo minimo tra le modifiche"
         }
       }
@@ -216,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Termostato",
+        "state": {
+          "heat": "Riscaldamento",
+          "cool": "Raffrescamento",
+          "auto": "Automatico"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -223,116 +236,742 @@
               "away": "Assente",
               "summer": "Estate",
               "winter": "Inverno"
-            }
+            },
+            "name": "Preimpostazione"
+          },
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "external_temperature_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "learned_offset": {
+            "name": "Compensazione appresa"
+          },
+          "control_error": {
+            "name": "Errore di controllo"
+          },
+          "control_output": {
+            "name": "Uscita di controllo"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Errore di controllo"
+        "name": "Errore di controllo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Errore assoluto di controllo"
+        "name": "Errore assoluto di controllo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Errore assoluto medio"
+        "name": "Errore assoluto medio",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Indice di comfort"
+        "name": "Indice di comfort",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Andamento della temperatura"
+        "name": "Andamento della temperatura",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "control_output": {
-        "name": "Uscita di controllo"
+        "name": "Uscita di controllo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "offset": {
-        "name": "Offset appreso"
+        "name": "Compensazione appresa",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "target_trv": {
-        "name": "Setpoint calcolato del termostato"
+        "name": "Temperatura calcolata per il termostato",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "last_set": {
-        "name": "Ultimo setpoint inviato al termostato"
+        "name": "Ultima temperatura inviata al termostato",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Setpoint confermato del termostato"
+        "name": "Temperatura impostata confermata dal termostato",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "correction": {
-        "name": "Correzione applicata"
+        "name": "Correzione applicata",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "last_action": {
-        "name": "Ultima decisione (codice)"
+        "name": "Ultima decisione (codice)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "last_action_text": {
         "name": "Ultima decisione",
         "state": {
           "init": "Inizializzazione",
-          "deadband_init": "Setpoint iniziale stabilito",
+          "deadband_init": "Temperatura iniziale impostata",
           "deadband_rebase": "Obiettivo modificato; riferimento aggiornato",
-          "hold": "Mantenimento del setpoint nella zona di comfort",
-          "stable_learn": "Offset stabile appreso",
-          "cooldown": "Attesa del tempo di blocco",
-          "set_temperature": "Setpoint inviato al termostato",
-          "skipped_no_change": "Nessuna modifica del setpoint necessaria",
+          "hold": "Mantenimento della temperatura impostata nella zona di comfort",
+          "stable_learn": "Compensazione stabile appresa",
+          "cooldown": "Attesa tra le regolazioni",
+          "set_temperature": "Temperatura impostata inviata al termostato",
+          "skipped_no_change": "Nessuna modifica necessaria alla temperatura impostata",
           "skipped_unavailable_entities": "Entità sorgente non disponibile",
           "skipped_invalid_room_temp": "Temperatura ambiente non valida",
-          "boost": "Boost attivo",
+          "boost": "Modalità turbo attiva",
           "window_open": "Protezione finestra attiva",
           "paused": "Controllo in pausa",
           "hvac_off": "Termostato spento",
           "hvac_mode_set": "Modalità del termostato modificata",
           "passive_mode": "Modalità passiva del termostato",
           "stuck_overtemp_down": "Correzione aggiuntiva per sovratemperatura",
-          "reset_offset": "Offset appreso azzerato",
+          "reset_offset": "Compensazione appresa azzerata",
           "manual_target_sync": "Modifica manuale acquisita",
           "manual_hold": "Attesa dopo la modifica manuale",
-          "manual_echo": "Comando al termostato confermato",
+          "manual_echo": "Comando del regolatore confermato",
           "service_error": "Comando al termostato non riuscito"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
         }
       },
       "change_count": {
-        "name": "Numero di cambiamenti setpoint"
+        "name": "Numero di modifiche della temperatura impostata",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Numero di modifiche manuali"
+        "name": "Numero di modifiche manuali",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "window_state": {
-        "name": "Stato finestra"
+        "name": "Stato finestra",
+        "state": {
+          "open": "Aperta",
+          "closed": "Chiusa"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Tempo rimanente boost"
+        "name": "Tempo rimanente della modalità turbo",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost attivo"
+        "name": "Modalità turbo attiva",
+        "state": {
+          "True": "Sì",
+          "False": "No"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       },
       "control_paused": {
-        "name": "Controllo in pausa"
+        "name": "Controllo in pausa",
+        "state": {
+          "True": "Sì",
+          "False": "No"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Termostato fisico"
+          },
+          "room_sensor": {
+            "name": "Sensore temperatura ambiente"
+          },
+          "preset": {
+            "name": "Preimpostazione",
+            "state": {
+              "present": "Presente",
+              "away": "Assente",
+              "summer": "Estate",
+              "winter": "Inverno"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modalità",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "auto": "Automatico",
+              "dry": "Deumidificazione",
+              "fan_only": "Solo ventilazione",
+              "off": "Spento"
+            }
+          },
+          "room_target": {
+            "name": "Temperatura ambiente desiderata"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Finestra aperta"
+        "name": "Finestra aperta",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "Stato del sensore finestra sconosciuto",
+            "state": {
+              "true": "Sì",
+              "false": "No"
+            }
+          }
+        }
       },
       "boost_running": {
-        "name": "Boost attivo"
+        "name": "Modalità turbo attiva"
       },
       "control_active": {
         "name": "Controllo attivo"
       },
       "controller_problem": {
-        "name": "Problema del controller"
+        "name": "Problema del regolatore"
       }
     },
     "switch": {
       "boost": {
-        "name": "Boost"
+        "name": "Turbo"
       }
     },
     "button": {
       "reset_offset": {
-        "name": "Reimposta offset"
+        "name": "Azzera la compensazione"
       }
     },
     "select": {
@@ -354,6 +993,44 @@
           "winter": "Inverno"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "Manca il termostato o il sensore della temperatura ambiente. Riconfigura i dispositivi collegati."
+    },
+    "duplicate_controller": {
+      "message": "{thermostat} è già controllato da {room_name}. Rimuovi questa configurazione duplicata o scegli un altro termostato."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "I dati per il ripristino della stanza sono incompleti. Avvia nuovamente il ripristino."
+    },
+    "recovery_identity_conflict": {
+      "message": "Più termostati utilizzano la stessa identità salvata della stanza. Risolvi le configurazioni duplicate prima di ripristinare questa stanza."
+    },
+    "recovery_failed": {
+      "message": "Non è stato possibile ripristinare questa stanza perché i dati salvati o le assegnazioni delle entità sono cambiati. Avvia nuovamente il ripristino."
+    },
+    "recovery_storage_conflict": {
+      "message": "I dati salvati della stanza sono in conflitto con questo termostato. Risolvi il conflitto prima di ripristinare la stanza."
+    },
+    "recovery_storage_write": {
+      "message": "Non è stato possibile salvare il ripristino della stanza. Controlla lo spazio di archiviazione di Home Assistant e riprova."
+    },
+    "recovery_reload_failed": {
+      "message": "Non è stato possibile ricaricare le entità della stanza ripristinata. Riavvia Home Assistant e riprova."
+    },
+    "unknown_preset": {
+      "message": "La preimpostazione {preset} non esiste."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Il termostato non supporta la modalità {mode}."
+    },
+    "hvac_mode_failed": {
+      "message": "Il termostato non è riuscito a passare alla modalità {mode}."
+    },
+    "no_hvac_mode": {
+      "message": "Non è disponibile alcuna modalità di funzionamento per accendere questo termostato."
     }
   }
 }

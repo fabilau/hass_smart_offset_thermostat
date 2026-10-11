@@ -74,6 +74,7 @@ from .const import (
     DEFAULT_TRV_MAX,
     DEFAULT_TRV_MIN,
     DEFAULT_WINDOW_DELAY_SEC,
+    DOMAIN,
     PASSIVE_HVAC_MODES,
     PRESET_HVAC_KEEP,
     PRESET_HVAC_MODES,
@@ -175,10 +176,12 @@ class SmartOffsetController:
         self._window_open_since: float | None = None
         self._window_setback_active = False
         self._override_was_active = False
-        self._rebase_required = False
+        self._rebase_required = storage.offset_reset_pending(entry.entry_id)
 
         self._last_room_target: float | None = None
         self._last_room_state_updated: Any = None
+        self._last_room_sample: Any = None
+        self._last_learning_sample: Any = None
         self._last_learning_time: float | None = None
         self._learning_block_until = 0.0
 
@@ -333,13 +336,21 @@ class SmartOffsetController:
     async def set_preset(self, preset: str) -> None:
         async with self._tick_lock:
             if preset not in self.get_preset_ids():
-                raise ValueError(f"Unknown preset: {preset}")
+                raise HomeAssistantError(
+                    f"Unknown preset: {preset}",
+                    translation_domain=DOMAIN,
+                    translation_key="unknown_preset",
+                    translation_placeholders={"preset": preset},
+                )
             settings = self._preset_settings(preset)
             preset_hvac_mode = str(settings.get(CONF_HVAC_MODE, PRESET_HVAC_KEEP))
             if preset_hvac_mode != PRESET_HVAC_KEEP:
                 if not await self._set_hvac_mode(preset_hvac_mode, persist=False):
                     raise HomeAssistantError(
-                        f"Could not apply HVAC mode {preset_hvac_mode}"
+                        f"Could not apply HVAC mode {preset_hvac_mode}",
+                        translation_domain=DOMAIN,
+                        translation_key="hvac_mode_failed",
+                        translation_placeholders={"mode": preset_hvac_mode},
                     )
                 self.storage.set_hvac_mode(self.entry.entry_id, preset_hvac_mode)
             self.storage.set_preset(self.entry.entry_id, preset)
@@ -422,9 +433,19 @@ class SmartOffsetController:
         mode = _mode_value(hvac_mode)
         async with self._tick_lock:
             if mode not in self.available_hvac_modes():
-                raise ValueError(f"Unsupported HVAC mode: {mode}")
+                raise HomeAssistantError(
+                    f"Unsupported HVAC mode: {mode}",
+                    translation_domain=DOMAIN,
+                    translation_key="unsupported_hvac_mode",
+                    translation_placeholders={"mode": mode},
+                )
             if not await self._set_hvac_mode(mode, persist=True):
-                raise HomeAssistantError(f"Could not apply HVAC mode {mode}")
+                raise HomeAssistantError(
+                    f"Could not apply HVAC mode {mode}",
+                    translation_domain=DOMAIN,
+                    translation_key="hvac_mode_failed",
+                    translation_placeholders={"mode": mode},
+                )
             if mode == "off":
                 self._cancel_boost(mark_rebase=False)
                 self._clear_manual_candidate()
@@ -445,7 +466,11 @@ class SmartOffsetController:
                 None,
             )
         if mode is None:
-            raise HomeAssistantError("No regulated HVAC mode is available")
+            raise HomeAssistantError(
+                "No regulated HVAC mode is available",
+                translation_domain=DOMAIN,
+                translation_key="no_hvac_mode",
+            )
         await self.async_set_hvac_mode(mode)
 
     async def _set_hvac_mode(self, mode: str, *, persist: bool) -> bool:
@@ -509,6 +534,8 @@ class SmartOffsetController:
         self.mode = preset
         self._ensure_listeners()
         self._schedule_interval()
+        if self.storage.offset_reset_pending(self.entry.entry_id):
+            self._block_learning_for_settle()
         await self.trigger_once(force=True, reason="startup")
 
     async def async_stop(self) -> None:
@@ -624,6 +651,9 @@ class SmartOffsetController:
                 control_changed = old_target != new_target or old_mode != new.state
                 old_action = old.attributes.get("hvac_action") if old else None
                 action_changed = old_action != new.attributes.get("hvac_action")
+                if action_changed:
+                    self._stable_since = None
+                    self._last_learning_sample = self._last_room_sample
                 if control_changed:
                     context = getattr(new, "context", None)
                     self._last_climate_context_id = getattr(context, "id", None)
@@ -635,8 +665,7 @@ class SmartOffsetController:
                     )
                     await self.trigger_once(reason="physical_climate")
                 elif action_changed:
-                    # HVAC action is display state, not a control input. Refresh
-                    # the virtual climate card immediately without a control pass.
+                    # Refresh the card without issuing extra temperature commands.
                     self._notify()
 
             self._climate_unsub = async_track_state_change_event(
@@ -766,6 +795,7 @@ class SmartOffsetController:
     # State helpers
     # ---------------------------------------------------------------------
     def _reset_dynamic_state(self, *, rebase: bool) -> None:
+        self._last_learning_sample = self._last_room_sample
         self._stable_since = None
         self._stable_target = None
         self._stable_last_set = None
@@ -785,6 +815,12 @@ class SmartOffsetController:
             self._learning_block_until,
             self.hass.loop.time() + settle,
         )
+
+    async def _async_confirm_rebase(self) -> None:
+        if await self.storage.async_finish_offset_reset(self.entry.entry_id):
+            self._last_learning_sample = self._last_room_sample
+            self._block_learning_for_settle()
+        self._rebase_required = False
 
     def _clear_manual_candidate(self) -> None:
         self._manual_pending_device_target = None
@@ -1125,6 +1161,12 @@ class SmartOffsetController:
         error = target - room_temperature
         self.last_error = error
         room_updated = getattr(room, "last_updated", None)
+        # Repeated reports of the same temperature are still fresh measurements.
+        room_sample = getattr(room, "last_reported", None) or room_updated
+        self._last_room_sample = room_sample
+        if self.storage.offset_reset_pending(self.entry.entry_id):
+            # Ignore measurements until the device confirms the upgraded baseline.
+            self._last_learning_sample = room_sample
         fresh_room_sample = room_updated != self._last_room_state_updated
         self._last_room_state_updated = room_updated
         self._update_statistics(
@@ -1285,6 +1327,7 @@ class SmartOffsetController:
 
         if window_setback or boost_active:
             self._clear_manual_candidate()
+            self._reset_dynamic_state(rebase=False)
 
         manual_sync = bool(self.opt(CONF_MANUAL_TARGET_SYNC))
         if not manual_sync:
@@ -1342,7 +1385,6 @@ class SmartOffsetController:
                 return
             self._update_control_output(hvac_mode, override, minimum, maximum)
             self.last_action = "window_open"
-            self._reset_dynamic_state(rebase=False)
             self._notify()
             return
 
@@ -1362,7 +1404,6 @@ class SmartOffsetController:
                 return
             self._update_control_output(hvac_mode, override, minimum, maximum)
             self.last_action = "boost"
-            self._reset_dynamic_state(rebase=False)
             self._notify()
             return
 
@@ -1371,160 +1412,9 @@ class SmartOffsetController:
             self._rebase_required = True
             force = True
 
-        offset = self.storage.get_offset(self.entry.entry_id, hvac_mode)
-        maximum_step = max(0.01, self._number(CONF_STEP_MAX, DEFAULT_STEP_MAX))
-        gain = max(0.0, self._number(CONF_CONTROL_GAIN, DEFAULT_CONTROL_GAIN))
-
-        if abs(error) <= deadband:
-            baseline = max(minimum, min(maximum, target + offset))
-            result = calculate_setpoint(
-                room_temperature=room_temperature,
-                room_target=target,
-                offset=offset,
-                gain=0.0,
-                maximum_correction=maximum_step,
-                maximum_step=maximum_step,
-                device_step=device_step,
-                minimum=minimum,
-                maximum=maximum,
-                # A rebase restores a known safe baseline in one command. A
-                # slew limit here could strand a boost/window intermediate
-                # forever once the controller re-enters the deadband.
-                reference_setpoint=None,
-                target_delta=0.0,
-            )
-            baseline = result.setpoint
-            must_rebase = target_changed or self._rebase_required
-            if must_rebase and (
-                device_target is None
-                or not command_matches(device_target, baseline, device_step)
-            ):
-                # Keep the flag until the physical state confirms the target;
-                # this also retries failed or silently dropped commands.
-                if not await self._command_temperature(baseline, normal_control=True):
-                    return
-                self.last_action = "deadband_rebase"
-                self.last_target_trv = baseline
-                self._stable_since = None
-                self._notify()
-                return
-            if must_rebase:
-                self._rebase_required = False
-
-            stable_setpoint = (
-                device_target if device_target is not None else self.last_set
-            )
-            if self._stable_since is None:
-                self._stable_since = now
-                self._stable_target = target
-                self._stable_last_set = stable_setpoint
-                self.last_action = (
-                    "deadband_init" if previous_device_target is None else "hold"
-                )
-            elif (
-                self._stable_target != target
-                or self._stable_last_set != stable_setpoint
-            ):
-                self._stable_since = now
-                self._stable_target = target
-                self._stable_last_set = stable_setpoint
-                self.last_action = "hold"
-            elif (
-                bool(self.opt(CONF_ENABLE_LEARNING))
-                and stable_setpoint is not None
-                and now >= self._learning_block_until
-                and now - self._stable_since >= STABLE_LEARN_SECONDS
-            ):
-                implied_offset = max(
-                    -MAX_OFFSET, min(MAX_OFFSET, stable_setpoint - target)
-                )
-                new_offset = offset + STABLE_LEARN_ALPHA * (implied_offset - offset)
-                if abs(new_offset - offset) > 1e-6:
-                    self.storage.set_offset(self.entry.entry_id, new_offset, hvac_mode)
-                    await self.storage.async_save()
-                self._stable_since = now
-                self.last_action = "stable_learn"
-            else:
-                self.last_action = "hold"
-            self.last_target_trv = stable_setpoint
-            self.last_correction = 0.0
-            self._update_control_output(hvac_mode, stable_setpoint, minimum, maximum)
-            self._notify()
-            return
-
-        self._stable_since = None
-        self._stable_target = None
-        self._stable_last_set = None
-
-        result = calculate_setpoint(
-            room_temperature=room_temperature,
-            room_target=target,
-            offset=offset,
-            gain=gain,
-            maximum_correction=max(maximum_step, 2.0 * maximum_step),
-            maximum_step=maximum_step,
-            device_step=device_step,
-            minimum=minimum,
-            maximum=maximum,
-            reference_setpoint=device_target,
-            target_delta=target_delta,
-        )
-
-        cooldown = max(0.0, self._number(CONF_COOLDOWN_SEC, DEFAULT_COOLDOWN_SEC))
-        cooldown_active = (
-            not force and self.last_change > 0.0 and now - self.last_change < cooldown
-        )
-
-        enable_learning = bool(
-            self.opt(CONF_ENABLE_LEARNING)
-            if self.opt(CONF_ENABLE_LEARNING) is not None
-            else DEFAULT_ENABLE_LEARNING
-        )
-        if (
-            enable_learning
-            and fresh_room_sample
-            and now >= self._learning_block_until
-            and not result.saturated
-            and not cooldown_active
-        ):
-            if self._last_learning_time is None:
-                self._last_learning_time = now
-            else:
-                elapsed = max(0.0, now - self._last_learning_time)
-                interval = float(self._interval_seconds or DEFAULT_INTERVAL_SEC)
-                scale = min(1.0, elapsed / max(1.0, interval))
-                if scale > 0:
-                    learn_rate = max(
-                        0.0, self._number(CONF_LEARN_RATE, DEFAULT_LEARN_RATE)
-                    )
-                    new_offset = max(
-                        -MAX_OFFSET,
-                        min(MAX_OFFSET, offset + learn_rate * error * scale),
-                    )
-                    if abs(new_offset - offset) > 1e-6:
-                        offset = new_offset
-                        self.storage.set_offset(self.entry.entry_id, offset, hvac_mode)
-                        await self.storage.async_save()
-                        result = calculate_setpoint(
-                            room_temperature=room_temperature,
-                            room_target=target,
-                            offset=offset,
-                            gain=gain,
-                            maximum_correction=2.0 * maximum_step,
-                            maximum_step=maximum_step,
-                            device_step=device_step,
-                            minimum=minimum,
-                            maximum=maximum,
-                            reference_setpoint=device_target,
-                            target_delta=target_delta,
-                        )
-                    self._last_learning_time = now
-
-        setpoint = result.setpoint
         action_after_command = "set_temperature"
 
-        # Retain the existing adaptive radiator over-temperature protection,
-        # but limit it, apply it only in heat mode, and keep it out of learning.
+        # Apply bias before slew limiting, avoiding repeated subtraction.
         stuck_enabled = bool(
             self.opt(CONF_STUCK_ENABLE)
             if self.opt(CONF_STUCK_ENABLE) is not None
@@ -1564,26 +1454,193 @@ class SmartOffsetController:
                     action_after_command = "stuck_overtemp_down"
                 self._stuck_ref_temp = room_temperature
                 self._stuck_ref_time = now
-            if self._stuck_bias > 0:
-                biased = max(minimum, setpoint - self._stuck_bias)
-                setpoint = calculate_setpoint(
-                    room_temperature=0,
-                    room_target=biased,
-                    offset=0,
-                    gain=0,
-                    maximum_correction=0,
-                    maximum_step=maximum - minimum,
-                    device_step=device_step,
-                    minimum=minimum,
-                    maximum=maximum,
-                    reference_setpoint=None,
-                    target_delta=0,
-                ).setpoint
         else:
+            if self._stuck_bias > 0:
+                self._reset_dynamic_state(rebase=True)
+                self._block_learning_for_settle()
             self._stuck_active = False
             self._stuck_ref_temp = None
             self._stuck_ref_time = None
             self._stuck_bias = 0.0
+
+        offset = self.storage.get_offset(self.entry.entry_id, hvac_mode)
+        maximum_step = max(0.01, self._number(CONF_STEP_MAX, DEFAULT_STEP_MAX))
+        gain = max(0.0, self._number(CONF_CONTROL_GAIN, DEFAULT_CONTROL_GAIN))
+        conditioning_active = _mode_value(climate.attributes.get("hvac_action")) == (
+            "heating" if hvac_mode == "heat" else "cooling"
+        )
+
+        if abs(error) <= deadband:
+            baseline = max(minimum, min(maximum, target + offset))
+            result = calculate_setpoint(
+                room_temperature=room_temperature,
+                room_target=target,
+                offset=offset,
+                gain=0.0,
+                maximum_correction=maximum_step,
+                maximum_step=maximum_step,
+                device_step=device_step,
+                minimum=minimum,
+                maximum=maximum,
+                # A rebase restores a known safe baseline in one command. A
+                # slew limit here could strand a boost/window intermediate
+                # forever once the controller re-enters the deadband.
+                reference_setpoint=None,
+                target_delta=0.0,
+            )
+            baseline = result.setpoint
+            must_rebase = target_changed or self._rebase_required
+            if must_rebase and (
+                device_target is None
+                or not command_matches(device_target, baseline, device_step)
+            ):
+                # Keep the flag until the physical state confirms the target;
+                # this also retries failed or silently dropped commands.
+                if not await self._command_temperature(baseline, normal_control=True):
+                    return
+                self.last_action = "deadband_rebase"
+                self.last_target_trv = baseline
+                self._stable_since = None
+                self._notify()
+                return
+            if must_rebase:
+                await self._async_confirm_rebase()
+
+            stable_setpoint = (
+                device_target if device_target is not None else self.last_set
+            )
+            if not conditioning_active:
+                # Idle targets cannot calibrate warmth from sunlight or residual heat.
+                self._stable_since = None
+                self._stable_target = target
+                self._stable_last_set = stable_setpoint
+                self._last_learning_sample = room_sample
+                self.last_action = (
+                    "deadband_init" if previous_device_target is None else "hold"
+                )
+            elif self._stable_since is None:
+                self._stable_since = now
+                self._stable_target = target
+                self._stable_last_set = stable_setpoint
+                self._last_learning_sample = room_sample
+                self.last_action = (
+                    "deadband_init" if previous_device_target is None else "hold"
+                )
+            elif (
+                self._stable_target != target
+                or self._stable_last_set != stable_setpoint
+            ):
+                self._stable_since = now
+                self._stable_target = target
+                self._stable_last_set = stable_setpoint
+                self._last_learning_sample = room_sample
+                self.last_action = "hold"
+            elif (
+                bool(self.opt(CONF_ENABLE_LEARNING))
+                and conditioning_active
+                and room_sample != self._last_learning_sample
+                and stable_setpoint is not None
+                and now >= self._learning_block_until
+                and now - self._stable_since >= STABLE_LEARN_SECONDS
+            ):
+                implied_offset = max(
+                    -MAX_OFFSET, min(MAX_OFFSET, stable_setpoint - target)
+                )
+                new_offset = offset + STABLE_LEARN_ALPHA * (implied_offset - offset)
+                if abs(new_offset - offset) > 1e-6:
+                    self.storage.set_offset(self.entry.entry_id, new_offset, hvac_mode)
+                    await self.storage.async_save()
+                self._stable_since = now
+                self._last_learning_sample = room_sample
+                self.last_action = "stable_learn"
+            else:
+                self.last_action = "hold"
+            self.last_target_trv = stable_setpoint
+            self.last_correction = 0.0
+            self._update_control_output(hvac_mode, stable_setpoint, minimum, maximum)
+            self._notify()
+            return
+
+        self._stable_since = None
+        self._stable_target = None
+        self._stable_last_set = None
+
+        result = calculate_setpoint(
+            room_temperature=room_temperature,
+            room_target=target,
+            offset=offset - self._stuck_bias,
+            gain=gain,
+            maximum_correction=2.0 * maximum_step,
+            maximum_step=maximum_step,
+            device_step=device_step,
+            minimum=minimum,
+            maximum=maximum,
+            reference_setpoint=None if self._rebase_required else device_target,
+            target_delta=target_delta,
+        )
+
+        cooldown = max(0.0, self._number(CONF_COOLDOWN_SEC, DEFAULT_COOLDOWN_SEC))
+        cooldown_active = (
+            not force
+            and not self._rebase_required
+            and self.last_change > 0.0
+            and now - self.last_change < cooldown
+        )
+
+        enable_learning = bool(
+            self.opt(CONF_ENABLE_LEARNING)
+            if self.opt(CONF_ENABLE_LEARNING) is not None
+            else DEFAULT_ENABLE_LEARNING
+        )
+        learning_direction_allowed = conditioning_active or (
+            error > 0 if hvac_mode == "heat" else error < 0
+        )
+        if not learning_direction_allowed or self._stuck_bias > 0:
+            self._last_learning_sample = room_sample
+        if (
+            enable_learning
+            and room_sample != self._last_learning_sample
+            and now >= self._learning_block_until
+            and not result.saturated
+            and not cooldown_active
+        ):
+            if self._last_learning_time is None:
+                self._last_learning_time = now
+            else:
+                elapsed = max(0.0, now - self._last_learning_time)
+                interval = float(self._interval_seconds or DEFAULT_INTERVAL_SEC)
+                scale = min(1.0, elapsed / max(1.0, interval))
+                if scale > 0:
+                    learn_rate = max(
+                        0.0, self._number(CONF_LEARN_RATE, DEFAULT_LEARN_RATE)
+                    )
+                    new_offset = max(
+                        -MAX_OFFSET,
+                        min(MAX_OFFSET, offset + learn_rate * error * scale),
+                    )
+                    if abs(new_offset - offset) > 1e-6:
+                        offset = new_offset
+                        self.storage.set_offset(self.entry.entry_id, offset, hvac_mode)
+                        await self.storage.async_save()
+                        result = calculate_setpoint(
+                            room_temperature=room_temperature,
+                            room_target=target,
+                            offset=offset - self._stuck_bias,
+                            gain=gain,
+                            maximum_correction=2.0 * maximum_step,
+                            maximum_step=maximum_step,
+                            device_step=device_step,
+                            minimum=minimum,
+                            maximum=maximum,
+                            reference_setpoint=(
+                                None if self._rebase_required else device_target
+                            ),
+                            target_delta=target_delta,
+                        )
+                    self._last_learning_time = now
+                    self._last_learning_sample = room_sample
+
+        setpoint = result.setpoint
 
         self.last_target_trv = setpoint
         self.last_correction = result.correction
@@ -1592,6 +1649,7 @@ class SmartOffsetController:
         if device_target is not None and command_matches(
             device_target, setpoint, device_step
         ):
+            await self._async_confirm_rebase()
             self.last_action = "skipped_no_change"
             self._notify()
             return

@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Aktuellen Modus beibehalten",
-        "heat": "Heizen",
-        "cool": "Kühlen",
+        "heat": "Heizen (Regelung durch Smart Offset Thermostat)",
+        "cool": "Kühlen (Regelung durch Smart Offset Thermostat)",
         "auto": "Automatisch (Gerätesteuerung)",
         "dry": "Entfeuchten",
         "fan_only": "Nur Lüfter",
         "off": "Aus"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Anwesend",
+        "away": "Abwesend",
+        "summer": "Sommer",
+        "winter": "Winter"
       }
     }
   },
@@ -25,7 +33,7 @@
       },
       "repair_or_setup": {
         "title": "Thermostat wiederherstellen oder neu einrichten",
-        "description": "Home Assistant hat frühere Smart Offset Thermostate gefunden. Stelle einen Raum wieder her, um seine bisherigen Entitäten und Dashboard-Verknüpfungen zu behalten, oder richte ein separates neues Thermostat ein.",
+        "description": "Home Assistant hat frühere Räume mit Smart Offset Thermostat gefunden. Stelle einen Raum wieder her, um seine bisherigen Entitäten und Dashboard-Verknüpfungen zu behalten, oder richte ein separates neues Thermostat ein.",
         "menu_options": {
           "repair_select": "Vorhandenen Raum wiederherstellen",
           "setup_new": "Neues Thermostat einrichten"
@@ -69,15 +77,15 @@
           "room_target": "Raum-Solltemperatur",
           "hvac_mode": "Anfänglicher Thermostatmodus",
           "window_sensor_entities": "Fenstersensoren (optional)",
-          "window_delay_sec": "Verzögerung vor Fensterabsenkung",
-          "enable_learning": "Optimales Thermostat-Offset lernen",
+          "window_delay_sec": "Verzögerung vor Fensterschutz",
+          "enable_learning": "Optimalen Thermostat-Offset lernen",
           "manual_target_sync": "Manuelle Thermostatänderungen übernehmen",
           "pause_on_hvac_off": "Regelung bei ausgeschaltetem Thermostat pausieren"
         }
       },
       "reconfigure": {
         "title": "Verbundene Geräte ändern",
-        "description": "Wähle ein anderes physisches Thermostat oder einen anderen Raumtemperatur-Sensor. Presets, gelerntes Offset und Optionen bleiben erhalten.",
+        "description": "Wähle ein anderes physisches Thermostat oder einen anderen Raumtemperatur-Sensor. Voreinstellungen, gelernter Offset und Optionen bleiben erhalten.",
         "data": {
           "climate_entity": "Thermostat",
           "room_sensor_entity": "Raumtemperatur-Sensor"
@@ -105,14 +113,14 @@
         "title": "Smart Offset Thermostat einstellen",
         "description": "Wähle den Bereich, den du konfigurieren möchtest.",
         "menu_options": {
-          "presets": "Komfort-Presets",
+          "presets": "Komfort-Voreinstellungen",
           "window_boost": "Fenster und Boost",
           "manual": "Manuelle Bedienung",
           "learning": "Lernen und Überhitzung",
           "expert": "Experteneinstellungen"
         },
         "menu_option_descriptions": {
-          "presets": "Raumtemperatur-Presets erstellen, bearbeiten oder entfernen.",
+          "presets": "Raumtemperatur-Voreinstellungen erstellen, bearbeiten oder entfernen.",
           "window_boost": "Fensterschutz und Boost-Dauer konfigurieren.",
           "manual": "Verhalten bei manuellen Änderungen und ausgeschaltetem Thermostat festlegen.",
           "learning": "Offset-Lernen und adaptiven Überhitzungsschutz abstimmen.",
@@ -120,43 +128,43 @@
         }
       },
       "presets": {
-        "title": "Komfort-Presets",
-        "description": "Erstelle ein neues Preset oder bearbeite ein bestehendes.",
+        "title": "Komfort-Voreinstellungen",
+        "description": "Erstelle eine neue Voreinstellung oder bearbeite eine bestehende.",
         "menu_options": {
-          "preset_new": "Preset erstellen",
-          "preset_select": "Preset bearbeiten"
+          "preset_new": "Voreinstellung erstellen",
+          "preset_select": "Voreinstellung bearbeiten"
         },
         "menu_option_descriptions": {
           "preset_new": "Ein weiteres Ziel mit Pausenstatus und Thermostatmodus hinzufügen.",
-          "preset_select": "Ein bestehendes Preset ändern oder entfernen."
+          "preset_select": "Eine bestehende Voreinstellung ändern oder entfernen."
         }
       },
       "preset_select": {
-        "title": "Preset auswählen",
-        "description": "Wähle das Preset, das du bearbeiten oder entfernen möchtest.",
+        "title": "Voreinstellung auswählen",
+        "description": "Wähle die Voreinstellung, die du bearbeiten oder entfernen möchtest.",
         "data": {
-          "preset_id": "Preset"
+          "preset_id": "Voreinstellung"
         }
       },
       "preset_new": {
-        "title": "Preset erstellen",
-        "description": "Verwende eine kurze, kleingeschriebene ID mit Buchstaben, Zahlen und Unterstrichen, zum Beispiel `schlafen` oder `home_office`.",
+        "title": "Voreinstellung erstellen",
+        "description": "Verwende eine kurze Kennung mit Kleinbuchstaben von a bis z, Zahlen und Unterstrichen, zum Beispiel `schlafen` oder `buero`.",
         "data": {
-          "preset_id": "Preset-ID",
+          "preset_id": "Kennung der Voreinstellung",
           "room_target": "Raum-Solltemperatur",
-          "pause": "Regelung in diesem Preset pausieren",
+          "pause": "Regelung in dieser Voreinstellung pausieren",
           "hvac_mode": "Modus des physischen Thermostats"
         }
       },
       "preset_edit": {
-        "title": "{preset_id} bearbeiten",
-        "description": "Aktualisiere dieses Preset oder aktiviere das Löschen, um es zu entfernen. Mindestens ein Preset muss erhalten bleiben.",
+        "title": "Voreinstellung bearbeiten",
+        "description": "Aktualisiere diese Voreinstellung oder aktiviere das Löschen, um sie zu entfernen. Mindestens eine Voreinstellung muss erhalten bleiben.",
         "data": {
-          "preset_id": "Preset-ID",
+          "preset_id": "Kennung der Voreinstellung",
           "room_target": "Raum-Solltemperatur",
-          "pause": "Regelung in diesem Preset pausieren",
+          "pause": "Regelung in dieser Voreinstellung pausieren",
           "hvac_mode": "Modus des physischen Thermostats",
-          "delete_preset": "Dieses Preset löschen"
+          "delete_preset": "Diese Voreinstellung löschen"
         }
       },
       "window_boost": {
@@ -164,7 +172,7 @@
         "description": "Offene Fenster wenden nach einer Verzögerung einen energiesparenden Sollwert an. Boost fordert vorübergehend die stärkste geregelte Leistung an.",
         "data": {
           "window_sensor_entities": "Fenstersensoren",
-          "window_delay_sec": "Verzögerung vor Fensterabsenkung",
+          "window_delay_sec": "Verzögerung vor Fensterschutz",
           "boost_duration_sec": "Boost-Dauer"
         }
       },
@@ -179,7 +187,7 @@
       },
       "learning": {
         "title": "Lernen und Überhitzung",
-        "description": "Das Lernen passt das Offset mit der Zeit an. Der Überhitzungsschutz kann den Sollwert weiter senken, wenn der Raum nicht wie erwartet abkühlt.",
+        "description": "Das Lernen passt den Offset mit der Zeit an. Der Überhitzungsschutz kann den Sollwert weiter senken, wenn der Raum nicht wie erwartet abkühlt.",
         "data": {
           "enable_learning": "Offset-Lernen aktivieren",
           "learn_rate": "Lernrate",
@@ -205,9 +213,9 @@
       }
     },
     "error": {
-      "invalid_preset_id": "Verwende 1–64 Kleinbuchstaben, Zahlen oder Unterstriche; das erste Zeichen muss ein Buchstabe oder eine Zahl sein.",
-      "duplicate_preset": "Ein Preset mit dieser ID ist bereits vorhanden.",
-      "last_preset": "Das letzte Preset kann nicht gelöscht werden.",
+      "invalid_preset_id": "Verwende 1–64 Kleinbuchstaben von a bis z, Zahlen oder Unterstriche; das erste Zeichen muss ein Buchstabe oder eine Zahl sein.",
+      "duplicate_preset": "Eine Voreinstellung mit dieser ID ist bereits vorhanden.",
+      "last_preset": "Die letzte Voreinstellung kann nicht gelöscht werden.",
       "min_max": "Der minimale Thermostat-Sollwert muss kleiner als der maximale sein.",
       "step_order": "Der Rundungsschritt muss kleiner oder gleich der maximalen Änderung pro Zyklus sein."
     }
@@ -216,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Thermostat",
+        "state": {
+          "heat": "Heizen",
+          "cool": "Kühlen",
+          "auto": "Automatisch"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -223,47 +236,435 @@
               "away": "Abwesend",
               "summer": "Sommer",
               "winter": "Winter"
-            }
+            },
+            "name": "Voreinstellung"
+          },
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "external_temperature_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "learned_offset": {
+            "name": "Gelernter Offset"
+          },
+          "control_error": {
+            "name": "Regelabweichung"
+          },
+          "control_output": {
+            "name": "Reglerausgang"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Regelabweichung"
+        "name": "Regelabweichung",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Absolute Regelabweichung"
+        "name": "Absolute Regelabweichung",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Mittlere absolute Regelabweichung"
+        "name": "Mittlere absolute Regelabweichung",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Komfortwert"
+        "name": "Komfortwert",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Temperaturtrend"
+        "name": "Temperaturtrend",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "control_output": {
-        "name": "Reglerausgang"
+        "name": "Reglerausgang",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "offset": {
-        "name": "Gelerntes Offset"
+        "name": "Gelernter Offset",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "target_trv": {
-        "name": "Berechneter Thermostat-Sollwert"
+        "name": "Berechneter Thermostat-Sollwert",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "last_set": {
-        "name": "Zuletzt gesetzter Thermostat-Sollwert"
+        "name": "Zuletzt gesetzter Thermostat-Sollwert",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Bestätigter Thermostat-Sollwert"
+        "name": "Bestätigter Thermostat-Sollwert",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "correction": {
-        "name": "Angewendete Korrektur"
+        "name": "Angewendete Korrektur",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "last_action": {
-        "name": "Letzte Entscheidung (Code)"
+        "name": "Letzte Entscheidung (Code)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "last_action_text": {
         "name": "Letzte Entscheidung",
@@ -272,7 +673,7 @@
           "deadband_init": "Anfangssollwert gesetzt",
           "deadband_rebase": "Ziel geändert; Basiswert aktualisiert",
           "hold": "Sollwert im Komfortbereich halten",
-          "stable_learn": "Stabiles Offset gelernt",
+          "stable_learn": "Stabilen Offset gelernt",
           "cooldown": "Sperrzeit abwarten",
           "set_temperature": "Sollwert an Thermostat gesendet",
           "skipped_no_change": "Keine Sollwertänderung nötig",
@@ -285,35 +686,273 @@
           "hvac_mode_set": "Thermostatmodus geändert",
           "passive_mode": "Passiver Thermostatmodus",
           "stuck_overtemp_down": "Zusätzliche Übertemperaturkorrektur",
-          "reset_offset": "Gelerntes Offset zurückgesetzt",
+          "reset_offset": "Gelernter Offset zurückgesetzt",
           "manual_target_sync": "Manuelle Änderung übernommen",
           "manual_hold": "Wartezeit nach manueller Änderung",
           "manual_echo": "Eigener Thermostatbefehl bestätigt",
           "service_error": "Thermostatbefehl fehlgeschlagen"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
         }
       },
       "change_count": {
-        "name": "Anzahl Sollwert-Änderungen"
+        "name": "Anzahl Sollwert-Änderungen",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Anzahl manueller Änderungen"
+        "name": "Anzahl manueller Änderungen",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "window_state": {
-        "name": "Fensterstatus"
+        "name": "Fensterstatus",
+        "state": {
+          "open": "Offen",
+          "closed": "Geschlossen"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Boost Restzeit"
+        "name": "Boost Restzeit",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost aktiv"
+        "name": "Boost aktiv",
+        "state": {
+          "True": "Ja",
+          "False": "Nein"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       },
       "control_paused": {
-        "name": "Regelung pausiert"
+        "name": "Regelung pausiert",
+        "state": {
+          "True": "Ja",
+          "False": "Nein"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Physisches Thermostat"
+          },
+          "room_sensor": {
+            "name": "Raumtemperatur-Sensor"
+          },
+          "preset": {
+            "name": "Voreinstellung",
+            "state": {
+              "present": "Anwesend",
+              "away": "Abwesend",
+              "summer": "Sommer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "auto": "Automatisch",
+              "dry": "Entfeuchten",
+              "fan_only": "Nur Lüfter",
+              "off": "Aus"
+            }
+          },
+          "room_target": {
+            "name": "Raum-Solltemperatur"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Fenster offen"
+        "name": "Fenster offen",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "Status des Fenstersensors unbekannt",
+            "state": {
+              "true": "Ja",
+              "false": "Nein"
+            }
+          }
+        }
       },
       "boost_running": {
         "name": "Boost läuft"
@@ -354,6 +993,44 @@
           "winter": "Winter"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "Das Thermostat oder der Raumtemperatur-Sensor fehlt. Konfiguriere die verbundenen Geräte neu."
+    },
+    "duplicate_controller": {
+      "message": "{thermostat} wird bereits von {room_name} gesteuert. Entferne diesen doppelten Eintrag oder wähle ein anderes Thermostat."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "Die Daten zur Wiederherstellung des Raums sind unvollständig. Starte die Wiederherstellung erneut."
+    },
+    "recovery_identity_conflict": {
+      "message": "Mehrere Thermostate verwenden dieselbe gespeicherte Raumzuordnung. Entferne doppelte Einträge, bevor du diesen Raum wiederherstellst."
+    },
+    "recovery_failed": {
+      "message": "Dieser Raum konnte nicht wiederhergestellt werden, weil sich seine gespeicherten Daten oder Entitätszuordnungen geändert haben. Starte die Wiederherstellung erneut."
+    },
+    "recovery_storage_conflict": {
+      "message": "Die gespeicherten Raumdaten stehen im Konflikt mit diesem Thermostat. Behebe den Konflikt, bevor du den Raum wiederherstellst."
+    },
+    "recovery_storage_write": {
+      "message": "Die Wiederherstellung des Raums konnte nicht gespeichert werden. Prüfe den Speicher von Home Assistant und versuche es erneut."
+    },
+    "recovery_reload_failed": {
+      "message": "Die Entitäten des wiederhergestellten Raums konnten nicht neu geladen werden. Starte Home Assistant neu und versuche es erneut."
+    },
+    "unknown_preset": {
+      "message": "Die Voreinstellung {preset} existiert nicht."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Das Thermostat unterstützt den Modus {mode} nicht."
+    },
+    "hvac_mode_failed": {
+      "message": "Das Thermostat konnte nicht in den Modus {mode} wechseln."
+    },
+    "no_hvac_mode": {
+      "message": "Es ist kein Betriebsmodus verfügbar, mit dem dieses Thermostat eingeschaltet werden kann."
     }
   }
 }

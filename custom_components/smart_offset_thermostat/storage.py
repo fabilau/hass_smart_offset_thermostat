@@ -10,7 +10,7 @@ from typing import Any
 from homeassistant.helpers.storage import Store
 
 _STORAGE_VERSION = 1
-_PAYLOAD_VERSION = 4
+_PAYLOAD_VERSION = 5
 _STORAGE_KEY = "smart_offset_thermostat"
 
 
@@ -109,6 +109,17 @@ class OffsetStorage:
             # dangerous heat/cool change during the upgrade.
             values.setdefault("change_count", 0)
             values.setdefault("manual_change_count", 0)
+            if schema_version < 5:
+                # Reset old calibration once; later schema upgrades must not repeat it.
+                offsets = values.get("offsets")
+                values["offsets"] = {
+                    **(offsets if isinstance(offsets, dict) else {}),
+                    "heat": 0.0,
+                    "cool": 0.0,
+                }
+                if "offset" in values:
+                    values["offset"] = 0.0
+                values["offset_reset_pending"] = True
             if values != original_values:
                 migrated = True
 
@@ -154,6 +165,25 @@ class OffsetStorage:
             offsets[str(hvac_mode)] = float(offset)
         else:
             values["offset"] = float(offset)
+
+    def offset_reset_pending(self, entry_id: str) -> bool:
+        return (
+            not self._future_schema
+            and self._entry(entry_id).get("offset_reset_pending") is True
+        )
+
+    async def async_finish_offset_reset(self, entry_id: str) -> bool:
+        """Acknowledge the upgraded baseline without resetting learned values again."""
+        if not self.offset_reset_pending(entry_id):
+            return False
+        values = self._entry(entry_id)
+        values.pop("offset_reset_pending")
+        try:
+            await self.async_save()
+        except (Exception, asyncio.CancelledError):
+            values["offset_reset_pending"] = True
+            raise
+        return True
 
     def get_preset(self, entry_id: str) -> str | None:
         preset = self._entry(entry_id).get("preset")

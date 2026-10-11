@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Behåll aktuellt läge",
-        "heat": "Värme",
-        "cool": "Kyla",
+        "heat": "Värme (regleras av Smart Offset Thermostat)",
+        "cool": "Kyla (regleras av Smart Offset Thermostat)",
         "auto": "Automatiskt (styrs av enheten)",
         "dry": "Avfuktning",
         "fan_only": "Endast fläkt",
         "off": "Av"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Hemma",
+        "away": "Borta",
+        "summer": "Sommar",
+        "winter": "Vinter"
       }
     }
   },
@@ -69,7 +77,7 @@
           "room_target": "Önskad rumstemperatur",
           "hvac_mode": "Termostatens startläge",
           "window_sensor_entities": "Fönstersensorer (valfritt)",
-          "window_delay_sec": "Fördröjning innan fönstersänkning",
+          "window_delay_sec": "Fördröjning innan fönsterskyddet aktiveras",
           "enable_learning": "Lär in optimal termostatkorrigering",
           "manual_target_sync": "Ta över manuella termostatändringar",
           "pause_on_hvac_off": "Pausa styrningen när termostaten är avstängd"
@@ -149,7 +157,7 @@
         }
       },
       "preset_edit": {
-        "title": "Ändra {preset_id}",
+        "title": "Ändra förinställning",
         "description": "Uppdatera förinställningen eller aktivera borttagning för att radera den. Minst en förinställning måste finnas kvar.",
         "data": {
           "preset_id": "Förinställnings-ID",
@@ -161,10 +169,10 @@
       },
       "window_boost": {
         "title": "Fönster och boost",
-        "description": "Efter en fördröjning använder öppna fönster en energisparande temperatur. Boost begär tillfälligt den starkaste reglerade effekten.",
+        "description": "Vid öppna fönster ställs en energisparande temperatur in efter en fördröjning. Boost begär tillfälligt den högsta reglerade effekten.",
         "data": {
           "window_sensor_entities": "Fönstersensorer",
-          "window_delay_sec": "Fördröjning innan fönstersänkning",
+          "window_delay_sec": "Fördröjning innan fönsterskyddet aktiveras",
           "boost_duration_sec": "Boostens varaktighet"
         }
       },
@@ -179,7 +187,7 @@
       },
       "learning": {
         "title": "Inlärning och överhettning",
-        "description": "Inlärningen anpassar korrigeringen över tid. Skyddet mot överhettning kan sänka temperaturen ytterligare om rummet inte svalnar som förväntat.",
+        "description": "Inlärningen anpassar korrigeringen över tid. Skyddet mot överhettning kan sänka börvärdet ytterligare om rummet inte svalnar som förväntat.",
         "data": {
           "enable_learning": "Aktivera inlärning av korrigering",
           "learn_rate": "Inlärningshastighet",
@@ -196,10 +204,10 @@
           "interval_sec": "Styrintervall",
           "deadband": "Komfortband",
           "control_gain": "Styrenhetens förstärkning",
-          "step_max": "Största temperaturändring per cykel",
+          "step_max": "Största ändring av börvärdet per cykel",
           "step_min": "Termostatens avrundningssteg",
-          "trv_min": "Minsta temperatur för fysisk termostat",
-          "trv_max": "Högsta temperatur för fysisk termostat",
+          "trv_min": "Lägsta börvärde för den fysiska termostaten",
+          "trv_max": "Högsta börvärde för den fysiska termostaten",
           "cooldown_sec": "Minsta tid mellan ändringar"
         }
       }
@@ -208,7 +216,7 @@
       "invalid_preset_id": "Använd 1–64 små bokstäver, siffror eller understreck. Det första tecknet måste vara en bokstav eller siffra.",
       "duplicate_preset": "Det finns redan en förinställning med detta ID.",
       "last_preset": "Den sista förinställningen kan inte tas bort.",
-      "min_max": "Termostatens lägsta temperatur måste vara lägre än den högsta.",
+      "min_max": "Termostatens lägsta börvärde måste vara lägre än det högsta.",
       "step_order": "Avrundningssteget måste vara mindre än eller lika med den största ändringen per cykel."
     }
   },
@@ -216,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Termostat",
+        "state": {
+          "heat": "Värme",
+          "cool": "Kyla",
+          "auto": "Automatiskt"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -223,47 +236,435 @@
               "away": "Borta",
               "summer": "Sommar",
               "winter": "Vinter"
-            }
+            },
+            "name": "Förinställning"
+          },
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "external_temperature_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "learned_offset": {
+            "name": "Inlärd korrigering"
+          },
+          "control_error": {
+            "name": "Regleravvikelse"
+          },
+          "control_output": {
+            "name": "Reglerutgång"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Styrfel"
+        "name": "Regleravvikelse",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Absolut styravvikelse"
+        "name": "Absolut styravvikelse",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Genomsnittlig absolut avvikelse"
+        "name": "Genomsnittlig absolut avvikelse",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Komfortpoäng"
+        "name": "Komfortpoäng",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Temperaturtrend"
+        "name": "Temperaturtrend",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "control_output": {
-        "name": "Reglerutgång"
+        "name": "Reglerutgång",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "offset": {
-        "name": "Inlärd offset"
+        "name": "Inlärd korrigering",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "target_trv": {
-        "name": "Beräknat termostatbörvärde"
+        "name": "Beräknat termostatbörvärde",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "last_set": {
-        "name": "Senast inställt termostatbörvärde"
+        "name": "Senast inställt termostatbörvärde",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Bekräftat termostatbörvärde"
+        "name": "Bekräftat termostatbörvärde",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "correction": {
-        "name": "Tillämpad korrigering"
+        "name": "Tillämpad korrigering",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "last_action": {
-        "name": "Senaste beslut (kod)"
+        "name": "Senaste beslut (kod)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "last_action_text": {
         "name": "Senaste beslut",
@@ -272,7 +673,7 @@
           "deadband_init": "Första börvärdet fastställt",
           "deadband_rebase": "Mål ändrat; basvärde uppdaterat",
           "hold": "Håller börvärdet inom komfortzonen",
-          "stable_learn": "Stabil offset inlärd",
+          "stable_learn": "Stabil korrigering inlärd",
           "cooldown": "Väntar på spärrtid",
           "set_temperature": "Börvärde skickat till termostat",
           "skipped_no_change": "Ingen börvärdesändring behövs",
@@ -285,35 +686,273 @@
           "hvac_mode_set": "Termostatläge ändrat",
           "passive_mode": "Passivt termostatläge",
           "stuck_overtemp_down": "Extra korrigering för övertemperatur",
-          "reset_offset": "Inlärd offset återställd",
+          "reset_offset": "Inlärd korrigering återställd",
           "manual_target_sync": "Manuell ändring övertagen",
           "manual_hold": "Väntar efter manuell ändring",
           "manual_echo": "Eget termostatkommando bekräftat",
           "service_error": "Termostatkommandot misslyckades"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
         }
       },
       "change_count": {
-        "name": "Antal börvärdesändringar"
+        "name": "Antal börvärdesändringar",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Antal manuella ändringar"
+        "name": "Antal manuella ändringar",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "window_state": {
-        "name": "Fönsterstatus"
+        "name": "Fönsterstatus",
+        "state": {
+          "open": "Öppet",
+          "closed": "Stängt"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Boost återstående tid"
+        "name": "Återstående boosttid",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost aktiv"
+        "name": "Boost aktiv",
+        "state": {
+          "True": "Ja",
+          "False": "Nej"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       },
       "control_paused": {
-        "name": "Styrning pausad"
+        "name": "Styrning pausad",
+        "state": {
+          "True": "Ja",
+          "False": "Nej"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysisk termostat"
+          },
+          "room_sensor": {
+            "name": "Rumstemperatursensor"
+          },
+          "preset": {
+            "name": "Förinställning",
+            "state": {
+              "present": "Hemma",
+              "away": "Borta",
+              "summer": "Sommar",
+              "winter": "Vinter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Läge",
+            "state": {
+              "heat": "Värme",
+              "cool": "Kyla",
+              "auto": "Automatiskt",
+              "dry": "Avfuktning",
+              "fan_only": "Endast fläkt",
+              "off": "Av"
+            }
+          },
+          "room_target": {
+            "name": "Önskad rumstemperatur"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Fönster öppet"
+        "name": "Fönster öppet",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "Okänd fönstersensorstatus",
+            "state": {
+              "true": "Ja",
+              "false": "Nej"
+            }
+          }
+        }
       },
       "boost_running": {
         "name": "Boost aktiv"
@@ -332,7 +971,7 @@
     },
     "button": {
       "reset_offset": {
-        "name": "Återställ offset"
+        "name": "Återställ korrigering"
       }
     },
     "select": {
@@ -348,12 +987,50 @@
       "mode": {
         "name": "Läge",
         "state": {
-          "present": "Närvarande",
+          "present": "Hemma",
           "away": "Borta",
           "summer": "Sommar",
           "winter": "Vinter"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "Termostaten eller rumstemperatursensorn saknas. Konfigurera de anslutna enheterna på nytt."
+    },
+    "duplicate_controller": {
+      "message": "{thermostat} styrs redan av {room_name}. Ta bort den här dubbletten eller välj en annan termostat."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "Uppgifterna för återställning av rummet är ofullständiga. Starta återställningen på nytt."
+    },
+    "recovery_identity_conflict": {
+      "message": "Flera termostater använder samma sparade rumsidentitet. Åtgärda dubbletterna innan du återställer rummet."
+    },
+    "recovery_failed": {
+      "message": "Rummet kunde inte återställas eftersom dess sparade uppgifter eller entitetskopplingar har ändrats. Starta återställningen på nytt."
+    },
+    "recovery_storage_conflict": {
+      "message": "De sparade rumsuppgifterna står i konflikt med den här termostaten. Lös konflikten innan du återställer rummet."
+    },
+    "recovery_storage_write": {
+      "message": "Återställningen av rummet kunde inte sparas. Kontrollera lagringen i Home Assistant och försök igen."
+    },
+    "recovery_reload_failed": {
+      "message": "Entiteterna för det återställda rummet kunde inte laddas om. Starta om Home Assistant och försök igen."
+    },
+    "unknown_preset": {
+      "message": "Förinställningen {preset} finns inte."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Termostaten stöder inte läget {mode}."
+    },
+    "hvac_mode_failed": {
+      "message": "Termostaten kunde inte växla till läget {mode}."
+    },
+    "no_hvac_mode": {
+      "message": "Det finns inget driftläge för att slå på den här termostaten."
     }
   }
 }

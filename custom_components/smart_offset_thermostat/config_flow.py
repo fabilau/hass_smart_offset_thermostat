@@ -708,6 +708,7 @@ class SmartOffsetThermostatOptionsFlow(config_entries.OptionsFlow):
                         SelectSelectorConfig(
                             options=preset_ids,
                             mode=SelectSelectorMode.DROPDOWN,
+                            translation_key="preset",
                         )
                     )
                 }

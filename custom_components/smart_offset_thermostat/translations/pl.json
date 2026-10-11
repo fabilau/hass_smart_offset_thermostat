@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Zachowaj bieżący tryb",
-        "heat": "Ogrzewanie",
-        "cool": "Chłodzenie",
+        "heat": "Ogrzewanie (regulowane przez Smart Offset Thermostat)",
+        "cool": "Chłodzenie (regulowane przez Smart Offset Thermostat)",
         "auto": "Automatyczny (sterowany przez urządzenie)",
         "dry": "Osuszanie",
         "fan_only": "Tylko wentylator",
         "off": "Wyłączony"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Obecny",
+        "away": "Poza domem",
+        "summer": "Lato",
+        "winter": "Zima"
       }
     }
   },
@@ -17,7 +25,7 @@
     "step": {
       "user": {
         "title": "Wybierz urządzenia",
-        "description": "Połącz jeden fizyczny termostat z wiarygodnym zewnętrznym czujnikiem temperatury w pomieszczeniu.",
+        "description": "Połącz jeden fizyczny termostat z niezawodnym zewnętrznym czujnikiem temperatury w pomieszczeniu.",
         "data": {
           "climate_entity": "Termostat",
           "room_sensor_entity": "Czujnik temperatury w pomieszczeniu"
@@ -69,15 +77,15 @@
           "room_target": "Docelowa temperatura w pomieszczeniu",
           "hvac_mode": "Początkowy tryb termostatu",
           "window_sensor_entities": "Czujniki okien (opcjonalnie)",
-          "window_delay_sec": "Opóźnienie przed obniżeniem przy otwartym oknie",
-          "enable_learning": "Ucz się optymalnego przesunięcia termostatu",
+          "window_delay_sec": "Opóźnienie aktywacji ochrony przy otwartym oknie",
+          "enable_learning": "Ucz się optymalnej korekty temperatury termostatu",
           "manual_target_sync": "Akceptuj ręczne zmiany termostatu",
           "pause_on_hvac_off": "Wstrzymaj sterowanie, gdy termostat jest wyłączony"
         }
       },
       "reconfigure": {
         "title": "Zmień połączone urządzenia",
-        "description": "Wybierz inny fizyczny termostat lub czujnik temperatury w pomieszczeniu. Profile, wyuczone przesunięcie i opcje zostaną zachowane.",
+        "description": "Wybierz inny fizyczny termostat lub czujnik temperatury w pomieszczeniu. Profile, wyuczona korekta i opcje zostaną zachowane.",
         "data": {
           "climate_entity": "Termostat",
           "room_sensor_entity": "Czujnik temperatury w pomieszczeniu"
@@ -115,7 +123,7 @@
           "presets": "Twórz, edytuj lub usuwaj profile temperatury w pomieszczeniu.",
           "window_boost": "Skonfiguruj ochronę przy otwartym oknie i czas trwania funkcji boost.",
           "manual": "Wybierz sposób obsługi zmian fizycznego termostatu i trybu wyłączenia.",
-          "learning": "Dostosuj uczenie przesunięcia i adaptacyjną ochronę przed przegrzewaniem.",
+          "learning": "Dostosuj uczenie korekty i adaptacyjną ochronę przed przegrzewaniem.",
           "expert": "Dostosuj czasy, limity i reakcję regulatora."
         }
       },
@@ -149,7 +157,7 @@
         }
       },
       "preset_edit": {
-        "title": "Edytuj profil {preset_id}",
+        "title": "Edytuj profil",
         "description": "Zaktualizuj ten profil lub włącz usuwanie, aby go usunąć. Musi pozostać co najmniej jeden profil.",
         "data": {
           "preset_id": "Identyfikator profilu",
@@ -164,7 +172,7 @@
         "description": "Otwarcie okna po upływie opóźnienia ustawia energooszczędną nastawę. Funkcja boost tymczasowo żąda największej regulowanej mocy.",
         "data": {
           "window_sensor_entities": "Czujniki okien",
-          "window_delay_sec": "Opóźnienie przed obniżeniem przy otwartym oknie",
+          "window_delay_sec": "Opóźnienie aktywacji ochrony przy otwartym oknie",
           "boost_duration_sec": "Czas trwania funkcji boost"
         }
       },
@@ -179,12 +187,12 @@
       },
       "learning": {
         "title": "Uczenie i przegrzewanie",
-        "description": "Uczenie z czasem dostosowuje przesunięcie. Ochrona przed przegrzewaniem może dodatkowo obniżyć nastawę, jeśli pomieszczenie nie ochładza się zgodnie z oczekiwaniami.",
+        "description": "Uczenie z czasem dostosowuje korektę. Ochrona przed przegrzewaniem może dodatkowo obniżyć nastawę, jeśli pomieszczenie nie ochładza się zgodnie z oczekiwaniami.",
         "data": {
-          "enable_learning": "Włącz uczenie przesunięcia",
+          "enable_learning": "Włącz uczenie korekty",
           "learn_rate": "Współczynnik uczenia",
           "stuck_enable": "Włącz adaptacyjną ochronę przed przegrzewaniem",
-          "stuck_seconds": "Okno oceny przegrzewania",
+          "stuck_seconds": "Okres oceny przegrzewania",
           "stuck_min_drop": "Minimalne oczekiwane ochłodzenie",
           "stuck_step": "Dodatkowy krok obniżenia"
         }
@@ -216,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Termostat",
+        "state": {
+          "heat": "Ogrzewanie",
+          "cool": "Chłodzenie",
+          "auto": "Automatyczny"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -223,47 +236,435 @@
               "away": "Poza domem",
               "summer": "Lato",
               "winter": "Zima"
-            }
+            },
+            "name": "Profil"
+          },
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "external_temperature_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "learned_offset": {
+            "name": "Wyuczona korekta"
+          },
+          "control_error": {
+            "name": "Błąd sterowania"
+          },
+          "control_output": {
+            "name": "Wyjście regulatora"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Błąd sterowania"
+        "name": "Błąd sterowania",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Bezwzględny błąd sterowania"
+        "name": "Bezwzględny błąd sterowania",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Średni błąd bezwzględny"
+        "name": "Średni błąd bezwzględny",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Wskaźnik komfortu"
+        "name": "Wskaźnik komfortu",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Trend temperatury"
+        "name": "Trend temperatury",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "control_output": {
-        "name": "Wyjście regulatora"
+        "name": "Wyjście regulatora",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "offset": {
-        "name": "Nauczony offset"
+        "name": "Wyuczona korekta",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "target_trv": {
-        "name": "Obliczona nastawa termostatu"
+        "name": "Obliczona nastawa termostatu",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "last_set": {
-        "name": "Ostatnio ustawiona nastawa termostatu"
+        "name": "Ostatnio ustawiona nastawa termostatu",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Potwierdzona nastawa termostatu"
+        "name": "Potwierdzona nastawa termostatu",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "correction": {
-        "name": "Zastosowana korekta"
+        "name": "Zastosowana korekta",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "last_action": {
-        "name": "Ostatnia decyzja (kod)"
+        "name": "Ostatnia decyzja (kod)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "last_action_text": {
         "name": "Ostatnia decyzja",
@@ -272,7 +673,7 @@
           "deadband_init": "Ustalono początkową nastawę",
           "deadband_rebase": "Cel zmieniony; wartość bazowa zaktualizowana",
           "hold": "Utrzymywanie nastawy w strefie komfortu",
-          "stable_learn": "Nauczono stabilną korektę",
+          "stable_learn": "Wyuczono stabilną korektę",
           "cooldown": "Oczekiwanie na zakończenie blokady",
           "set_temperature": "Nastawa wysłana do termostatu",
           "skipped_no_change": "Zmiana nastawy nie jest potrzebna",
@@ -285,35 +686,273 @@
           "hvac_mode_set": "Zmieniono tryb termostatu",
           "passive_mode": "Pasywny tryb termostatu",
           "stuck_overtemp_down": "Dodatkowa korekta przegrzania",
-          "reset_offset": "Zresetowano nauczoną korektę",
+          "reset_offset": "Wyzerowano wyuczoną korektę",
           "manual_target_sync": "Przyjęto zmianę ręczną",
           "manual_hold": "Oczekiwanie po zmianie ręcznej",
           "manual_echo": "Potwierdzono własne polecenie termostatu",
           "service_error": "Polecenie termostatu nie powiodło się"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
         }
       },
       "change_count": {
-        "name": "Liczba zmian nastawy"
+        "name": "Liczba zmian nastawy",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Liczba zmian ręcznych"
+        "name": "Liczba zmian ręcznych",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "window_state": {
-        "name": "Status okna"
+        "name": "Status okna",
+        "state": {
+          "open": "Otwarte",
+          "closed": "Zamknięte"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Pozostały czas boost"
+        "name": "Pozostały czas funkcji boost",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost aktywny"
+        "name": "Boost aktywny",
+        "state": {
+          "True": "Tak",
+          "False": "Nie"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       },
       "control_paused": {
-        "name": "Sterowanie wstrzymane"
+        "name": "Sterowanie wstrzymane",
+        "state": {
+          "True": "Tak",
+          "False": "Nie"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fizyczny termostat"
+          },
+          "room_sensor": {
+            "name": "Czujnik temperatury w pomieszczeniu"
+          },
+          "preset": {
+            "name": "Profil",
+            "state": {
+              "present": "Obecny",
+              "away": "Poza domem",
+              "summer": "Lato",
+              "winter": "Zima"
+            }
+          },
+          "hvac_mode": {
+            "name": "Tryb",
+            "state": {
+              "heat": "Ogrzewanie",
+              "cool": "Chłodzenie",
+              "auto": "Automatyczny",
+              "dry": "Osuszanie",
+              "fan_only": "Tylko wentylator",
+              "off": "Wyłączony"
+            }
+          },
+          "room_target": {
+            "name": "Docelowa temperatura w pomieszczeniu"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Otwarte okno"
+        "name": "Otwarte okno",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "Nieznany stan czujnika okna",
+            "state": {
+              "true": "Tak",
+              "false": "Nie"
+            }
+          }
+        }
       },
       "boost_running": {
         "name": "Boost aktywny"
@@ -332,12 +971,12 @@
     },
     "button": {
       "reset_offset": {
-        "name": "Resetuj offset"
+        "name": "Wyzeruj korektę"
       }
     },
     "select": {
       "preset_legacy": {
-        "name": "Tryb",
+        "name": "Profil",
         "state": {
           "present": "Obecny",
           "away": "Poza domem",
@@ -349,11 +988,49 @@
         "name": "Tryb",
         "state": {
           "present": "Obecny",
-          "away": "Nieobecny",
+          "away": "Poza domem",
           "summer": "Lato",
           "winter": "Zima"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "Brakuje termostatu lub czujnika temperatury w pomieszczeniu. Skonfiguruj ponownie połączone urządzenia."
+    },
+    "duplicate_controller": {
+      "message": "Termostat {thermostat} jest już sterowany przez {room_name}. Usuń tę zduplikowaną konfigurację lub wybierz inny termostat."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "Dane przywracania pomieszczenia są niekompletne. Rozpocznij przywracanie ponownie."
+    },
+    "recovery_identity_conflict": {
+      "message": "Kilka termostatów używa tego samego zapisanego identyfikatora pomieszczenia. Rozwiąż problem zduplikowanych wpisów przed przywróceniem tego pomieszczenia."
+    },
+    "recovery_failed": {
+      "message": "Nie udało się przywrócić pomieszczenia, ponieważ jego zapisane dane lub przypisania encji uległy zmianie. Rozpocznij przywracanie ponownie."
+    },
+    "recovery_storage_conflict": {
+      "message": "Zapisane dane pomieszczenia są w konflikcie z tym termostatem. Rozwiąż konflikt przed przywróceniem pomieszczenia."
+    },
+    "recovery_storage_write": {
+      "message": "Nie udało się zapisać przywróconych danych pomieszczenia. Sprawdź miejsce przechowywania danych Home Assistant i spróbuj ponownie."
+    },
+    "recovery_reload_failed": {
+      "message": "Nie udało się ponownie załadować encji przywróconego pomieszczenia. Uruchom ponownie Home Assistant i spróbuj jeszcze raz."
+    },
+    "unknown_preset": {
+      "message": "Profil {preset} nie istnieje."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Termostat nie obsługuje trybu {mode}."
+    },
+    "hvac_mode_failed": {
+      "message": "Nie udało się przełączyć termostatu w tryb {mode}."
+    },
+    "no_hvac_mode": {
+      "message": "Brak dostępnego trybu pracy umożliwiającego włączenie tego termostatu."
     }
   }
 }

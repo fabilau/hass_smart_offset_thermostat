@@ -4,12 +4,20 @@
     "hvac_mode": {
       "options": {
         "keep": "Huidige modus behouden",
-        "heat": "Verwarmen",
-        "cool": "Koelen",
+        "heat": "Verwarmen (geregeld door Smart Offset Thermostat)",
+        "cool": "Koelen (geregeld door Smart Offset Thermostat)",
         "auto": "Automatisch (door apparaat geregeld)",
-        "dry": "Drogen",
+        "dry": "Ontvochtigen",
         "fan_only": "Alleen ventileren",
         "off": "Uit"
+      }
+    },
+    "preset": {
+      "options": {
+        "present": "Aanwezig",
+        "away": "Afwezig",
+        "summer": "Zomer",
+        "winter": "Winter"
       }
     }
   },
@@ -69,7 +77,7 @@
           "room_target": "Gewenste kamertemperatuur",
           "hvac_mode": "Beginmodus van thermostaat",
           "window_sensor_entities": "Raamsensoren (optioneel)",
-          "window_delay_sec": "Vertraging voordat raamverlaging ingaat",
+          "window_delay_sec": "Vertraging bij een open raam",
           "enable_learning": "Optimale thermostaatcorrectie leren",
           "manual_target_sync": "Handmatige thermostaatwijzigingen overnemen",
           "pause_on_hvac_off": "Regeling pauzeren terwijl thermostaat uit staat"
@@ -149,7 +157,7 @@
         }
       },
       "preset_edit": {
-        "title": "{preset_id} wijzigen",
+        "title": "Voorkeuze wijzigen",
         "description": "Werk deze voorkeuze bij of schakel verwijderen in om deze te wissen. Er moet minstens één voorkeuze overblijven.",
         "data": {
           "preset_id": "Voorkeuze-ID",
@@ -161,10 +169,10 @@
       },
       "window_boost": {
         "title": "Ramen en boost",
-        "description": "Na een vertraging zorgen open ramen voor een energiebesparende temperatuur. Boost vraagt tijdelijk de sterkste gereguleerde uitvoer.",
+        "description": "Bij open ramen wordt na een vertraging een energiebesparende temperatuur ingesteld. Boost vraagt tijdelijk het maximale geregelde vermogen.",
         "data": {
           "window_sensor_entities": "Raamsensoren",
-          "window_delay_sec": "Vertraging voordat raamverlaging ingaat",
+          "window_delay_sec": "Vertraging bij een open raam",
           "boost_duration_sec": "Boostduur"
         }
       },
@@ -179,7 +187,7 @@
       },
       "learning": {
         "title": "Leren en oververhitting",
-        "description": "Het leerproces past de correctie in de loop van de tijd aan. Bescherming tegen oververhitting kan de temperatuur verder verlagen als de ruimte niet zoals verwacht afkoelt.",
+        "description": "Het leerproces past de correctie in de loop van de tijd aan. Bescherming tegen oververhitting kan de ingestelde temperatuur verder verlagen als de ruimte niet zoals verwacht afkoelt.",
         "data": {
           "enable_learning": "Leren van correctie inschakelen",
           "learn_rate": "Leersnelheid",
@@ -196,10 +204,10 @@
           "interval_sec": "Regelinterval",
           "deadband": "Comfortband",
           "control_gain": "Regelversterking",
-          "step_max": "Maximale temperatuurwijziging per cyclus",
+          "step_max": "Maximale wijziging van de insteltemperatuur per cyclus",
           "step_min": "Afrondingsstap van thermostaat",
-          "trv_min": "Minimale temperatuur van fysieke thermostaat",
-          "trv_max": "Maximale temperatuur van fysieke thermostaat",
+          "trv_min": "Minimale insteltemperatuur van de fysieke thermostaat",
+          "trv_max": "Maximale insteltemperatuur van de fysieke thermostaat",
           "cooldown_sec": "Minimale tijd tussen wijzigingen"
         }
       }
@@ -216,6 +224,11 @@
     "climate": {
       "thermostat": {
         "name": "Thermostaat",
+        "state": {
+          "heat": "Verwarmen",
+          "cool": "Koelen",
+          "auto": "Automatisch"
+        },
         "state_attributes": {
           "preset_mode": {
             "state": {
@@ -223,59 +236,447 @@
               "away": "Afwezig",
               "summer": "Zomer",
               "winter": "Winter"
-            }
+            },
+            "name": "Voorkeuze"
+          },
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "external_temperature_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "learned_offset": {
+            "name": "Geleerde correctie"
+          },
+          "control_error": {
+            "name": "Regelfout"
+          },
+          "control_output": {
+            "name": "Regeluitgang"
           }
         }
       }
     },
     "sensor": {
       "error": {
-        "name": "Regelfout"
+        "name": "Regelfout",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "absolute_error": {
-        "name": "Absolute regelfout"
+        "name": "Absolute regelfout",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "mean_absolute_error": {
-        "name": "Gemiddelde absolute fout"
+        "name": "Gemiddelde absolute fout",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "comfort_score": {
-        "name": "Comfortscore"
+        "name": "Comfortscore",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "temperature_trend": {
-        "name": "Temperatuurtrend"
+        "name": "Temperatuurtrend",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "control_output": {
-        "name": "Regeluitgang"
+        "name": "Regeluitgang",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "offset": {
-        "name": "Geleerde offset"
+        "name": "Geleerde correctie",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "target_trv": {
-        "name": "Berekend thermostaatsetpoint"
+        "name": "Berekende insteltemperatuur van de thermostaat",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "last_set": {
-        "name": "Laatst ingesteld thermostaatsetpoint"
+        "name": "Laatst ingestelde temperatuur van de thermostaat",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "confirmed_setpoint": {
-        "name": "Bevestigd thermostaatsetpoint"
+        "name": "Bevestigde insteltemperatuur van de thermostaat",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "correction": {
-        "name": "Toegepaste correctie"
+        "name": "Toegepaste correctie",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "last_action": {
-        "name": "Laatste beslissing (code)"
+        "name": "Laatste beslissing (code)",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "last_action_text": {
         "name": "Laatste beslissing",
         "state": {
           "init": "Initialisatie",
-          "deadband_init": "Eerste setpoint vastgesteld",
+          "deadband_init": "Eerste insteltemperatuur vastgesteld",
           "deadband_rebase": "Doel gewijzigd; basislijn bijgewerkt",
-          "hold": "Setpoint binnen comfortzone vasthouden",
-          "stable_learn": "Stabiele offset geleerd",
-          "cooldown": "Wachten op minimale interval",
-          "set_temperature": "Setpoint naar thermostaat gestuurd",
-          "skipped_no_change": "Geen setpointwijziging nodig",
+          "hold": "Insteltemperatuur binnen comfortzone vasthouden",
+          "stable_learn": "Stabiele correctie geleerd",
+          "cooldown": "Wachten tot de wachttijd voorbij is",
+          "set_temperature": "Insteltemperatuur naar thermostaat gestuurd",
+          "skipped_no_change": "Geen wijziging van de insteltemperatuur nodig",
           "skipped_unavailable_entities": "Bronentiteit niet beschikbaar",
           "skipped_invalid_room_temp": "Ongeldige kamertemperatuur",
           "boost": "Boost actief",
@@ -285,35 +686,273 @@
           "hvac_mode_set": "Thermostaatmodus gewijzigd",
           "passive_mode": "Passieve thermostaatmodus",
           "stuck_overtemp_down": "Extra correctie voor overtemperatuur",
-          "reset_offset": "Geleerde offset gereset",
+          "reset_offset": "Geleerde correctie teruggezet",
           "manual_target_sync": "Handmatige wijziging overgenomen",
           "manual_hold": "Wachten na handmatige wijziging",
           "manual_echo": "Eigen thermostaatopdracht bevestigd",
           "service_error": "Thermostaatopdracht mislukt"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
         }
       },
       "change_count": {
-        "name": "Aantal setpointwijzigingen"
+        "name": "Aantal wijzigingen van de insteltemperatuur",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "manual_change_count": {
-        "name": "Aantal handmatige wijzigingen"
+        "name": "Aantal handmatige wijzigingen",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "window_state": {
-        "name": "Raamstatus"
+        "name": "Raamstatus",
+        "state": {
+          "open": "Open",
+          "closed": "Gesloten"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "boost_remaining": {
-        "name": "Boost resterende tijd"
+        "name": "Resterende boosttijd",
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "boost_active": {
-        "name": "Boost actief"
+        "name": "Boost actief",
+        "state": {
+          "True": "Ja",
+          "False": "Nee"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       },
       "control_paused": {
-        "name": "Regeling gepauzeerd"
+        "name": "Regeling gepauzeerd",
+        "state": {
+          "True": "Ja",
+          "False": "Nee"
+        },
+        "state_attributes": {
+          "physical_thermostat": {
+            "name": "Fysieke thermostaat"
+          },
+          "room_sensor": {
+            "name": "Kamertemperatuursensor"
+          },
+          "preset": {
+            "name": "Voorkeuze",
+            "state": {
+              "present": "Aanwezig",
+              "away": "Afwezig",
+              "summer": "Zomer",
+              "winter": "Winter"
+            }
+          },
+          "hvac_mode": {
+            "name": "Modus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "auto": "Automatisch",
+              "dry": "Ontvochtigen",
+              "fan_only": "Alleen ventileren",
+              "off": "Uit"
+            }
+          },
+          "room_target": {
+            "name": "Gewenste kamertemperatuur"
+          }
+        }
       }
     },
     "binary_sensor": {
       "window_open": {
-        "name": "Raam open"
+        "name": "Raam open",
+        "state_attributes": {
+          "sensor_state_unknown": {
+            "name": "Status van raamsensor onbekend",
+            "state": {
+              "true": "Ja",
+              "false": "Nee"
+            }
+          }
+        }
       },
       "boost_running": {
         "name": "Boost actief"
@@ -332,12 +971,12 @@
     },
     "button": {
       "reset_offset": {
-        "name": "Offset resetten"
+        "name": "Correctie terugzetten"
       }
     },
     "select": {
       "preset_legacy": {
-        "name": "Voorinstelling",
+        "name": "Voorkeuze",
         "state": {
           "present": "Aanwezig",
           "away": "Afwezig",
@@ -354,6 +993,44 @@
           "winter": "Winter"
         }
       }
+    }
+  },
+  "exceptions": {
+    "missing_sources": {
+      "message": "De thermostaat of kamertemperatuursensor ontbreekt. Stel de gekoppelde apparaten opnieuw in."
+    },
+    "duplicate_controller": {
+      "message": "{thermostat} wordt al geregeld door {room_name}. Verwijder deze dubbele configuratie of kies een andere thermostaat."
+    },
+    "recovery_metadata_incomplete": {
+      "message": "De gegevens voor het herstel van de ruimte zijn onvolledig. Start het herstel opnieuw."
+    },
+    "recovery_identity_conflict": {
+      "message": "Meerdere thermostaten gebruiken dezelfde opgeslagen ruimte-identiteit. Los de dubbele configuraties op voordat je deze ruimte herstelt."
+    },
+    "recovery_failed": {
+      "message": "Deze ruimte kon niet worden hersteld omdat de opgeslagen gegevens of entiteitstoewijzingen zijn gewijzigd. Start het herstel van de ruimte opnieuw."
+    },
+    "recovery_storage_conflict": {
+      "message": "De opgeslagen ruimtegegevens komen niet overeen met deze thermostaat. Los dit conflict op voordat je de ruimte herstelt."
+    },
+    "recovery_storage_write": {
+      "message": "Het herstel van de ruimte kon niet worden opgeslagen. Controleer de opslag van Home Assistant en probeer het opnieuw."
+    },
+    "recovery_reload_failed": {
+      "message": "De entiteiten van de herstelde ruimte konden niet opnieuw worden geladen. Start Home Assistant opnieuw en probeer het nogmaals."
+    },
+    "unknown_preset": {
+      "message": "De voorkeuze {preset} bestaat niet."
+    },
+    "unsupported_hvac_mode": {
+      "message": "De thermostaat ondersteunt modus {mode} niet."
+    },
+    "hvac_mode_failed": {
+      "message": "De thermostaat kon niet overschakelen naar modus {mode}."
+    },
+    "no_hvac_mode": {
+      "message": "Er is geen bedrijfsmodus beschikbaar om deze thermostaat in te schakelen."
     }
   }
 }

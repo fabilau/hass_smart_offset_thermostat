@@ -215,7 +215,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if missing_sources:
         raise ConfigEntryError(
             "Config entry is missing required source entities: "
-            + ", ".join(missing_sources)
+            + ", ".join(missing_sources),
+            translation_domain=DOMAIN,
+            translation_key="missing_sources",
         )
 
     # Prefer the original entry so entity IDs already used by dashboards and
@@ -227,7 +229,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "Physical thermostat "
             f"{entry.data[CONF_CLIMATE]} is already controlled by config entry "
             f"{owner.title!r} ({owner.entry_id}); remove the duplicate entry "
-            "or reconfigure it to another thermostat"
+            "or reconfigure it to another thermostat",
+            translation_domain=DOMAIN,
+            translation_key="duplicate_controller",
+            translation_placeholders={
+                "thermostat": entry.data[CONF_CLIMATE],
+                "room_name": owner.title,
+            },
         )
 
     if unique_id := _legacy_entry_unique_id(hass, entry, dict(entry.data)):
@@ -248,7 +256,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             not isinstance(value, str) or not value
             for value in recovery_values.values()
         ) or not isinstance(entry.data.get(CONF_REGISTRY_IDENTITY), str):
-            raise ConfigEntryError("Registry recovery metadata is incomplete")
+            raise ConfigEntryError(
+                "Registry recovery metadata is incomplete",
+                translation_domain=DOMAIN,
+                translation_key="recovery_metadata_incomplete",
+            )
 
         source_entry_id = recovery_values[CONF_RECOVERY_SOURCE_ENTRY_ID]
         device_id = recovery_values[CONF_RECOVERY_DEVICE_ID]
@@ -264,7 +276,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             previous_owner = identity_owners.get(identity)
             if previous_owner is not None and previous_owner != candidate.entry_id:
                 raise ConfigEntryError(
-                    f"Registry identity {identity!r} is owned by multiple entries"
+                    f"Registry identity {identity!r} is owned by multiple entries",
+                    translation_domain=DOMAIN,
+                    translation_key="recovery_identity_conflict",
                 )
             identity_owners[identity] = candidate.entry_id
 
@@ -289,11 +303,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             )
         except RegistryRecoveryError as err:
             raise ConfigEntryError(
-                f"Registry recovery failed ({err.reason}): {err}"
+                f"Registry recovery failed ({err.reason}): {err}",
+                translation_domain=DOMAIN,
+                translation_key="recovery_failed",
             ) from err
         except RuntimeError as err:
             raise ConfigEntryError(
-                f"Registry recovery failed (storage_conflict): {err}"
+                f"Registry recovery failed (storage_conflict): {err}",
+                translation_domain=DOMAIN,
+                translation_key="recovery_storage_conflict",
             ) from err
         except Exception as err:
             # Registry operations are wrapped above, so an exception reaching
@@ -301,7 +319,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             # recovery markers in place and retry the idempotent adoption on
             # the next setup instead of loading with unpersisted runtime data.
             raise ConfigEntryError(
-                f"Registry recovery failed (storage_write): {err}"
+                f"Registry recovery failed (storage_write): {err}",
+                translation_domain=DOMAIN,
+                translation_key="recovery_storage_write",
             ) from err
 
         recovery_pending = {
@@ -351,7 +371,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     entry, PLATFORMS
                 ):
                     raise ConfigEntryError(
-                        "Registry recovery could not reload restored entities"
+                        "Registry recovery could not reload restored entities",
+                        translation_domain=DOMAIN,
+                        translation_key="recovery_reload_failed",
                     )
                 await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
             verified = verify_recovered_registry_group(
@@ -384,7 +406,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except RegistryRecoveryError as err:
         await _async_cleanup_failed_setup()
         raise ConfigEntryError(
-            f"Registry recovery failed ({err.reason}): {err}"
+            f"Registry recovery failed ({err.reason}): {err}",
+            translation_domain=DOMAIN,
+            translation_key="recovery_failed",
         ) from err
     except Exception:
         await _async_cleanup_failed_setup()
