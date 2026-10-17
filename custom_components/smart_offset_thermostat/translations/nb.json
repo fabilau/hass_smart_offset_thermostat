@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Læring og overoppheting",
-        "description": "Innlæringen tilpasser temperaturkorreksjonen over tid. Beskyttelse mot overoppheting kan senke settpunktet ytterligere hvis rommet ikke kjøles ned som forventet.",
+        "title": "Læring av temperaturforskyvning",
+        "description": "Læringen justerer temperaturforskyvningen når rommet trenger mer oppvarming eller kjøling. Oppvarmingen settes automatisk på pause når rommet er varmt nok.",
         "data": {
           "enable_learning": "Aktiver innlæring av temperaturkorreksjon",
-          "learn_rate": "Læringsrate",
-          "stuck_enable": "Aktiver adaptiv beskyttelse mot overoppheting",
-          "stuck_seconds": "Vurderingsperiode for overoppheting",
-          "stuck_min_drop": "Minste forventede nedkjøling",
-          "stuck_step": "Ekstra senketrinn"
+          "learn_rate": "Læringsrate"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Manuell endring overtatt",
           "manual_hold": "Venter etter manuell endring",
           "manual_echo": "Egen termostatkommando bekreftet",
-          "service_error": "Termostatkommando mislyktes"
+          "service_error": "Termostatkommando mislyktes",
+          "heat_satisfied": "Rommet er varmt nok – oppvarming satt på pause"
         },
         "state_attributes": {
           "physical_thermostat": {

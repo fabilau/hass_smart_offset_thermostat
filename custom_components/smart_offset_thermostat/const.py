@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Final
 
 DOMAIN: Final = "smart_offset_thermostat"
-INTEGRATION_VERSION: Final = "2.0.6"
+INTEGRATION_VERSION: Final = "2.0.7"
 CONFIG_ENTRY_VERSION: Final = 3
 CONFIG_ENTRY_MINOR_VERSION: Final = 5
 
@@ -50,6 +50,7 @@ CONF_WINDOW_SENSORS: Final = "window_sensor_entities"
 CONF_WINDOW_DELAY_SEC: Final = "window_delay_sec"
 CONF_BOOST_DURATION_SEC: Final = "boost_duration_sec"
 
+# Retained for saved-option compatibility; heating now pauses without this timer.
 CONF_STUCK_ENABLE: Final = "stuck_enable"
 CONF_STUCK_SECONDS: Final = "stuck_seconds"
 CONF_STUCK_MIN_DROP: Final = "stuck_min_drop"
@@ -179,6 +180,7 @@ LAST_ACTION_OPTIONS: Final = (
     "deadband_init",
     "deadband_rebase",
     "hold",
+    "heat_satisfied",
     "stable_learn",
     "cooldown",
     "set_temperature",

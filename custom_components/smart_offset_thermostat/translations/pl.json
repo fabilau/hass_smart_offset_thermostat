@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Uczenie i przegrzewanie",
-        "description": "Uczenie z czasem dostosowuje korektę. Ochrona przed przegrzewaniem może dodatkowo obniżyć nastawę, jeśli pomieszczenie nie ochładza się zgodnie z oczekiwaniami.",
+        "title": "Uczenie korekty temperatury",
+        "description": "Funkcja uczenia dostosowuje korektę, gdy pomieszczenie potrzebuje więcej ogrzewania lub chłodzenia. Ogrzewanie jest automatycznie wstrzymywane, gdy w pomieszczeniu jest wystarczająco ciepło.",
         "data": {
           "enable_learning": "Włącz uczenie korekty",
-          "learn_rate": "Współczynnik uczenia",
-          "stuck_enable": "Włącz adaptacyjną ochronę przed przegrzewaniem",
-          "stuck_seconds": "Okres oceny przegrzewania",
-          "stuck_min_drop": "Minimalne oczekiwane ochłodzenie",
-          "stuck_step": "Dodatkowy krok obniżenia"
+          "learn_rate": "Współczynnik uczenia"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Przyjęto zmianę ręczną",
           "manual_hold": "Oczekiwanie po zmianie ręcznej",
           "manual_echo": "Potwierdzono własne polecenie termostatu",
-          "service_error": "Polecenie termostatu nie powiodło się"
+          "service_error": "Polecenie termostatu nie powiodło się",
+          "heat_satisfied": "W pomieszczeniu jest wystarczająco ciepło – ogrzewanie wstrzymane"
         },
         "state_attributes": {
           "physical_thermostat": {

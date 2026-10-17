@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Aprendizagem e sobreaquecimento",
-        "description": "A aprendizagem adapta a compensação ao longo do tempo. A proteção contra sobreaquecimento pode reduzir ainda mais a temperatura-alvo se a divisão não arrefecer como esperado.",
+        "title": "Aprendizagem da compensação",
+        "description": "A aprendizagem ajusta a compensação quando a divisão precisa de mais aquecimento ou arrefecimento. O aquecimento é automaticamente interrompido quando a divisão está suficientemente quente.",
         "data": {
           "enable_learning": "Ativar a aprendizagem da compensação",
-          "learn_rate": "Taxa de aprendizagem",
-          "stuck_enable": "Ativar a proteção adaptativa contra sobreaquecimento",
-          "stuck_seconds": "Janela de avaliação do sobreaquecimento",
-          "stuck_min_drop": "Arrefecimento mínimo esperado",
-          "stuck_step": "Passo adicional de redução"
+          "learn_rate": "Taxa de aprendizagem"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Alteração manual adotada",
           "manual_hold": "A aguardar após alteração manual",
           "manual_echo": "Comando do controlador confirmado",
-          "service_error": "Falha no comando do termóstato"
+          "service_error": "Falha no comando do termóstato",
+          "heat_satisfied": "Divisão suficientemente quente – aquecimento em pausa"
         },
         "state_attributes": {
           "physical_thermostat": {

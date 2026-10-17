@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Apprendimento e surriscaldamento",
-        "description": "L’apprendimento adatta la compensazione nel tempo. La protezione dal surriscaldamento può ridurre ulteriormente la temperatura impostata se la stanza non si raffredda come previsto.",
+        "title": "Apprendimento dell’offset",
+        "description": "L’apprendimento regola l’offset quando la stanza necessita di più riscaldamento o raffreddamento. Il riscaldamento si interrompe automaticamente quando la stanza è sufficientemente calda.",
         "data": {
           "enable_learning": "Attiva l’apprendimento della compensazione",
-          "learn_rate": "Velocità di apprendimento",
-          "stuck_enable": "Attiva la protezione adattiva dal surriscaldamento",
-          "stuck_seconds": "Periodo di valutazione del surriscaldamento",
-          "stuck_min_drop": "Raffreddamento minimo previsto",
-          "stuck_step": "Passo di riduzione aggiuntivo"
+          "learn_rate": "Velocità di apprendimento"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Modifica manuale acquisita",
           "manual_hold": "Attesa dopo la modifica manuale",
           "manual_echo": "Comando del regolatore confermato",
-          "service_error": "Comando al termostato non riuscito"
+          "service_error": "Comando al termostato non riuscito",
+          "heat_satisfied": "Stanza sufficientemente calda – riscaldamento in pausa"
         },
         "state_attributes": {
           "physical_thermostat": {

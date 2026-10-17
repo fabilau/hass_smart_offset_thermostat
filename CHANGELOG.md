@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.0.7
+
+- Prevented unnecessary reheating after ventilation or Boost when the room is already warm enough.
+- Heating now pauses at the upper temperature tolerance and resumes below the lower tolerance, without a slow ramp from the setback temperature. This replaces the delayed overheating correction and its four settings; existing saved settings remain compatible.
+- Repeated preset, target and HVAC commands no longer discard regulation state. Editing an inactive preset also leaves the active room control unchanged.
+- Manual thermostat changes during a heating pause are adopted as the room target directly, without adding the gap from the minimum setpoint.
+- Prevented increasing learned heating offsets while fresh room measurements already show warming. Calibration remains available when heating stalls and during stable operation.
+- Added regression coverage for recorded room histories, sensor outages, command retries, restarts, Fahrenheit and real Home Assistant event handling.
+- Preserved learned offsets and the existing one-time upgrade migration. This update does not introduce another automatic offset reset.
+
 ## v2.0.6
 
 - Improved room-temperature control when the room is too cold or too warm.

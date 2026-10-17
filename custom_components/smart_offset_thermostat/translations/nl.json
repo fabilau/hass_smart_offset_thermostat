@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Leren en oververhitting",
-        "description": "Het leerproces past de correctie in de loop van de tijd aan. Bescherming tegen oververhitting kan de ingestelde temperatuur verder verlagen als de ruimte niet zoals verwacht afkoelt.",
+        "title": "Offset leren",
+        "description": "De leerfunctie past de offset aan wanneer de kamer meer verwarming of koeling nodig heeft. De verwarming pauzeert automatisch wanneer de kamer warm genoeg is.",
         "data": {
           "enable_learning": "Leren van correctie inschakelen",
-          "learn_rate": "Leersnelheid",
-          "stuck_enable": "Adaptieve bescherming tegen oververhitting inschakelen",
-          "stuck_seconds": "Meetperiode voor oververhitting",
-          "stuck_min_drop": "Minimaal verwachte afkoeling",
-          "stuck_step": "Extra verlagingsstap"
+          "learn_rate": "Leersnelheid"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Handmatige wijziging overgenomen",
           "manual_hold": "Wachten na handmatige wijziging",
           "manual_echo": "Eigen thermostaatopdracht bevestigd",
-          "service_error": "Thermostaatopdracht mislukt"
+          "service_error": "Thermostaatopdracht mislukt",
+          "heat_satisfied": "Kamer warm genoeg – verwarming gepauzeerd"
         },
         "state_attributes": {
           "physical_thermostat": {

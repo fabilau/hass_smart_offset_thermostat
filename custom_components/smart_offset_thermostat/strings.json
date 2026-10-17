@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Learning and overheating",
-        "description": "Learning adapts the offset over time. Overheating protection can reduce the setpoint further if the room does not cool as expected.",
+        "title": "Offset learning",
+        "description": "Learning adjusts the offset when the room needs more heating or cooling. Heating pauses automatically when the room is warm enough.",
         "data": {
           "enable_learning": "Enable offset learning",
-          "learn_rate": "Learning rate",
-          "stuck_enable": "Enable adaptive overheating protection",
-          "stuck_seconds": "Overheating evaluation window",
-          "stuck_min_drop": "Minimum expected cooling",
-          "stuck_step": "Additional reduction step"
+          "learn_rate": "Learning rate"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Manual change adopted",
           "manual_hold": "Waiting after manual change",
           "manual_echo": "Own thermostat command confirmed",
-          "service_error": "Thermostat command failed"
+          "service_error": "Thermostat command failed",
+          "heat_satisfied": "Room warm enough – heating paused"
         },
         "state_attributes": {
           "physical_thermostat": {

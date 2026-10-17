@@ -53,10 +53,6 @@ from .const import (
     CONF_ROOM_TARGET,
     CONF_STEP_MAX,
     CONF_STEP_MIN,
-    CONF_STUCK_ENABLE,
-    CONF_STUCK_MIN_DROP,
-    CONF_STUCK_SECONDS,
-    CONF_STUCK_STEP,
     CONF_TRV_MAX,
     CONF_TRV_MIN,
     CONF_WINDOW_DELAY_SEC,
@@ -77,10 +73,6 @@ from .const import (
     DEFAULT_ROOM_TARGET,
     DEFAULT_STEP_MAX,
     DEFAULT_STEP_MIN,
-    DEFAULT_STUCK_ENABLE,
-    DEFAULT_STUCK_MIN_DROP,
-    DEFAULT_STUCK_SECONDS,
-    DEFAULT_STUCK_STEP,
     DEFAULT_TRV_MAX,
     DEFAULT_TRV_MIN,
     DEFAULT_WINDOW_DELAY_SEC,
@@ -953,14 +945,11 @@ class SmartOffsetThermostatOptionsFlow(config_entries.OptionsFlow):
     async def async_step_learning(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
-        """Configure learning and adaptive over-temperature correction."""
+        """Configure offset learning."""
         if user_input is not None:
-            updates = _canonical_temperature_updates(
-                self.hass,
-                user_input,
-                difference_keys=(CONF_STUCK_MIN_DROP, CONF_STUCK_STEP),
+            return self.async_create_entry(
+                title="", data=self._merged_options(user_input)
             )
-            return self.async_create_entry(title="", data=self._merged_options(updates))
 
         schema = vol.Schema(
             {
@@ -978,50 +967,6 @@ class SmartOffsetThermostatOptionsFlow(config_entries.OptionsFlow):
                         step=0.01,
                         mode=NumberSelectorMode.BOX,
                     )
-                ),
-                vol.Optional(
-                    CONF_STUCK_ENABLE,
-                    default=self._value(CONF_STUCK_ENABLE, DEFAULT_STUCK_ENABLE),
-                ): BooleanSelector(),
-                vol.Optional(
-                    CONF_STUCK_SECONDS,
-                    default=self._value(CONF_STUCK_SECONDS, DEFAULT_STUCK_SECONDS),
-                ): NumberSelector(
-                    NumberSelectorConfig(
-                        min=300,
-                        max=7200,
-                        step=60,
-                        mode=NumberSelectorMode.BOX,
-                        unit_of_measurement="s",
-                    )
-                ),
-                vol.Optional(
-                    CONF_STUCK_MIN_DROP,
-                    default=_temperature_form_value(
-                        self.hass,
-                        self._value(CONF_STUCK_MIN_DROP, DEFAULT_STUCK_MIN_DROP),
-                        difference=True,
-                    ),
-                ): _temperature_selector(
-                    self.hass,
-                    default_min=0.0,
-                    default_max=1.0,
-                    step=0.05,
-                    difference=True,
-                ),
-                vol.Optional(
-                    CONF_STUCK_STEP,
-                    default=_temperature_form_value(
-                        self.hass,
-                        self._value(CONF_STUCK_STEP, DEFAULT_STUCK_STEP),
-                        difference=True,
-                    ),
-                ): _temperature_selector(
-                    self.hass,
-                    default_min=0.1,
-                    default_max=2.0,
-                    step=0.1,
-                    difference=True,
                 ),
             }
         )

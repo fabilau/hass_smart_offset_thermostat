@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Lernen und Überhitzung",
-        "description": "Das Lernen passt den Offset mit der Zeit an. Der Überhitzungsschutz kann den Sollwert weiter senken, wenn der Raum nicht wie erwartet abkühlt.",
+        "title": "Offset lernen",
+        "description": "Das Lernen passt den Offset bei zusätzlichem Heiz- oder Kühlbedarf an. Ist der Raum ausreichend warm, pausiert die Heizung automatisch.",
         "data": {
           "enable_learning": "Offset-Lernen aktivieren",
-          "learn_rate": "Lernrate",
-          "stuck_enable": "Adaptiven Überhitzungsschutz aktivieren",
-          "stuck_seconds": "Auswertefenster für Überhitzung",
-          "stuck_min_drop": "Mindestens erwartete Abkühlung",
-          "stuck_step": "Zusätzlicher Absenkschritt"
+          "learn_rate": "Lernrate"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Manuelle Änderung übernommen",
           "manual_hold": "Wartezeit nach manueller Änderung",
           "manual_echo": "Eigener Thermostatbefehl bestätigt",
-          "service_error": "Thermostatbefehl fehlgeschlagen"
+          "service_error": "Thermostatbefehl fehlgeschlagen",
+          "heat_satisfied": "Raum ausreichend warm – Heizpause"
         },
         "state_attributes": {
           "physical_thermostat": {

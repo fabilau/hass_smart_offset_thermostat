@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Inlärning och överhettning",
-        "description": "Inlärningen anpassar korrigeringen över tid. Skyddet mot överhettning kan sänka börvärdet ytterligare om rummet inte svalnar som förväntat.",
+        "title": "Inlärning av temperaturförskjutning",
+        "description": "Inlärningen justerar temperaturförskjutningen när rummet behöver mer uppvärmning eller kylning. Uppvärmningen pausas automatiskt när rummet är tillräckligt varmt.",
         "data": {
           "enable_learning": "Aktivera inlärning av korrigering",
-          "learn_rate": "Inlärningshastighet",
-          "stuck_enable": "Aktivera adaptivt skydd mot överhettning",
-          "stuck_seconds": "Utvärderingsperiod för överhettning",
-          "stuck_min_drop": "Minsta förväntade avkylning",
-          "stuck_step": "Ytterligare sänkningssteg"
+          "learn_rate": "Inlärningshastighet"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Manuell ändring övertagen",
           "manual_hold": "Väntar efter manuell ändring",
           "manual_echo": "Eget termostatkommando bekräftat",
-          "service_error": "Termostatkommandot misslyckades"
+          "service_error": "Termostatkommandot misslyckades",
+          "heat_satisfied": "Rummet är tillräckligt varmt – uppvärmningen pausad"
         },
         "state_attributes": {
           "physical_thermostat": {

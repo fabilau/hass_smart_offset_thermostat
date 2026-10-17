@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Apprentissage et surchauffe",
-        "description": "L’apprentissage adapte le décalage au fil du temps. La protection contre la surchauffe peut réduire davantage la consigne si la pièce ne refroidit pas comme prévu.",
+        "title": "Apprentissage du décalage",
+        "description": "L’apprentissage ajuste le décalage lorsque la pièce a besoin de davantage de chauffage ou de refroidissement. Le chauffage se met automatiquement en pause lorsque la pièce est suffisamment chaude.",
         "data": {
           "enable_learning": "Activer l’apprentissage du décalage",
-          "learn_rate": "Vitesse d’apprentissage",
-          "stuck_enable": "Activer la protection adaptative contre la surchauffe",
-          "stuck_seconds": "Période d’évaluation de la surchauffe",
-          "stuck_min_drop": "Refroidissement minimal attendu",
-          "stuck_step": "Palier d’abaissement supplémentaire"
+          "learn_rate": "Vitesse d’apprentissage"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Modification manuelle adoptée",
           "manual_hold": "Attente après modification manuelle",
           "manual_echo": "Commande du régulateur confirmée",
-          "service_error": "Échec de la commande du thermostat"
+          "service_error": "Échec de la commande du thermostat",
+          "heat_satisfied": "Pièce suffisamment chaude – chauffage en pause"
         },
         "state_attributes": {
           "physical_thermostat": {

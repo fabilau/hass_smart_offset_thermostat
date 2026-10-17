@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Aprendizado e superaquecimento",
-        "description": "O aprendizado adapta a compensação ao longo do tempo. A proteção contra superaquecimento pode reduzir ainda mais a temperatura-alvo se o ambiente não esfriar como esperado.",
+        "title": "Aprendizado da compensação",
+        "description": "O aprendizado ajusta a compensação quando o ambiente precisa de mais aquecimento ou resfriamento. O aquecimento é pausado automaticamente quando o ambiente está suficientemente quente.",
         "data": {
           "enable_learning": "Ativar o aprendizado da compensação",
-          "learn_rate": "Taxa de aprendizado",
-          "stuck_enable": "Ativar proteção adaptativa contra superaquecimento",
-          "stuck_seconds": "Janela de avaliação de superaquecimento",
-          "stuck_min_drop": "Resfriamento mínimo esperado",
-          "stuck_step": "Passo adicional de redução"
+          "learn_rate": "Taxa de aprendizado"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Alteração manual adotada",
           "manual_hold": "Aguardando após alteração manual",
           "manual_echo": "Comando do controlador confirmado",
-          "service_error": "Falha no comando do termostato"
+          "service_error": "Falha no comando do termostato",
+          "heat_satisfied": "Ambiente suficientemente quente – aquecimento pausado"
         },
         "state_attributes": {
           "physical_thermostat": {

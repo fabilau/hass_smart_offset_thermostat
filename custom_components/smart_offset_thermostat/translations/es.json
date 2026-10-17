@@ -186,15 +186,11 @@
         }
       },
       "learning": {
-        "title": "Aprendizaje y sobrecalentamiento",
-        "description": "El aprendizaje adapta la compensación con el tiempo. La protección contra el sobrecalentamiento puede reducir aún más la consigna si la estancia no se enfría como se esperaba.",
+        "title": "Aprendizaje de la compensación",
+        "description": "El aprendizaje ajusta la compensación cuando la habitación necesita más calefacción o refrigeración. La calefacción se pausa automáticamente cuando la habitación está suficientemente caliente.",
         "data": {
           "enable_learning": "Activar el aprendizaje de compensación",
-          "learn_rate": "Velocidad de aprendizaje",
-          "stuck_enable": "Activar la protección adaptativa contra el sobrecalentamiento",
-          "stuck_seconds": "Periodo de evaluación del sobrecalentamiento",
-          "stuck_min_drop": "Enfriamiento mínimo esperado",
-          "stuck_step": "Paso de reducción adicional"
+          "learn_rate": "Velocidad de aprendizaje"
         }
       },
       "expert": {
@@ -690,7 +686,8 @@
           "manual_target_sync": "Cambio manual adoptado",
           "manual_hold": "Espera tras el cambio manual",
           "manual_echo": "Orden del controlador confirmada",
-          "service_error": "Error al enviar la orden al termostato"
+          "service_error": "Error al enviar la orden al termostato",
+          "heat_satisfied": "Habitación suficientemente caliente – calefacción en pausa"
         },
         "state_attributes": {
           "physical_thermostat": {
